@@ -61,7 +61,7 @@ namespace TQDC16_Summary_Rev_1
                 }
             }
         }
-   
+        /*
         public static void DescFile(TextBox SerialText,TextBox IDText)
         {
             var FSD = new FileStream(String.Format("{0}", Path), FileMode.Open);
@@ -72,46 +72,7 @@ namespace TQDC16_Summary_Rev_1
             Event_Block.EventPayLen = Converters.Byte2Int(ReadByte(4, 8, FSD));
             FSD.Close();
         }
-
-        public static void ReadEvBl (int pos)
-        {
-            object[] TDCB;
-            object[] ADCB;
-            var FS = new FileStream(String.Format("{0}", Path), FileMode.Open);
-            Event_Block.EventPayLen = Converters.Byte2Int(ReadByte(pos + 4, pos + 8, FS));
-            Event_Block.NumEvent = Converters.Byte2Int(ReadByte(pos + 8, pos + 12, FS));
-            DeviceEventBlock.Serial = Converters.Byte2Str(ReadByte(pos + 12, pos + 16, FS));
-            DeviceEventBlock.ID = Converters.Byte2Int(ReadByte(pos + 16, pos + 17, FS));
-            DeviceEventBlock.DEventPayLen = Converters.Byte2Int(ReadByte(pos + 17, pos + 20, FS));
-            MstreamBlock.STypeBit = Converters.Byte2Int(ReadByte(pos + 20, pos + 21, FS));
-            MstreamBlock.MStrPLen = Converters.Byte2Int(ReadByte(pos + 21, pos + 24, FS))>>2;
-            MstreamBlock.MstrS = (Converters.Byte2Int(ReadByte(pos + 23, pos + 24, FS)) << 6) >> 6;
-            MstreamPL.EvTimSt_Sec = Converters.Byte2Int(ReadByte(pos + 24, pos + 28, FS));
-            MstreamPL.EvTimSt_nSec = Converters.Byte2Int(ReadByte(pos + 28, pos + 32, FS)) >>2;
-            MstreamPL.EvTim_Flag = (Converters.Byte2Int(ReadByte(pos + 31, pos + 32, FS)) << 6) >> 6;
-            /*
-            switch (Converters.Byte2Int(ReadByte(pos + 32, pos + 33, FS))>>4) 
-            {
-                
-                case 0:
-                    {
-                        int postdc = pos+36;
-                        TDC.Ch_N = (Converters.Byte2Int(ReadByte(pos + 32, pos + 33, FS)) << 4) >> 4;
-                        TDC.LengthPl = Converters.Byte2Int(ReadByte(pos + 34, pos + 36, FS));
-                        TDCB = new object[TDC.LengthPl / 4];
-                        
-                        break;
-                    }
-                case 1:
-                    {
-
-                        break;
-                    }
-            }
-            */
-            FS.Close();
-        }
-
+        */
         public static byte[] ReadByte (long x,long y,FileStream FS)
         {
             if ((x>y)|(((x/4)*4)+4<y))

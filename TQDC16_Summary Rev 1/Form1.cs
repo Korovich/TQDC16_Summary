@@ -28,7 +28,7 @@ namespace TQDC16_Summary_Rev_1
                 ConSaveFile.BackColor = System.Drawing.Color.White;
                 ConfiguireWindow.Enabled = true;
                 //TQDC2File.ReadEvBl(0);
-                TQDC2File.DescFile(SerialText,IDText);
+                // TQDC2File.DescFile(SerialText,IDText);
             }
         }
         private void label1_Click(object sender, EventArgs e)

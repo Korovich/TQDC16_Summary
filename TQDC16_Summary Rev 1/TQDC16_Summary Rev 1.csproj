@@ -55,7 +55,6 @@
   <ItemGroup>
     <Compile Include="AnalysisFile.cs" />
     <Compile Include="CSV_Output.cs" />
-    <Compile Include="Event_Block.cs" />
     <Compile Include="Converters.cs" />
     <Compile Include="Decoder.cs" />
     <Compile Include="OutSummaryFile.cs" />

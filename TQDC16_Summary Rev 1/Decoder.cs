@@ -31,6 +31,12 @@ namespace TQDC16_Summary_Rev_1
                 
                 CSV_Output.csv.WriteHeader<DecData>();
                 CSV_Output.csv.NextRecord();
+                AddData(TIMESTAMP, "Время(ns)");
+                AddData(EVENT, "№");
+                AddData(TYPE_DATA, "Тип данных");
+                CSV_Output.csv.WriteRecord(data);
+                Record_Clear();
+                CSV_Output.csv.NextRecord();
                 while (pos < FS.Length)
                 {
                     EvLeng = Converters.Byte2Int(TQDC2File.ReadByte(pos + 4, pos + 8, FS));
@@ -52,7 +58,57 @@ namespace TQDC16_Summary_Rev_1
                         {
                             case 0:
                                 {
-                                    pospl += PLLeng + 4;
+                                    pospl += 4;
+                                    for (int i = 0; i < PLLeng / 4; i++)
+                                    {
+                                        switch (Converters.Byte2Int(TQDC2File.ReadByte(pospl, pospl + 1, FS)) >> 4)
+                                        {
+                                            case 2:
+                                                {
+                                                    uint TimeStamp = ((Converters.Byte2uInt(TQDC2File.ReadByte(pospl + 2, pospl + 4, FS)) << 4) >> 4) * 25;
+                                                    AddData(TIMESTAMP, TimeStamp.ToString());
+                                                    pospl += 4;
+                                                    break;
+                                                }
+                                            case 3:
+                                                {
+                                                    pospl += 4;
+                                                    break;
+                                                }
+                                            case 4:
+                                                {
+                                                    uint ch = ((Converters.Byte2uInt(TQDC2File.ReadByte(pospl, pospl + 4, FS))) << 7) >> 28;
+                                                    uint value = ((Converters.Byte2uInt(TQDC2File.ReadByte(pospl, pospl + 4, FS))) << 11) >> 13;
+                                                    AddData(CHANNEL, ch.ToString());
+                                                    AddData(DATA, (value / 10).ToString() + "," + (value % 10).ToString());
+                                                    AddData(TYPE_DATA, TDC);
+                                                    CSV_Output.csv.WriteRecord(data);
+                                                    CSV_Output.csv.NextRecord();
+                                                    //AddSummary(TDC, ch, value);
+                                                    pospl += 4;
+                                                    break;
+                                                }
+                                            case 5:
+                                                {
+                                                    uint ch = ((Converters.Byte2uInt(TQDC2File.ReadByte(pospl, pospl + 4, FS))) << 7) >> 28;
+                                                    uint value = ((Converters.Byte2uInt(TQDC2File.ReadByte(pospl, pospl + 4, FS))) << 11) >> 13;
+                                                    AddData(CHANNEL, ch.ToString());
+                                                    AddData(DATA, (value / 10).ToString() + "," + (value % 10).ToString());
+                                                    AddData(TYPE_DATA, TDC);
+                                                    CSV_Output.csv.WriteRecord(data);
+                                                    Record_Clear();
+                                                    CSV_Output.csv.NextRecord();
+                                                    //AddSummary(TDC, ch, value);
+                                                    pospl += 4;
+                                                    break;
+                                                }
+                                            case 7:
+                                                {
+                                                    pospl += 4;
+                                                    break;
+                                                }
+                                        }
+                                    }
                                     break;
                                 }
                             case 1:
@@ -87,10 +143,11 @@ namespace TQDC16_Summary_Rev_1
                                             pospl += 4;
                                         }
                                         AddData(DATA, Databuf);
+                                        AddData(TYPE_DATA, ADC);
                                         CSV_Output.csv.WriteRecord(data);
+                                        Record_Clear();
                                         CSV_Output.csv.NextRecord();
                                     }
-                                    Record_Clear();
                                     break;
                                 }
                         }
@@ -114,7 +171,10 @@ namespace TQDC16_Summary_Rev_1
         public static byte EVENT { get; } = 1;
         public static byte TIMESTAMP { get; } = 2;
         public static byte CHANNEL { get; } = 3;
-        public static byte DATA { get; } = 4;
+        public static byte TYPE_DATA { get; } = 4;
+        public static byte DATA { get; } = 5;
+        public static string TDC { get; } = "TDC";
+        public static string ADC { get; } = "ADC";
 
         static void AddData(byte Type, string String)
         {
@@ -123,7 +183,8 @@ namespace TQDC16_Summary_Rev_1
                 case 1: data.Event = String; break;
                 case 2: data.Timestamp = String; break;
                 case 3: data.Channel = String; break;
-                case 4: data.Data = String; break;
+                case 4: data.Type_Data = String; break;
+                case 5: data.Data = String; break;
             }
         }
 
@@ -132,6 +193,7 @@ namespace TQDC16_Summary_Rev_1
             data.Event = "";
             data.Timestamp = "";
             data.Channel = "";
+            data.Type_Data = "";
             data.Data = "";
     }
 
@@ -140,6 +202,7 @@ namespace TQDC16_Summary_Rev_1
             public string Event { get; set; } = "";
             public string Timestamp { get; set; } = "";
             public string Channel { get; set; } = "";
+            public string Type_Data { get; set; } = "";
             public string Data { get; set; } = "";
         }
     }

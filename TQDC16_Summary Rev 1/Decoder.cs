@@ -10,7 +10,7 @@ namespace TQDC16_Summary_Rev_1
 {
     class Decoder
     {
-        static Data data = new Data();
+        static DecData data = new DecData();
         public static void StartDecoding(BackgroundWorker ProgressBar)
         {
             CSV_Output.Create_CSV();
@@ -29,7 +29,7 @@ namespace TQDC16_Summary_Rev_1
             using (CSV_Output.csv)
             {
                 
-                CSV_Output.csv.WriteHeader<Data>();
+                CSV_Output.csv.WriteHeader<DecData>();
                 CSV_Output.csv.NextRecord();
                 while (pos < FS.Length)
                 {
@@ -58,6 +58,7 @@ namespace TQDC16_Summary_Rev_1
                             case 1:
                                 {
                                     uint ch = ((Converters.Byte2uInt(TQDC2File.ReadByte(pospl, pospl + 1, FS))) << 28) >> 28;
+                                    AddData(CHANNEL, ch.ToString());
                                     long apospl = pospl;
                                     pospl += 4;
                                     if (pospl == apospl + PLLeng) { pospl += 4; break; }
@@ -85,7 +86,7 @@ namespace TQDC16_Summary_Rev_1
                                             Databuf += i != (DataLen / 4) - 1 ? ";" : "";
                                             pospl += 4;
                                         }
-                                        AddData(DATA, Databuf, ch);
+                                        AddData(DATA, Databuf);
                                         CSV_Output.csv.WriteRecord(data);
                                         CSV_Output.csv.NextRecord();
                                     }
@@ -112,37 +113,17 @@ namespace TQDC16_Summary_Rev_1
 
         public static byte EVENT { get; } = 1;
         public static byte TIMESTAMP { get; } = 2;
-        public static byte DATA { get; } = 3;
+        public static byte CHANNEL { get; } = 3;
+        public static byte DATA { get; } = 4;
 
-        static void AddData(byte Type, string String, uint Channel = 0)
+        static void AddData(byte Type, string String)
         {
             switch (Type)
             {
                 case 1: data.Event = String; break;
                 case 2: data.Timestamp = String; break;
-                case 3:
-                    {
-                        switch (Channel)
-                        {
-                            case 0: data.Data0 = String; break;
-                            case 1: data.Data1 = String; break;
-                            case 2: data.Data2 = String; break;
-                            case 3: data.Data3 = String; break;
-                            case 4: data.Data4 = String; break;
-                            case 5: data.Data5 = String; break;
-                            case 6: data.Data6 = String; break;
-                            case 7: data.Data7 = String; break;
-                            case 8: data.Data8 = String; break;
-                            case 9: data.Data9 = String; break;
-                            case 10: data.Data10 = String; break;
-                            case 11: data.Data11 = String; break;
-                            case 12: data.Data12 = String; break;
-                            case 13: data.Data13 = String; break;
-                            case 14: data.Data14 = String; break;
-                            case 15: data.Data15 = String; break;
-                        }
-                    }
-                    break;
+                case 3: data.Channel = String; break;
+                case 4: data.Data = String; break;
             }
         }
 
@@ -150,44 +131,16 @@ namespace TQDC16_Summary_Rev_1
         {
             data.Event = "";
             data.Timestamp = "";
-            data.Data0 = "";
-            data.Data1 = "";
-            data.Data2  = "";
-            data.Data3  = "";
-            data.Data4  = "";
-            data.Data5  = "";
-            data.Data6  = "";
-            data.Data7  = "";
-            data.Data8  = "";
-            data.Data9  = "";
-            data.Data10  = "";
-            data.Data11  = "";
-            data.Data12  = "";
-            data.Data13  = "";
-            data.Data14  = "";
-            data.Data15  = "";
+            data.Channel = "";
+            data.Data = "";
     }
 
-        public class Data
+        public class DecData
         {
             public string Event { get; set; } = "";
             public string Timestamp { get; set; } = "";
-            public string Data0 { get; set; } = "";
-            public string Data1 { get; set; } = "";
-            public string Data2 { get; set; } = "";
-            public string Data3 { get; set; } = "";
-            public string Data4 { get; set; } = "";
-            public string Data5 { get; set; } = "";
-            public string Data6 { get; set; } = "";
-            public string Data7 { get; set; } = "";
-            public string Data8 { get; set; } = "";
-            public string Data9 { get; set; } = "";
-            public string Data10 { get; set; } = "";
-            public string Data11 { get; set; } = "";
-            public string Data12 { get; set; } = "";
-            public string Data13 { get; set; } = "";
-            public string Data14 { get; set; } = "";
-            public string Data15 { get; set; } = "";
+            public string Channel { get; set; } = "";
+            public string Data { get; set; } = "";
         }
     }
 }

@@ -36,29 +36,27 @@
             this.SerialText = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.ConSaveFile = new System.Windows.Forms.TabPage();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.label5 = new System.Windows.Forms.Label();
+            this.StartAnalys = new System.Windows.Forms.Button();
             this.OutInfoFile = new System.Windows.Forms.TabPage();
             this.NumEvText = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.NumUsCh = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
             this.OpenPanel = new System.Windows.Forms.Panel();
-            this.StartAnalys = new System.Windows.Forms.Button();
             this.MainPanel = new System.Windows.Forms.Panel();
             this.StartDecoder = new System.Windows.Forms.Button();
             this.StartWrite = new System.Windows.Forms.Button();
             this.Progress = new System.Windows.Forms.ProgressBar();
-            this.AnalysisBackGrWork = new System.ComponentModel.BackgroundWorker();
-            this.FilewriteBackGrWork = new System.ComponentModel.BackgroundWorker();
             this.BackGrWorkProgressBar = new System.ComponentModel.BackgroundWorker();
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.label5 = new System.Windows.Forms.Label();
             this.ConfiguireWindow.SuspendLayout();
             this.ConReadFile.SuspendLayout();
             this.ConSaveFile.SuspendLayout();
+            this.panel1.SuspendLayout();
             this.OutInfoFile.SuspendLayout();
             this.OpenPanel.SuspendLayout();
             this.MainPanel.SuspendLayout();
-            this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // button1
@@ -146,6 +144,35 @@
             this.ConSaveFile.TabIndex = 1;
             this.ConSaveFile.Text = "Выходной файл";
             // 
+            // panel1
+            // 
+            this.panel1.Controls.Add(this.label5);
+            this.panel1.Controls.Add(this.StartAnalys);
+            this.panel1.Location = new System.Drawing.Point(0, 0);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(347, 399);
+            this.panel1.TabIndex = 5;
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(31, 97);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(286, 17);
+            this.label5.TabIndex = 5;
+            this.label5.Text = "Для начала надо провести анализ файла";
+            this.label5.Click += new System.EventHandler(this.label5_Click);
+            // 
+            // StartAnalys
+            // 
+            this.StartAnalys.Location = new System.Drawing.Point(86, 163);
+            this.StartAnalys.Name = "StartAnalys";
+            this.StartAnalys.Size = new System.Drawing.Size(155, 35);
+            this.StartAnalys.TabIndex = 4;
+            this.StartAnalys.Text = "Анализ файла";
+            this.StartAnalys.UseVisualStyleBackColor = true;
+            this.StartAnalys.Click += new System.EventHandler(this.StartAnalys_Click);
+            // 
             // OutInfoFile
             // 
             this.OutInfoFile.BackColor = System.Drawing.Color.White;
@@ -205,16 +232,6 @@
             this.OpenPanel.Size = new System.Drawing.Size(347, 68);
             this.OpenPanel.TabIndex = 2;
             // 
-            // StartAnalys
-            // 
-            this.StartAnalys.Location = new System.Drawing.Point(86, 163);
-            this.StartAnalys.Name = "StartAnalys";
-            this.StartAnalys.Size = new System.Drawing.Size(155, 35);
-            this.StartAnalys.TabIndex = 4;
-            this.StartAnalys.Text = "Анализ файла";
-            this.StartAnalys.UseVisualStyleBackColor = true;
-            this.StartAnalys.Click += new System.EventHandler(this.StartAnalys_Click);
-            // 
             // MainPanel
             // 
             this.MainPanel.Controls.Add(this.StartDecoder);
@@ -252,21 +269,6 @@
             this.Progress.Size = new System.Drawing.Size(784, 20);
             this.Progress.TabIndex = 4;
             // 
-            // AnalysisBackGrWork
-            // 
-            this.AnalysisBackGrWork.WorkerReportsProgress = true;
-            this.AnalysisBackGrWork.DoWork += new System.ComponentModel.DoWorkEventHandler(this.AnalysisBackGrWork_DoWork);
-            this.AnalysisBackGrWork.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.AnalysisBackGrWork_ProgressChanged);
-            this.AnalysisBackGrWork.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.AnalysisBackGrWork_RunWorkerCompleted);
-            // 
-            // FilewriteBackGrWork
-            // 
-            this.FilewriteBackGrWork.WorkerReportsProgress = true;
-            this.FilewriteBackGrWork.WorkerSupportsCancellation = true;
-            this.FilewriteBackGrWork.DoWork += new System.ComponentModel.DoWorkEventHandler(this.FilewriteBackGrWork_DoWork);
-            this.FilewriteBackGrWork.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.FilewriteBackGrWork_ProgressChanged);
-            this.FilewriteBackGrWork.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.FilewriteBackGrWork_RunWorkerCompleted);
-            // 
             // BackGrWorkProgressBar
             // 
             this.BackGrWorkProgressBar.WorkerReportsProgress = true;
@@ -274,25 +276,6 @@
             this.BackGrWorkProgressBar.DoWork += new System.ComponentModel.DoWorkEventHandler(this.BackGrWorkProgressBar_DoWork);
             this.BackGrWorkProgressBar.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.BackGrWorkProgressBar_ProgressChanged);
             this.BackGrWorkProgressBar.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.BackGrWorkProgressBar_RunWorkerCompleted);
-            // 
-            // panel1
-            // 
-            this.panel1.Controls.Add(this.label5);
-            this.panel1.Controls.Add(this.StartAnalys);
-            this.panel1.Location = new System.Drawing.Point(0, 0);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(347, 399);
-            this.panel1.TabIndex = 5;
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(31, 97);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(286, 17);
-            this.label5.TabIndex = 5;
-            this.label5.Text = "Для начала надо провести анализ файла";
-            this.label5.Click += new System.EventHandler(this.label5_Click);
             // 
             // Form1
             // 
@@ -310,12 +293,12 @@
             this.ConReadFile.ResumeLayout(false);
             this.ConReadFile.PerformLayout();
             this.ConSaveFile.ResumeLayout(false);
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
             this.OutInfoFile.ResumeLayout(false);
             this.OutInfoFile.PerformLayout();
             this.OpenPanel.ResumeLayout(false);
             this.MainPanel.ResumeLayout(false);
-            this.panel1.ResumeLayout(false);
-            this.panel1.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -334,14 +317,12 @@
         private System.Windows.Forms.Panel MainPanel;
         private System.Windows.Forms.Button StartAnalys;
         private System.Windows.Forms.ProgressBar Progress;
-        public System.ComponentModel.BackgroundWorker AnalysisBackGrWork;
         private System.Windows.Forms.TabPage OutInfoFile;
         private System.Windows.Forms.TextBox NumEvText;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TextBox NumUsCh;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Button StartWrite;
-        private System.ComponentModel.BackgroundWorker FilewriteBackGrWork;
         private System.ComponentModel.BackgroundWorker BackGrWorkProgressBar;
         private System.Windows.Forms.Button StartDecoder;
         private System.Windows.Forms.Panel panel1;

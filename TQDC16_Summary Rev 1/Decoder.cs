@@ -44,7 +44,7 @@ namespace TQDC16_Summary_Rev_1
                     AddData(EVENT, NumEv.ToString()); // Добавление номера Event в блок данных
                     MSLeng = Converters.Byte2Int(TQDC2File.ReadByte(pos + 21, pos + 24, FS)) >> 2; // Чтение длины блока MStream
                     Date = Converters.UnixTimeStampToDateTime(Converters.Byte2uInt(TQDC2File.ReadByte(pos + 24, pos + 28, FS))).ToString(); // Чтение даты и времени глобального Event  и конвертация из unix в стандратный вид
-                    Date += ":" + (Converters.Byte2Int(TQDC2File.ReadByte(pos + 28, pos + 32, FS)) >> 2).ToString(); // добавление к дате времени в нс
+                    Date += ":" + (Converters.Byte2uInt(TQDC2File.ReadByte(pos + 28, pos + 32, FS)) >> 2).ToString(); // добавление к дате времени в нс
                     AddData(TIMESTAMP, Date); // Добавление временной метки Event в блок данных
                     CSV_Output.csv.WriteRecord(data); //запись блока данных в файл 
                     Record_Clear(); //Очистка блока данных
@@ -77,7 +77,12 @@ namespace TQDC16_Summary_Rev_1
                                                 }
                                             case 4: //TDC data, leading edge
                                                 {
-                                                    uint ch = ((Converters.Byte2uInt(TQDC2File.ReadByte(pospl, pospl + 4, FS))) << 7) >> 28; // Считываемый канал данных
+                                                    uint ch = (((Converters.Byte2uInt(TQDC2File.ReadByte(pospl, pospl + 4, FS))) << 7) >> 28)+1; // Считываемый канал данных
+                                                    if (!IsNeedChannel(ch))
+                                                    {
+                                                        pospl += 4;
+                                                        break;
+                                                    }
                                                     uint value = ((Converters.Byte2uInt(TQDC2File.ReadByte(pospl, pospl + 4, FS))) << 11) >> 13; // Значение TDC с канала #ch
                                                     AddData(CHANNEL, ch.ToString());                                              //Добавление канала, данных,
                                                     AddData(DATA, (value / 10).ToString() + "," + (value % 10).ToString());       //и типа данных в блок данных
@@ -89,7 +94,12 @@ namespace TQDC16_Summary_Rev_1
                                                 }
                                             case 5: //TDC data, trailing edge
                                                 {
-                                                    uint ch = ((Converters.Byte2uInt(TQDC2File.ReadByte(pospl, pospl + 4, FS))) << 7) >> 28;// Считываемый канал данных
+                                                    uint ch = (((Converters.Byte2uInt(TQDC2File.ReadByte(pospl, pospl + 4, FS))) << 7) >> 28)+1;// Считываемый канал данных
+                                                    if (!IsNeedChannel(ch))
+                                                    {
+                                                        pospl += 4;
+                                                        break;
+                                                    }
                                                     uint value = ((Converters.Byte2uInt(TQDC2File.ReadByte(pospl, pospl + 4, FS))) << 11) >> 13;// Значение TDC с канала #ch
                                                     AddData(CHANNEL, ch.ToString());                                        //Добавление канала, данных,
                                                     AddData(DATA, (value / 10).ToString() + "," + (value % 10).ToString()); //и типа данных в блок данных
@@ -112,7 +122,12 @@ namespace TQDC16_Summary_Rev_1
                                 }
                             case 1: //ADC
                                 {
-                                    uint ch = ((Converters.Byte2uInt(TQDC2File.ReadByte(pospl, pospl + 1, FS))) << 28) >> 28; // Считываемый канал данных
+                                    uint ch = (((Converters.Byte2uInt(TQDC2File.ReadByte(pospl, pospl + 1, FS))) << 28) >> 28)+1; // Считываемый канал данных
+                                    if (!IsNeedChannel(ch))
+                                    {
+                                        pospl = pospl + DataPLLeng + 4;
+                                        break;
+                                    }
                                     AddData(CHANNEL, ch.ToString()); //Запись канала в блок данных
                                     long apospl = pospl; // Запись положения Header ADC
                                     pospl += 4; //переход на новую строку
@@ -174,6 +189,11 @@ namespace TQDC16_Summary_Rev_1
         public static byte DATA { get; } = 5;           //
         public static string TDC { get; } = "TDC";      //
         public static string ADC { get; } = "ADC";      //
+
+        static bool IsNeedChannel(uint i)
+        {
+            return Form1.Channel[i-1];
+        }
 
         static void AddData(byte Type, string String) // Функция добавление данных в блок данных
         {

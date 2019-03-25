@@ -11,14 +11,13 @@ namespace TQDC16_Summary_Rev_1
     class TQDC2File
     {
         public static String Path { get; set; } = "";
-        public static Boolean Sel { get; set; } = false;
-        public static Int32 DeEvPaL { get; set; } = 0;
         public static bool[] Ch { get; set; } = new bool[16];
 
-        public static void Open_File()
+        public static OpenResult Open_File()
         {
+            OpenResult openresult = new OpenResult();
             OpenFileDialog TQDC_DATA = new OpenFileDialog();
-            Sel = true;
+            openresult.Selected = true;
             TQDC_DATA.Filter = "Raw files (*.dat)|*.dat|Decoded files (*.txt)|*.txt|All files (*.*)|*.*";
             while (true)
             {
@@ -26,6 +25,9 @@ namespace TQDC16_Summary_Rev_1
                 ResultDil = TQDC_DATA.ShowDialog();
                 if (ResultDil == DialogResult.Cancel)
                 {
+                    openresult.Selected = false;
+                    openresult.Serial = "/n";
+                    openresult.ID = "CancelEr";
                     break;
                 }
                 if (ResultDil == DialogResult.OK)
@@ -34,20 +36,24 @@ namespace TQDC16_Summary_Rev_1
                     var FSD = new FileStream(String.Format("{0}", TQDC_DATA.FileName), FileMode.Open);
                     byte[] bbyte = new byte[4];
                     byte[] fbyte = new byte[4] { 0x50, 0x2a, 0x50, 0x2a };
+
                     FSD.Read(bbyte, 0, 4);
                     for (int i = 0; i < 4; i++)
                     {
                         if (bbyte[i] != fbyte[i])
                         {
-                            Sel = false;
+                            openresult.Selected = false;
                         }
                     }
-                    FSD.Close();
-                    if (Sel)
+                    if (openresult.Selected)
                     {
                         Path = TQDC_DATA.FileName;
+                        openresult.Serial = Converters.Byte2Str(ReadByte(12, 16, FSD));
+                        openresult.ID = Converters.Id2Str(ReadByte(16, 17, FSD)[0]);
+                        FSD.Close();
                         break;
                     }
+                    FSD.Close();
                     ResultMes = MessageBox.Show("Выберете другой файл", "Неправильный файл", MessageBoxButtons.RetryCancel);
                     if (ResultMes == DialogResult.Retry)
                     {
@@ -55,24 +61,23 @@ namespace TQDC16_Summary_Rev_1
                     }
                     if (ResultMes == DialogResult.Cancel)
                     {
-                        Sel = false;
+                        openresult.Selected = false;
+                        openresult.Serial = "/n";
+                        openresult.ID = "CancelEr";
                         break;
                     }
                 }
             }
+            return openresult;
         }
-        /*
-        public static void DescFile(TextBox SerialText,TextBox IDText)
-        {
-            var FSD = new FileStream(String.Format("{0}", Path), FileMode.Open);
-            //SerialText.Text = String.Format("{0} - {1}",Converters.ByteAr2Str(serial)), Converters.ByteAr2Str(serial.Skip(2).ToArray));
-            SerialText.Text = Converters.Byte2Str(ReadByte(12, 16, FSD));
-            IDText.Text = Converters.Id2Str(ReadByte(16, 17, FSD)[0]);
-            DeEvPaL =Converters.Byte2Int(ReadByte(17, 20, FSD));
-            Event_Block.EventPayLen = Converters.Byte2Int(ReadByte(4, 8, FSD));
-            FSD.Close();
-        }
-        */
+
+        public class OpenResult 
+            {
+                public string Serial { get; set; } = "";
+                public string ID { get; set; } = "";
+                public Boolean Selected { get; set; } = false;
+            }
+
         public static byte[] ReadByte (long x,long y,FileStream FS)
         {
             if ((x>y)|(((x/4)*4)+4<y))

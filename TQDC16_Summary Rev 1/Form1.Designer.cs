@@ -28,100 +28,135 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.button1 = new System.Windows.Forms.Button();
             this.ConfiguireWindow = new System.Windows.Forms.TabControl();
             this.ConReadFile = new System.Windows.Forms.TabPage();
+            this.NumEvText = new System.Windows.Forms.TextBox();
             this.IDText = new System.Windows.Forms.TextBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.NumUsCh = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
             this.SerialText = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.ConSaveFile = new System.Windows.Forms.TabPage();
             this.panel2 = new System.Windows.Forms.Panel();
-            this.OutInfoFile = new System.Windows.Forms.TabPage();
-            this.NumEvText = new System.Windows.Forms.TextBox();
-            this.label3 = new System.Windows.Forms.Label();
-            this.NumUsCh = new System.Windows.Forms.TextBox();
-            this.label4 = new System.Windows.Forms.Label();
-            this.panelAnalysis = new System.Windows.Forms.Panel();
-            this.label5 = new System.Windows.Forms.Label();
-            this.StartAnalys = new System.Windows.Forms.Button();
+            this.tabControl1 = new System.Windows.Forms.TabControl();
+            this.ConDecoder = new System.Windows.Forms.TabPage();
+            this.DChannel16 = new System.Windows.Forms.CheckBox();
+            this.DChannel1 = new System.Windows.Forms.CheckBox();
+            this.DChannel2 = new System.Windows.Forms.CheckBox();
+            this.DChannel3 = new System.Windows.Forms.CheckBox();
+            this.DChannel4 = new System.Windows.Forms.CheckBox();
+            this.DChannel15 = new System.Windows.Forms.CheckBox();
+            this.DChannel5 = new System.Windows.Forms.CheckBox();
+            this.DChannel14 = new System.Windows.Forms.CheckBox();
+            this.DChannel6 = new System.Windows.Forms.CheckBox();
+            this.DChannel13 = new System.Windows.Forms.CheckBox();
+            this.DChannel7 = new System.Windows.Forms.CheckBox();
+            this.DChannel12 = new System.Windows.Forms.CheckBox();
+            this.DChannel8 = new System.Windows.Forms.CheckBox();
+            this.DChannel11 = new System.Windows.Forms.CheckBox();
+            this.DChannel9 = new System.Windows.Forms.CheckBox();
+            this.DChannel10 = new System.Windows.Forms.CheckBox();
+            this.ConCalc = new System.Windows.Forms.TabPage();
+            this.CalcMin = new System.Windows.Forms.CheckBox();
+            this.CalcMax = new System.Windows.Forms.CheckBox();
+            this.CChannel16 = new System.Windows.Forms.CheckBox();
+            this.CChannel1 = new System.Windows.Forms.CheckBox();
+            this.CChannel2 = new System.Windows.Forms.CheckBox();
+            this.CChannel3 = new System.Windows.Forms.CheckBox();
+            this.CChannel4 = new System.Windows.Forms.CheckBox();
+            this.CChannel15 = new System.Windows.Forms.CheckBox();
+            this.CChannel5 = new System.Windows.Forms.CheckBox();
+            this.CChannel14 = new System.Windows.Forms.CheckBox();
+            this.CChannel6 = new System.Windows.Forms.CheckBox();
+            this.CChannel13 = new System.Windows.Forms.CheckBox();
+            this.CChannel7 = new System.Windows.Forms.CheckBox();
+            this.CChannel12 = new System.Windows.Forms.CheckBox();
+            this.CChannel8 = new System.Windows.Forms.CheckBox();
+            this.CChannel11 = new System.Windows.Forms.CheckBox();
+            this.CChannel9 = new System.Windows.Forms.CheckBox();
+            this.CChannel10 = new System.Windows.Forms.CheckBox();
             this.OpenPanel = new System.Windows.Forms.Panel();
+            this.OpenFileBtn = new System.Windows.Forms.Button();
             this.MainPanel = new System.Windows.Forms.Panel();
             this.StartDecoder = new System.Windows.Forms.Button();
             this.StartWrite = new System.Windows.Forms.Button();
             this.Progress = new System.Windows.Forms.ProgressBar();
             this.BackGrWorkProgressBar = new System.ComponentModel.BackgroundWorker();
-            this.Channel1 = new System.Windows.Forms.CheckBox();
-            this.Channel2 = new System.Windows.Forms.CheckBox();
-            this.Channel3 = new System.Windows.Forms.CheckBox();
-            this.Channel4 = new System.Windows.Forms.CheckBox();
-            this.Channel5 = new System.Windows.Forms.CheckBox();
-            this.Channel6 = new System.Windows.Forms.CheckBox();
-            this.Channel7 = new System.Windows.Forms.CheckBox();
-            this.Channel8 = new System.Windows.Forms.CheckBox();
-            this.Channel9 = new System.Windows.Forms.CheckBox();
-            this.Channel10 = new System.Windows.Forms.CheckBox();
-            this.Channel11 = new System.Windows.Forms.CheckBox();
-            this.Channel12 = new System.Windows.Forms.CheckBox();
-            this.Channel13 = new System.Windows.Forms.CheckBox();
-            this.Channel14 = new System.Windows.Forms.CheckBox();
-            this.Channel15 = new System.Windows.Forms.CheckBox();
-            this.Channel16 = new System.Windows.Forms.CheckBox();
             this.ConfiguireWindow.SuspendLayout();
             this.ConReadFile.SuspendLayout();
             this.ConSaveFile.SuspendLayout();
             this.panel2.SuspendLayout();
-            this.OutInfoFile.SuspendLayout();
-            this.panelAnalysis.SuspendLayout();
+            this.tabControl1.SuspendLayout();
+            this.ConDecoder.SuspendLayout();
+            this.ConCalc.SuspendLayout();
             this.OpenPanel.SuspendLayout();
             this.MainPanel.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(4, 17);
-            this.button1.Margin = new System.Windows.Forms.Padding(4);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(155, 35);
-            this.button1.TabIndex = 0;
-            this.button1.Text = "Открыть файл";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // ConfiguireWindow
             // 
             this.ConfiguireWindow.Controls.Add(this.ConReadFile);
             this.ConfiguireWindow.Controls.Add(this.ConSaveFile);
-            this.ConfiguireWindow.Controls.Add(this.OutInfoFile);
             this.ConfiguireWindow.Enabled = false;
             this.ConfiguireWindow.Location = new System.Drawing.Point(13, 12);
             this.ConfiguireWindow.Name = "ConfiguireWindow";
             this.ConfiguireWindow.SelectedIndex = 0;
-            this.ConfiguireWindow.Size = new System.Drawing.Size(355, 428);
+            this.ConfiguireWindow.Size = new System.Drawing.Size(351, 428);
             this.ConfiguireWindow.TabIndex = 1;
             // 
             // ConReadFile
             // 
             this.ConReadFile.BackColor = System.Drawing.Color.Silver;
+            this.ConReadFile.Controls.Add(this.NumEvText);
             this.ConReadFile.Controls.Add(this.IDText);
+            this.ConReadFile.Controls.Add(this.label3);
+            this.ConReadFile.Controls.Add(this.NumUsCh);
             this.ConReadFile.Controls.Add(this.label2);
+            this.ConReadFile.Controls.Add(this.label4);
             this.ConReadFile.Controls.Add(this.SerialText);
             this.ConReadFile.Controls.Add(this.label1);
             this.ConReadFile.Location = new System.Drawing.Point(4, 25);
             this.ConReadFile.Name = "ConReadFile";
             this.ConReadFile.Padding = new System.Windows.Forms.Padding(3);
-            this.ConReadFile.Size = new System.Drawing.Size(347, 399);
+            this.ConReadFile.Size = new System.Drawing.Size(343, 399);
             this.ConReadFile.TabIndex = 0;
             this.ConReadFile.Text = "Описание файла";
             // 
+            // NumEvText
+            // 
+            this.NumEvText.Location = new System.Drawing.Point(198, 91);
+            this.NumEvText.Name = "NumEvText";
+            this.NumEvText.ReadOnly = true;
+            this.NumEvText.Size = new System.Drawing.Size(139, 22);
+            this.NumEvText.TabIndex = 23;
+            // 
             // IDText
             // 
-            this.IDText.Location = new System.Drawing.Point(202, 14);
+            this.IDText.Location = new System.Drawing.Point(198, 14);
             this.IDText.Name = "IDText";
             this.IDText.ReadOnly = true;
             this.IDText.Size = new System.Drawing.Size(139, 22);
             this.IDText.TabIndex = 3;
             this.IDText.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(6, 91);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(104, 17);
+            this.label3.TabIndex = 22;
+            this.label3.Text = "Кол.  тригеров";
+            // 
+            // NumUsCh
+            // 
+            this.NumUsCh.Location = new System.Drawing.Point(198, 131);
+            this.NumUsCh.Name = "NumUsCh";
+            this.NumUsCh.ReadOnly = true;
+            this.NumUsCh.Size = new System.Drawing.Size(139, 22);
+            this.NumUsCh.TabIndex = 21;
             // 
             // label2
             // 
@@ -133,9 +168,18 @@
             this.label2.Text = "ID TQDC";
             this.label2.Click += new System.EventHandler(this.label2_Click);
             // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(6, 131);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(90, 17);
+            this.label4.TabIndex = 20;
+            this.label4.Text = "Кол. каналы";
+            // 
             // SerialText
             // 
-            this.SerialText.Location = new System.Drawing.Point(202, 54);
+            this.SerialText.Location = new System.Drawing.Point(198, 54);
             this.SerialText.Name = "SerialText";
             this.SerialText.ReadOnly = true;
             this.SerialText.Size = new System.Drawing.Size(139, 22);
@@ -158,121 +202,471 @@
             this.ConSaveFile.Location = new System.Drawing.Point(4, 25);
             this.ConSaveFile.Name = "ConSaveFile";
             this.ConSaveFile.Padding = new System.Windows.Forms.Padding(3);
-            this.ConSaveFile.Size = new System.Drawing.Size(347, 399);
+            this.ConSaveFile.Size = new System.Drawing.Size(343, 399);
             this.ConSaveFile.TabIndex = 1;
             this.ConSaveFile.Text = "Выходной файл";
             // 
             // panel2
             // 
-            this.panel2.Controls.Add(this.panelAnalysis);
-            this.panel2.Controls.Add(this.Channel16);
-            this.panel2.Controls.Add(this.Channel15);
-            this.panel2.Controls.Add(this.Channel14);
-            this.panel2.Controls.Add(this.Channel13);
-            this.panel2.Controls.Add(this.Channel12);
-            this.panel2.Controls.Add(this.Channel11);
-            this.panel2.Controls.Add(this.Channel10);
-            this.panel2.Controls.Add(this.Channel9);
-            this.panel2.Controls.Add(this.Channel8);
-            this.panel2.Controls.Add(this.Channel7);
-            this.panel2.Controls.Add(this.Channel6);
-            this.panel2.Controls.Add(this.Channel5);
-            this.panel2.Controls.Add(this.Channel4);
-            this.panel2.Controls.Add(this.Channel3);
-            this.panel2.Controls.Add(this.Channel2);
-            this.panel2.Controls.Add(this.Channel1);
+            this.panel2.Controls.Add(this.tabControl1);
             this.panel2.Location = new System.Drawing.Point(0, 0);
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(347, 399);
             this.panel2.TabIndex = 6;
             // 
-            // OutInfoFile
+            // tabControl1
             // 
-            this.OutInfoFile.BackColor = System.Drawing.Color.White;
-            this.OutInfoFile.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.OutInfoFile.Controls.Add(this.NumEvText);
-            this.OutInfoFile.Controls.Add(this.label3);
-            this.OutInfoFile.Controls.Add(this.NumUsCh);
-            this.OutInfoFile.Controls.Add(this.label4);
-            this.OutInfoFile.Location = new System.Drawing.Point(4, 25);
-            this.OutInfoFile.Name = "OutInfoFile";
-            this.OutInfoFile.Padding = new System.Windows.Forms.Padding(3);
-            this.OutInfoFile.Size = new System.Drawing.Size(347, 399);
-            this.OutInfoFile.TabIndex = 2;
-            this.OutInfoFile.Text = "О файле";
+            this.tabControl1.Controls.Add(this.ConDecoder);
+            this.tabControl1.Controls.Add(this.ConCalc);
+            this.tabControl1.Location = new System.Drawing.Point(0, 0);
+            this.tabControl1.Name = "tabControl1";
+            this.tabControl1.SelectedIndex = 0;
+            this.tabControl1.Size = new System.Drawing.Size(347, 403);
+            this.tabControl1.TabIndex = 6;
             // 
-            // NumEvText
+            // ConDecoder
             // 
-            this.NumEvText.Location = new System.Drawing.Point(200, 6);
-            this.NumEvText.Name = "NumEvText";
-            this.NumEvText.ReadOnly = true;
-            this.NumEvText.Size = new System.Drawing.Size(139, 22);
-            this.NumEvText.TabIndex = 7;
+            this.ConDecoder.Controls.Add(this.DChannel16);
+            this.ConDecoder.Controls.Add(this.DChannel1);
+            this.ConDecoder.Controls.Add(this.DChannel2);
+            this.ConDecoder.Controls.Add(this.DChannel3);
+            this.ConDecoder.Controls.Add(this.DChannel4);
+            this.ConDecoder.Controls.Add(this.DChannel15);
+            this.ConDecoder.Controls.Add(this.DChannel5);
+            this.ConDecoder.Controls.Add(this.DChannel14);
+            this.ConDecoder.Controls.Add(this.DChannel6);
+            this.ConDecoder.Controls.Add(this.DChannel13);
+            this.ConDecoder.Controls.Add(this.DChannel7);
+            this.ConDecoder.Controls.Add(this.DChannel12);
+            this.ConDecoder.Controls.Add(this.DChannel8);
+            this.ConDecoder.Controls.Add(this.DChannel11);
+            this.ConDecoder.Controls.Add(this.DChannel9);
+            this.ConDecoder.Controls.Add(this.DChannel10);
+            this.ConDecoder.Location = new System.Drawing.Point(4, 25);
+            this.ConDecoder.Name = "ConDecoder";
+            this.ConDecoder.Padding = new System.Windows.Forms.Padding(3);
+            this.ConDecoder.Size = new System.Drawing.Size(339, 374);
+            this.ConDecoder.TabIndex = 0;
+            this.ConDecoder.Text = "Декодер";
             // 
-            // label3
+            // DChannel16
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(4, 6);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(104, 17);
-            this.label3.TabIndex = 6;
-            this.label3.Text = "Кол.  тригеров";
-            this.label3.Click += new System.EventHandler(this.label3_Click);
+            this.DChannel16.AutoSize = true;
+            this.DChannel16.Location = new System.Drawing.Point(6, 305);
+            this.DChannel16.Name = "DChannel16";
+            this.DChannel16.Size = new System.Drawing.Size(91, 21);
+            this.DChannel16.TabIndex = 15;
+            this.DChannel16.Text = "16 Канал";
+            this.DChannel16.UseVisualStyleBackColor = true;
+            this.DChannel16.CheckedChanged += new System.EventHandler(this.DChannel16_CheckedChanged);
             // 
-            // NumUsCh
+            // DChannel1
             // 
-            this.NumUsCh.Location = new System.Drawing.Point(200, 46);
-            this.NumUsCh.Name = "NumUsCh";
-            this.NumUsCh.ReadOnly = true;
-            this.NumUsCh.Size = new System.Drawing.Size(139, 22);
-            this.NumUsCh.TabIndex = 5;
+            this.DChannel1.AutoSize = true;
+            this.DChannel1.Location = new System.Drawing.Point(6, 5);
+            this.DChannel1.Name = "DChannel1";
+            this.DChannel1.Size = new System.Drawing.Size(83, 21);
+            this.DChannel1.TabIndex = 0;
+            this.DChannel1.Text = "1 Канал";
+            this.DChannel1.UseVisualStyleBackColor = true;
+            this.DChannel1.CheckedChanged += new System.EventHandler(this.DChannel1_CheckedChanged);
             // 
-            // label4
+            // DChannel2
             // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(4, 46);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(90, 17);
-            this.label4.TabIndex = 4;
-            this.label4.Text = "Кол. каналы";
-            this.label4.Click += new System.EventHandler(this.label4_Click);
+            this.DChannel2.AutoSize = true;
+            this.DChannel2.Location = new System.Drawing.Point(6, 25);
+            this.DChannel2.Name = "DChannel2";
+            this.DChannel2.Size = new System.Drawing.Size(83, 21);
+            this.DChannel2.TabIndex = 1;
+            this.DChannel2.Text = "2 Канал";
+            this.DChannel2.UseVisualStyleBackColor = true;
+            this.DChannel2.CheckedChanged += new System.EventHandler(this.DChannel2_CheckedChanged);
             // 
-            // panelAnalysis
+            // DChannel3
             // 
-            this.panelAnalysis.Controls.Add(this.label5);
-            this.panelAnalysis.Controls.Add(this.StartAnalys);
-            this.panelAnalysis.Location = new System.Drawing.Point(0, 0);
-            this.panelAnalysis.Name = "panelAnalysis";
-            this.panelAnalysis.Size = new System.Drawing.Size(347, 399);
-            this.panelAnalysis.TabIndex = 5;
+            this.DChannel3.AutoSize = true;
+            this.DChannel3.Location = new System.Drawing.Point(6, 45);
+            this.DChannel3.Name = "DChannel3";
+            this.DChannel3.Size = new System.Drawing.Size(83, 21);
+            this.DChannel3.TabIndex = 2;
+            this.DChannel3.Text = "3 Канал";
+            this.DChannel3.UseVisualStyleBackColor = true;
+            this.DChannel3.CheckedChanged += new System.EventHandler(this.DChannel3_CheckedChanged);
             // 
-            // label5
+            // DChannel4
             // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(31, 97);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(286, 17);
-            this.label5.TabIndex = 5;
-            this.label5.Text = "Для начала надо провести анализ файла";
-            this.label5.Click += new System.EventHandler(this.label5_Click);
+            this.DChannel4.AutoSize = true;
+            this.DChannel4.Location = new System.Drawing.Point(6, 65);
+            this.DChannel4.Name = "DChannel4";
+            this.DChannel4.Size = new System.Drawing.Size(83, 21);
+            this.DChannel4.TabIndex = 3;
+            this.DChannel4.Text = "4 Канал";
+            this.DChannel4.UseVisualStyleBackColor = true;
+            this.DChannel4.CheckedChanged += new System.EventHandler(this.DChannel4_CheckedChanged);
             // 
-            // StartAnalys
+            // DChannel15
             // 
-            this.StartAnalys.Location = new System.Drawing.Point(86, 163);
-            this.StartAnalys.Name = "StartAnalys";
-            this.StartAnalys.Size = new System.Drawing.Size(155, 35);
-            this.StartAnalys.TabIndex = 4;
-            this.StartAnalys.Text = "Анализ файла";
-            this.StartAnalys.UseVisualStyleBackColor = true;
-            this.StartAnalys.Click += new System.EventHandler(this.StartAnalys_Click);
+            this.DChannel15.AutoSize = true;
+            this.DChannel15.Location = new System.Drawing.Point(6, 285);
+            this.DChannel15.Name = "DChannel15";
+            this.DChannel15.Size = new System.Drawing.Size(91, 21);
+            this.DChannel15.TabIndex = 14;
+            this.DChannel15.Text = "15 Канал";
+            this.DChannel15.UseVisualStyleBackColor = true;
+            this.DChannel15.CheckedChanged += new System.EventHandler(this.DChannel15_CheckedChanged);
+            // 
+            // DChannel5
+            // 
+            this.DChannel5.AutoSize = true;
+            this.DChannel5.Location = new System.Drawing.Point(6, 85);
+            this.DChannel5.Name = "DChannel5";
+            this.DChannel5.Size = new System.Drawing.Size(83, 21);
+            this.DChannel5.TabIndex = 4;
+            this.DChannel5.Text = "5 Канал";
+            this.DChannel5.UseVisualStyleBackColor = true;
+            this.DChannel5.CheckedChanged += new System.EventHandler(this.DChannel5_CheckedChanged);
+            // 
+            // DChannel14
+            // 
+            this.DChannel14.AutoSize = true;
+            this.DChannel14.Location = new System.Drawing.Point(6, 265);
+            this.DChannel14.Name = "DChannel14";
+            this.DChannel14.Size = new System.Drawing.Size(91, 21);
+            this.DChannel14.TabIndex = 13;
+            this.DChannel14.Text = "14 Канал";
+            this.DChannel14.UseVisualStyleBackColor = true;
+            this.DChannel14.CheckedChanged += new System.EventHandler(this.DChannel14_CheckedChanged);
+            // 
+            // DChannel6
+            // 
+            this.DChannel6.AutoSize = true;
+            this.DChannel6.BackColor = System.Drawing.SystemColors.Control;
+            this.DChannel6.Location = new System.Drawing.Point(6, 105);
+            this.DChannel6.Name = "DChannel6";
+            this.DChannel6.Size = new System.Drawing.Size(83, 21);
+            this.DChannel6.TabIndex = 5;
+            this.DChannel6.Text = "6 Канал";
+            this.DChannel6.UseVisualStyleBackColor = false;
+            this.DChannel6.CheckedChanged += new System.EventHandler(this.DChannel6_CheckedChanged);
+            // 
+            // DChannel13
+            // 
+            this.DChannel13.AutoSize = true;
+            this.DChannel13.Location = new System.Drawing.Point(6, 245);
+            this.DChannel13.Name = "DChannel13";
+            this.DChannel13.Size = new System.Drawing.Size(91, 21);
+            this.DChannel13.TabIndex = 12;
+            this.DChannel13.Text = "13 Канал";
+            this.DChannel13.UseVisualStyleBackColor = true;
+            this.DChannel13.CheckedChanged += new System.EventHandler(this.DChannel13_CheckedChanged);
+            // 
+            // DChannel7
+            // 
+            this.DChannel7.AutoSize = true;
+            this.DChannel7.Location = new System.Drawing.Point(6, 125);
+            this.DChannel7.Name = "DChannel7";
+            this.DChannel7.Size = new System.Drawing.Size(83, 21);
+            this.DChannel7.TabIndex = 6;
+            this.DChannel7.Text = "7 Канал";
+            this.DChannel7.UseVisualStyleBackColor = true;
+            this.DChannel7.CheckedChanged += new System.EventHandler(this.DChannel7_CheckedChanged);
+            // 
+            // DChannel12
+            // 
+            this.DChannel12.AutoSize = true;
+            this.DChannel12.Location = new System.Drawing.Point(6, 225);
+            this.DChannel12.Name = "DChannel12";
+            this.DChannel12.Size = new System.Drawing.Size(91, 21);
+            this.DChannel12.TabIndex = 11;
+            this.DChannel12.Text = "12 Канал";
+            this.DChannel12.UseVisualStyleBackColor = true;
+            this.DChannel12.CheckedChanged += new System.EventHandler(this.DChannel12_CheckedChanged);
+            // 
+            // DChannel8
+            // 
+            this.DChannel8.AutoSize = true;
+            this.DChannel8.Location = new System.Drawing.Point(6, 145);
+            this.DChannel8.Name = "DChannel8";
+            this.DChannel8.Size = new System.Drawing.Size(83, 21);
+            this.DChannel8.TabIndex = 7;
+            this.DChannel8.Text = "8 Канал";
+            this.DChannel8.UseVisualStyleBackColor = true;
+            this.DChannel8.CheckedChanged += new System.EventHandler(this.DChannel8_CheckedChanged);
+            // 
+            // DChannel11
+            // 
+            this.DChannel11.AutoSize = true;
+            this.DChannel11.Location = new System.Drawing.Point(6, 205);
+            this.DChannel11.Name = "DChannel11";
+            this.DChannel11.Size = new System.Drawing.Size(91, 21);
+            this.DChannel11.TabIndex = 10;
+            this.DChannel11.Text = "11 Канал";
+            this.DChannel11.UseVisualStyleBackColor = true;
+            this.DChannel11.CheckedChanged += new System.EventHandler(this.DChannel11_CheckedChanged);
+            // 
+            // DChannel9
+            // 
+            this.DChannel9.AutoSize = true;
+            this.DChannel9.Location = new System.Drawing.Point(6, 165);
+            this.DChannel9.Name = "DChannel9";
+            this.DChannel9.Size = new System.Drawing.Size(83, 21);
+            this.DChannel9.TabIndex = 8;
+            this.DChannel9.Text = "9 Канал";
+            this.DChannel9.UseVisualStyleBackColor = true;
+            this.DChannel9.CheckedChanged += new System.EventHandler(this.DChannel9_CheckedChanged);
+            // 
+            // DChannel10
+            // 
+            this.DChannel10.AutoSize = true;
+            this.DChannel10.Location = new System.Drawing.Point(6, 185);
+            this.DChannel10.Name = "DChannel10";
+            this.DChannel10.Size = new System.Drawing.Size(91, 21);
+            this.DChannel10.TabIndex = 9;
+            this.DChannel10.Text = "10 Канал";
+            this.DChannel10.UseVisualStyleBackColor = true;
+            this.DChannel10.CheckedChanged += new System.EventHandler(this.DChannel10_CheckedChanged);
+            // 
+            // ConCalc
+            // 
+            this.ConCalc.Controls.Add(this.CalcMin);
+            this.ConCalc.Controls.Add(this.CalcMax);
+            this.ConCalc.Controls.Add(this.CChannel16);
+            this.ConCalc.Controls.Add(this.CChannel1);
+            this.ConCalc.Controls.Add(this.CChannel2);
+            this.ConCalc.Controls.Add(this.CChannel3);
+            this.ConCalc.Controls.Add(this.CChannel4);
+            this.ConCalc.Controls.Add(this.CChannel15);
+            this.ConCalc.Controls.Add(this.CChannel5);
+            this.ConCalc.Controls.Add(this.CChannel14);
+            this.ConCalc.Controls.Add(this.CChannel6);
+            this.ConCalc.Controls.Add(this.CChannel13);
+            this.ConCalc.Controls.Add(this.CChannel7);
+            this.ConCalc.Controls.Add(this.CChannel12);
+            this.ConCalc.Controls.Add(this.CChannel8);
+            this.ConCalc.Controls.Add(this.CChannel11);
+            this.ConCalc.Controls.Add(this.CChannel9);
+            this.ConCalc.Controls.Add(this.CChannel10);
+            this.ConCalc.Location = new System.Drawing.Point(4, 25);
+            this.ConCalc.Name = "ConCalc";
+            this.ConCalc.Padding = new System.Windows.Forms.Padding(3);
+            this.ConCalc.Size = new System.Drawing.Size(339, 374);
+            this.ConCalc.TabIndex = 1;
+            this.ConCalc.Text = "Вычисление";
+            this.ConCalc.UseVisualStyleBackColor = true;
+            // 
+            // CalcMin
+            // 
+            this.CalcMin.AutoSize = true;
+            this.CalcMin.Location = new System.Drawing.Point(166, 36);
+            this.CalcMin.Name = "CalcMin";
+            this.CalcMin.Size = new System.Drawing.Size(163, 21);
+            this.CalcMin.TabIndex = 33;
+            this.CalcMin.Text = "Минимальная точка";
+            this.CalcMin.UseVisualStyleBackColor = true;
+            // 
+            // CalcMax
+            // 
+            this.CalcMax.AutoSize = true;
+            this.CalcMax.Location = new System.Drawing.Point(166, 6);
+            this.CalcMax.Name = "CalcMax";
+            this.CalcMax.Size = new System.Drawing.Size(169, 21);
+            this.CalcMax.TabIndex = 32;
+            this.CalcMax.Text = "Максимальная точка";
+            this.CalcMax.UseVisualStyleBackColor = true;
+            // 
+            // CChannel16
+            // 
+            this.CChannel16.AutoSize = true;
+            this.CChannel16.Location = new System.Drawing.Point(6, 305);
+            this.CChannel16.Name = "CChannel16";
+            this.CChannel16.Size = new System.Drawing.Size(91, 21);
+            this.CChannel16.TabIndex = 31;
+            this.CChannel16.Text = "16 Канал";
+            this.CChannel16.UseVisualStyleBackColor = true;
+            this.CChannel16.CheckedChanged += new System.EventHandler(this.CChannel16_CheckedChanged);
+            // 
+            // CChannel1
+            // 
+            this.CChannel1.AutoSize = true;
+            this.CChannel1.Location = new System.Drawing.Point(6, 5);
+            this.CChannel1.Name = "CChannel1";
+            this.CChannel1.Size = new System.Drawing.Size(83, 21);
+            this.CChannel1.TabIndex = 16;
+            this.CChannel1.Text = "1 Канал";
+            this.CChannel1.UseVisualStyleBackColor = true;
+            this.CChannel1.CheckedChanged += new System.EventHandler(this.CChannel1_CheckedChanged);
+            // 
+            // CChannel2
+            // 
+            this.CChannel2.AutoSize = true;
+            this.CChannel2.Location = new System.Drawing.Point(6, 25);
+            this.CChannel2.Name = "CChannel2";
+            this.CChannel2.Size = new System.Drawing.Size(83, 21);
+            this.CChannel2.TabIndex = 17;
+            this.CChannel2.Text = "2 Канал";
+            this.CChannel2.UseVisualStyleBackColor = true;
+            this.CChannel2.CheckedChanged += new System.EventHandler(this.CChannel2_CheckedChanged);
+            // 
+            // CChannel3
+            // 
+            this.CChannel3.AutoSize = true;
+            this.CChannel3.Location = new System.Drawing.Point(6, 45);
+            this.CChannel3.Name = "CChannel3";
+            this.CChannel3.Size = new System.Drawing.Size(83, 21);
+            this.CChannel3.TabIndex = 18;
+            this.CChannel3.Text = "3 Канал";
+            this.CChannel3.UseVisualStyleBackColor = true;
+            this.CChannel3.CheckedChanged += new System.EventHandler(this.CChannel3_CheckedChanged);
+            // 
+            // CChannel4
+            // 
+            this.CChannel4.AutoSize = true;
+            this.CChannel4.Location = new System.Drawing.Point(6, 65);
+            this.CChannel4.Name = "CChannel4";
+            this.CChannel4.Size = new System.Drawing.Size(83, 21);
+            this.CChannel4.TabIndex = 19;
+            this.CChannel4.Text = "4 Канал";
+            this.CChannel4.UseVisualStyleBackColor = true;
+            this.CChannel4.CheckedChanged += new System.EventHandler(this.CChannel4_CheckedChanged);
+            // 
+            // CChannel15
+            // 
+            this.CChannel15.AutoSize = true;
+            this.CChannel15.Location = new System.Drawing.Point(6, 285);
+            this.CChannel15.Name = "CChannel15";
+            this.CChannel15.Size = new System.Drawing.Size(91, 21);
+            this.CChannel15.TabIndex = 30;
+            this.CChannel15.Text = "15 Канал";
+            this.CChannel15.UseVisualStyleBackColor = true;
+            this.CChannel15.CheckedChanged += new System.EventHandler(this.CChannel15_CheckedChanged);
+            // 
+            // CChannel5
+            // 
+            this.CChannel5.AutoSize = true;
+            this.CChannel5.Location = new System.Drawing.Point(6, 85);
+            this.CChannel5.Name = "CChannel5";
+            this.CChannel5.Size = new System.Drawing.Size(83, 21);
+            this.CChannel5.TabIndex = 20;
+            this.CChannel5.Text = "5 Канал";
+            this.CChannel5.UseVisualStyleBackColor = true;
+            this.CChannel5.CheckedChanged += new System.EventHandler(this.CChannel5_CheckedChanged);
+            // 
+            // CChannel14
+            // 
+            this.CChannel14.AutoSize = true;
+            this.CChannel14.Location = new System.Drawing.Point(6, 265);
+            this.CChannel14.Name = "CChannel14";
+            this.CChannel14.Size = new System.Drawing.Size(91, 21);
+            this.CChannel14.TabIndex = 29;
+            this.CChannel14.Text = "14 Канал";
+            this.CChannel14.UseVisualStyleBackColor = true;
+            this.CChannel14.CheckedChanged += new System.EventHandler(this.CChannel14_CheckedChanged);
+            // 
+            // CChannel6
+            // 
+            this.CChannel6.AutoSize = true;
+            this.CChannel6.Location = new System.Drawing.Point(6, 105);
+            this.CChannel6.Name = "CChannel6";
+            this.CChannel6.Size = new System.Drawing.Size(83, 21);
+            this.CChannel6.TabIndex = 21;
+            this.CChannel6.Text = "6 Канал";
+            this.CChannel6.UseVisualStyleBackColor = true;
+            this.CChannel6.CheckedChanged += new System.EventHandler(this.CChannel6_CheckedChanged);
+            // 
+            // CChannel13
+            // 
+            this.CChannel13.AutoSize = true;
+            this.CChannel13.Location = new System.Drawing.Point(6, 245);
+            this.CChannel13.Name = "CChannel13";
+            this.CChannel13.Size = new System.Drawing.Size(91, 21);
+            this.CChannel13.TabIndex = 28;
+            this.CChannel13.Text = "13 Канал";
+            this.CChannel13.UseVisualStyleBackColor = true;
+            this.CChannel13.CheckedChanged += new System.EventHandler(this.CChannel13_CheckedChanged);
+            // 
+            // CChannel7
+            // 
+            this.CChannel7.AutoSize = true;
+            this.CChannel7.Location = new System.Drawing.Point(6, 125);
+            this.CChannel7.Name = "CChannel7";
+            this.CChannel7.Size = new System.Drawing.Size(83, 21);
+            this.CChannel7.TabIndex = 22;
+            this.CChannel7.Text = "7 Канал";
+            this.CChannel7.UseVisualStyleBackColor = true;
+            this.CChannel7.CheckedChanged += new System.EventHandler(this.CChannel7_CheckedChanged);
+            // 
+            // CChannel12
+            // 
+            this.CChannel12.AutoSize = true;
+            this.CChannel12.Location = new System.Drawing.Point(6, 225);
+            this.CChannel12.Name = "CChannel12";
+            this.CChannel12.Size = new System.Drawing.Size(91, 21);
+            this.CChannel12.TabIndex = 27;
+            this.CChannel12.Text = "12 Канал";
+            this.CChannel12.UseVisualStyleBackColor = true;
+            this.CChannel12.CheckedChanged += new System.EventHandler(this.CChannel12_CheckedChanged);
+            // 
+            // CChannel8
+            // 
+            this.CChannel8.AutoSize = true;
+            this.CChannel8.Location = new System.Drawing.Point(6, 145);
+            this.CChannel8.Name = "CChannel8";
+            this.CChannel8.Size = new System.Drawing.Size(83, 21);
+            this.CChannel8.TabIndex = 23;
+            this.CChannel8.Text = "8 Канал";
+            this.CChannel8.UseVisualStyleBackColor = true;
+            this.CChannel8.CheckedChanged += new System.EventHandler(this.CChannel8_CheckedChanged);
+            // 
+            // CChannel11
+            // 
+            this.CChannel11.AutoSize = true;
+            this.CChannel11.Location = new System.Drawing.Point(6, 205);
+            this.CChannel11.Name = "CChannel11";
+            this.CChannel11.Size = new System.Drawing.Size(91, 21);
+            this.CChannel11.TabIndex = 26;
+            this.CChannel11.Text = "11 Канал";
+            this.CChannel11.UseVisualStyleBackColor = true;
+            this.CChannel11.CheckedChanged += new System.EventHandler(this.CChannel11_CheckedChanged);
+            // 
+            // CChannel9
+            // 
+            this.CChannel9.AutoSize = true;
+            this.CChannel9.Location = new System.Drawing.Point(6, 165);
+            this.CChannel9.Name = "CChannel9";
+            this.CChannel9.Size = new System.Drawing.Size(83, 21);
+            this.CChannel9.TabIndex = 24;
+            this.CChannel9.Text = "9 Канал";
+            this.CChannel9.UseVisualStyleBackColor = true;
+            this.CChannel9.CheckedChanged += new System.EventHandler(this.CChannel9_CheckedChanged);
+            // 
+            // CChannel10
+            // 
+            this.CChannel10.AutoSize = true;
+            this.CChannel10.Location = new System.Drawing.Point(6, 185);
+            this.CChannel10.Name = "CChannel10";
+            this.CChannel10.Size = new System.Drawing.Size(91, 21);
+            this.CChannel10.TabIndex = 25;
+            this.CChannel10.Text = "10 Канал";
+            this.CChannel10.UseVisualStyleBackColor = true;
+            this.CChannel10.CheckedChanged += new System.EventHandler(this.CChannel10_CheckedChanged);
             // 
             // OpenPanel
             // 
-            this.OpenPanel.Controls.Add(this.button1);
+            this.OpenPanel.Controls.Add(this.OpenFileBtn);
             this.OpenPanel.Location = new System.Drawing.Point(17, 459);
             this.OpenPanel.Name = "OpenPanel";
             this.OpenPanel.Size = new System.Drawing.Size(347, 68);
             this.OpenPanel.TabIndex = 2;
+            // 
+            // OpenFileBtn
+            // 
+            this.OpenFileBtn.Location = new System.Drawing.Point(3, 17);
+            this.OpenFileBtn.Name = "OpenFileBtn";
+            this.OpenFileBtn.Size = new System.Drawing.Size(155, 35);
+            this.OpenFileBtn.TabIndex = 6;
+            this.OpenFileBtn.Text = "Открыть файл";
+            this.OpenFileBtn.UseVisualStyleBackColor = true;
+            this.OpenFileBtn.Click += new System.EventHandler(this.OpenFileBtn_Click);
             // 
             // MainPanel
             // 
@@ -319,182 +713,6 @@
             this.BackGrWorkProgressBar.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.BackGrWorkProgressBar_ProgressChanged);
             this.BackGrWorkProgressBar.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.BackGrWorkProgressBar_RunWorkerCompleted);
             // 
-            // Channel1
-            // 
-            this.Channel1.AutoSize = true;
-            this.Channel1.Location = new System.Drawing.Point(6, 6);
-            this.Channel1.Name = "Channel1";
-            this.Channel1.Size = new System.Drawing.Size(83, 21);
-            this.Channel1.TabIndex = 0;
-            this.Channel1.Text = "1 Канал";
-            this.Channel1.UseVisualStyleBackColor = true;
-            this.Channel1.CheckedChanged += new System.EventHandler(this.Channel1_CheckedChanged);
-            // 
-            // Channel2
-            // 
-            this.Channel2.AutoSize = true;
-            this.Channel2.Location = new System.Drawing.Point(6, 24);
-            this.Channel2.Name = "Channel2";
-            this.Channel2.Size = new System.Drawing.Size(83, 21);
-            this.Channel2.TabIndex = 1;
-            this.Channel2.Text = "2 Канал";
-            this.Channel2.UseVisualStyleBackColor = true;
-            this.Channel2.CheckedChanged += new System.EventHandler(this.Channel2_CheckedChanged);
-            // 
-            // Channel3
-            // 
-            this.Channel3.AutoSize = true;
-            this.Channel3.Location = new System.Drawing.Point(6, 42);
-            this.Channel3.Name = "Channel3";
-            this.Channel3.Size = new System.Drawing.Size(83, 21);
-            this.Channel3.TabIndex = 2;
-            this.Channel3.Text = "3 Канал";
-            this.Channel3.UseVisualStyleBackColor = true;
-            this.Channel3.CheckedChanged += new System.EventHandler(this.Channel3_CheckedChanged);
-            // 
-            // Channel4
-            // 
-            this.Channel4.AutoSize = true;
-            this.Channel4.Location = new System.Drawing.Point(6, 60);
-            this.Channel4.Name = "Channel4";
-            this.Channel4.Size = new System.Drawing.Size(83, 21);
-            this.Channel4.TabIndex = 3;
-            this.Channel4.Text = "4 Канал";
-            this.Channel4.UseVisualStyleBackColor = true;
-            this.Channel4.CheckedChanged += new System.EventHandler(this.Channel4_CheckedChanged);
-            // 
-            // Channel5
-            // 
-            this.Channel5.AutoSize = true;
-            this.Channel5.Location = new System.Drawing.Point(6, 78);
-            this.Channel5.Name = "Channel5";
-            this.Channel5.Size = new System.Drawing.Size(83, 21);
-            this.Channel5.TabIndex = 4;
-            this.Channel5.Text = "5 Канал";
-            this.Channel5.UseVisualStyleBackColor = true;
-            this.Channel5.CheckedChanged += new System.EventHandler(this.Channel5_CheckedChanged);
-            // 
-            // Channel6
-            // 
-            this.Channel6.AutoSize = true;
-            this.Channel6.Location = new System.Drawing.Point(6, 96);
-            this.Channel6.Name = "Channel6";
-            this.Channel6.Size = new System.Drawing.Size(83, 21);
-            this.Channel6.TabIndex = 5;
-            this.Channel6.Text = "6 Канал";
-            this.Channel6.UseVisualStyleBackColor = true;
-            this.Channel6.CheckedChanged += new System.EventHandler(this.Channel6_CheckedChanged);
-            // 
-            // Channel7
-            // 
-            this.Channel7.AutoSize = true;
-            this.Channel7.Location = new System.Drawing.Point(6, 114);
-            this.Channel7.Name = "Channel7";
-            this.Channel7.Size = new System.Drawing.Size(83, 21);
-            this.Channel7.TabIndex = 6;
-            this.Channel7.Text = "7 Канал";
-            this.Channel7.UseVisualStyleBackColor = true;
-            this.Channel7.CheckedChanged += new System.EventHandler(this.Channel7_CheckedChanged);
-            // 
-            // Channel8
-            // 
-            this.Channel8.AutoSize = true;
-            this.Channel8.Location = new System.Drawing.Point(6, 132);
-            this.Channel8.Name = "Channel8";
-            this.Channel8.Size = new System.Drawing.Size(83, 21);
-            this.Channel8.TabIndex = 7;
-            this.Channel8.Text = "8 Канал";
-            this.Channel8.UseVisualStyleBackColor = true;
-            this.Channel8.CheckedChanged += new System.EventHandler(this.Channel8_CheckedChanged);
-            // 
-            // Channel9
-            // 
-            this.Channel9.AutoSize = true;
-            this.Channel9.Location = new System.Drawing.Point(6, 150);
-            this.Channel9.Name = "Channel9";
-            this.Channel9.Size = new System.Drawing.Size(83, 21);
-            this.Channel9.TabIndex = 8;
-            this.Channel9.Text = "9 Канал";
-            this.Channel9.UseVisualStyleBackColor = true;
-            this.Channel9.CheckedChanged += new System.EventHandler(this.Channel9_CheckedChanged);
-            // 
-            // Channel10
-            // 
-            this.Channel10.AutoSize = true;
-            this.Channel10.Location = new System.Drawing.Point(6, 168);
-            this.Channel10.Name = "Channel10";
-            this.Channel10.Size = new System.Drawing.Size(91, 21);
-            this.Channel10.TabIndex = 9;
-            this.Channel10.Text = "10 Канал";
-            this.Channel10.UseVisualStyleBackColor = true;
-            this.Channel10.CheckedChanged += new System.EventHandler(this.Channel10_CheckedChanged);
-            // 
-            // Channel11
-            // 
-            this.Channel11.AutoSize = true;
-            this.Channel11.Location = new System.Drawing.Point(6, 186);
-            this.Channel11.Name = "Channel11";
-            this.Channel11.Size = new System.Drawing.Size(91, 21);
-            this.Channel11.TabIndex = 10;
-            this.Channel11.Text = "11 Канал";
-            this.Channel11.UseVisualStyleBackColor = true;
-            this.Channel11.CheckedChanged += new System.EventHandler(this.Channel11_CheckedChanged);
-            // 
-            // Channel12
-            // 
-            this.Channel12.AutoSize = true;
-            this.Channel12.Location = new System.Drawing.Point(6, 204);
-            this.Channel12.Name = "Channel12";
-            this.Channel12.Size = new System.Drawing.Size(91, 21);
-            this.Channel12.TabIndex = 11;
-            this.Channel12.Text = "12 Канал";
-            this.Channel12.UseVisualStyleBackColor = true;
-            this.Channel12.CheckedChanged += new System.EventHandler(this.Channel12_CheckedChanged);
-            // 
-            // Channel13
-            // 
-            this.Channel13.AutoSize = true;
-            this.Channel13.Location = new System.Drawing.Point(6, 222);
-            this.Channel13.Name = "Channel13";
-            this.Channel13.Size = new System.Drawing.Size(91, 21);
-            this.Channel13.TabIndex = 12;
-            this.Channel13.Text = "13 Канал";
-            this.Channel13.UseVisualStyleBackColor = true;
-            this.Channel13.CheckedChanged += new System.EventHandler(this.Channel13_CheckedChanged);
-            // 
-            // Channel14
-            // 
-            this.Channel14.AutoSize = true;
-            this.Channel14.Location = new System.Drawing.Point(6, 240);
-            this.Channel14.Name = "Channel14";
-            this.Channel14.Size = new System.Drawing.Size(91, 21);
-            this.Channel14.TabIndex = 13;
-            this.Channel14.Text = "14 Канал";
-            this.Channel14.UseVisualStyleBackColor = true;
-            this.Channel14.CheckedChanged += new System.EventHandler(this.Channel14_CheckedChanged);
-            // 
-            // Channel15
-            // 
-            this.Channel15.AutoSize = true;
-            this.Channel15.Location = new System.Drawing.Point(6, 258);
-            this.Channel15.Name = "Channel15";
-            this.Channel15.Size = new System.Drawing.Size(91, 21);
-            this.Channel15.TabIndex = 14;
-            this.Channel15.Text = "15 Канал";
-            this.Channel15.UseVisualStyleBackColor = true;
-            this.Channel15.CheckedChanged += new System.EventHandler(this.Channel15_CheckedChanged);
-            // 
-            // Channel16
-            // 
-            this.Channel16.AutoSize = true;
-            this.Channel16.Location = new System.Drawing.Point(6, 276);
-            this.Channel16.Name = "Channel16";
-            this.Channel16.Size = new System.Drawing.Size(91, 21);
-            this.Channel16.TabIndex = 15;
-            this.Channel16.Text = "16 Канал";
-            this.Channel16.UseVisualStyleBackColor = true;
-            this.Channel16.CheckedChanged += new System.EventHandler(this.Channel16_CheckedChanged);
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -504,6 +722,7 @@
             this.Controls.Add(this.MainPanel);
             this.Controls.Add(this.OpenPanel);
             this.Controls.Add(this.ConfiguireWindow);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "Form1";
             this.Text = "Form1";
@@ -512,11 +731,11 @@
             this.ConReadFile.PerformLayout();
             this.ConSaveFile.ResumeLayout(false);
             this.panel2.ResumeLayout(false);
-            this.panel2.PerformLayout();
-            this.OutInfoFile.ResumeLayout(false);
-            this.OutInfoFile.PerformLayout();
-            this.panelAnalysis.ResumeLayout(false);
-            this.panelAnalysis.PerformLayout();
+            this.tabControl1.ResumeLayout(false);
+            this.ConDecoder.ResumeLayout(false);
+            this.ConDecoder.PerformLayout();
+            this.ConCalc.ResumeLayout(false);
+            this.ConCalc.PerformLayout();
             this.OpenPanel.ResumeLayout(false);
             this.MainPanel.ResumeLayout(false);
             this.ResumeLayout(false);
@@ -524,8 +743,6 @@
         }
 
         #endregion
-
-        private System.Windows.Forms.Button button1;
         private System.Windows.Forms.TabControl ConfiguireWindow;
         private System.Windows.Forms.TabPage ConReadFile;
         private System.Windows.Forms.TabPage ConSaveFile;
@@ -535,35 +752,53 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Panel OpenPanel;
         private System.Windows.Forms.Panel MainPanel;
-        private System.Windows.Forms.Button StartAnalys;
         private System.Windows.Forms.ProgressBar Progress;
-        private System.Windows.Forms.TabPage OutInfoFile;
+        private System.Windows.Forms.Button StartWrite;
+        private System.ComponentModel.BackgroundWorker BackGrWorkProgressBar;
+        private System.Windows.Forms.Button StartDecoder;
+        private System.Windows.Forms.Panel panel2;
+        private System.Windows.Forms.CheckBox DChannel16;
+        private System.Windows.Forms.CheckBox DChannel15;
+        private System.Windows.Forms.CheckBox DChannel14;
+        private System.Windows.Forms.CheckBox DChannel13;
+        private System.Windows.Forms.CheckBox DChannel12;
+        private System.Windows.Forms.CheckBox DChannel11;
+        private System.Windows.Forms.CheckBox DChannel10;
+        private System.Windows.Forms.CheckBox DChannel9;
+        private System.Windows.Forms.CheckBox DChannel8;
+        private System.Windows.Forms.CheckBox DChannel7;
+        private System.Windows.Forms.CheckBox DChannel6;
+        private System.Windows.Forms.CheckBox DChannel5;
+        private System.Windows.Forms.CheckBox DChannel4;
+        private System.Windows.Forms.CheckBox DChannel3;
+        private System.Windows.Forms.CheckBox DChannel2;
+        private System.Windows.Forms.CheckBox DChannel1;
+        private System.Windows.Forms.TabControl tabControl1;
+        private System.Windows.Forms.TabPage ConDecoder;
+        private System.Windows.Forms.TabPage ConCalc;
         private System.Windows.Forms.TextBox NumEvText;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TextBox NumUsCh;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Button StartWrite;
-        private System.ComponentModel.BackgroundWorker BackGrWorkProgressBar;
-        private System.Windows.Forms.Button StartDecoder;
-        private System.Windows.Forms.Panel panelAnalysis;
-        private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.Panel panel2;
-        private System.Windows.Forms.CheckBox Channel16;
-        private System.Windows.Forms.CheckBox Channel15;
-        private System.Windows.Forms.CheckBox Channel14;
-        private System.Windows.Forms.CheckBox Channel13;
-        private System.Windows.Forms.CheckBox Channel12;
-        private System.Windows.Forms.CheckBox Channel11;
-        private System.Windows.Forms.CheckBox Channel10;
-        private System.Windows.Forms.CheckBox Channel9;
-        private System.Windows.Forms.CheckBox Channel8;
-        private System.Windows.Forms.CheckBox Channel7;
-        private System.Windows.Forms.CheckBox Channel6;
-        private System.Windows.Forms.CheckBox Channel5;
-        private System.Windows.Forms.CheckBox Channel4;
-        private System.Windows.Forms.CheckBox Channel3;
-        private System.Windows.Forms.CheckBox Channel2;
-        private System.Windows.Forms.CheckBox Channel1;
+        private System.Windows.Forms.CheckBox CChannel16;
+        private System.Windows.Forms.CheckBox CChannel1;
+        private System.Windows.Forms.CheckBox CChannel2;
+        private System.Windows.Forms.CheckBox CChannel3;
+        private System.Windows.Forms.CheckBox CChannel4;
+        private System.Windows.Forms.CheckBox CChannel15;
+        private System.Windows.Forms.CheckBox CChannel5;
+        private System.Windows.Forms.CheckBox CChannel14;
+        private System.Windows.Forms.CheckBox CChannel6;
+        private System.Windows.Forms.CheckBox CChannel13;
+        private System.Windows.Forms.CheckBox CChannel7;
+        private System.Windows.Forms.CheckBox CChannel12;
+        private System.Windows.Forms.CheckBox CChannel8;
+        private System.Windows.Forms.CheckBox CChannel11;
+        private System.Windows.Forms.CheckBox CChannel9;
+        private System.Windows.Forms.CheckBox CChannel10;
+        private System.Windows.Forms.CheckBox CalcMin;
+        private System.Windows.Forms.CheckBox CalcMax;
+        private System.Windows.Forms.Button OpenFileBtn;
     }
 }
 

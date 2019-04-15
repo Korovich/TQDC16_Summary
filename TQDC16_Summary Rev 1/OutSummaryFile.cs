@@ -14,18 +14,18 @@ namespace TQDC16_Summary_Rev_1
     class OutSummaryFile
     {
         static Summary SummFile = new Summary();
-        public static void StartSummary(BackgroundWorker ProgressBar)
+        public static void StartSummary(BackgroundWorker ProgressBar, DoWorkEventArgs e)
         {
             CSV_Output.Create_CSV();
             CSV_Output.InitCsv();
             int EvLeng = 0;
             int MSLeng = 0;
-            int PLLeng = 0;
+            int DataPLLeng = 0;
             ulong NumEv = 0;
             long pos = 0;
             long pospl = 0;
             long prog = 0;
-            var FS = new FileStream(String.Format("{0}", TQDC2File.Path), FileMode.Open);
+            var FS = new FileStream(String.Format("{0}", TQDC2File.ReadFilePath), FileMode.Open);
             long prog_st = FS.Length / 999;
             using (CSV_Output.writer)
             using (CSV_Output.csv)
@@ -40,18 +40,18 @@ namespace TQDC16_Summary_Rev_1
                     pospl = pos + 32;
                     while (pospl != pos + EvLeng + 12)
                     {
-                        PLLeng = Converters.Byte2Int(TQDC2File.ReadByte(pospl + 2, pospl + 4, FS));
+                        DataPLLeng = Converters.Byte2Int(TQDC2File.ReadByte(pospl + 2, pospl + 4, FS));
                         switch ((Converters.Byte2Int(TQDC2File.ReadByte(pospl, pospl + 1, FS))) >> 4)
                         {
                             case 0:
                                 {
-                                    for (int i = 0; i < PLLeng / 4; i++)
+                                    for (int i = 0; i < DataPLLeng / 4; i++)
                                     {
                                         switch (Converters.Byte2Int(TQDC2File.ReadByte(pospl + 4, pospl + 5, FS)) >> 4)
                                         {
                                             case 2:
                                                 {
-                                                    SummFile.TDCEvent = Converters.Byte2uInt(TQDC2File.ReadByte(pospl + 5, pospl + 8, FS)) >> 12;
+                                                    //SummFile.TDCEvent = Converters.Byte2uInt(TQDC2File.ReadByte(pospl + 5, pospl + 8, FS)) >> 12;
                                                     pospl += 4;
                                                     break;
                                                 }
@@ -62,17 +62,17 @@ namespace TQDC16_Summary_Rev_1
                                                 }
                                             case 4:
                                                 {
-                                                    uint ch = ((Converters.Byte2uInt(TQDC2File.ReadByte(pospl + 4, pospl + 8, FS))) << 7) >> 28;
-                                                    uint value = ((Converters.Byte2uInt(TQDC2File.ReadByte(pospl + 4, pospl + 8, FS))) << 11) >> 11;
-                                                    AddSummary(TDC, ch, value);
+                                                    //uint ch = ((Converters.Byte2uInt(TQDC2File.ReadByte(pospl + 4, pospl + 8, FS))) << 7) >> 28;
+                                                    //uint value = ((Converters.Byte2uInt(TQDC2File.ReadByte(pospl + 4, pospl + 8, FS))) << 11) >> 11;
+                                                    //AddSummary(TDC, ch, value);
                                                     pospl += 4;
                                                     break;
                                                 }
                                             case 5:
                                                 {
-                                                    uint ch = ((Converters.Byte2uInt(TQDC2File.ReadByte(pospl + 4, pospl + 8, FS))) << 7) >> 28;
-                                                    uint value = ((Converters.Byte2uInt(TQDC2File.ReadByte(pospl + 4, pospl + 8, FS))) << 11) >> 11;
-                                                    AddSummary(TDC, ch, value);
+                                                    //uint ch = ((Converters.Byte2uInt(TQDC2File.ReadByte(pospl + 4, pospl + 8, FS))) << 7) >> 28;
+                                                    //uint value = ((Converters.Byte2uInt(TQDC2File.ReadByte(pospl + 4, pospl + 8, FS))) << 11) >> 11;
+                                                    //AddSummary(TDC, ch, value);
                                                     pospl += 4;
                                                     break;
                                                 }
@@ -87,9 +87,29 @@ namespace TQDC16_Summary_Rev_1
                                 }
                             case 1:
                                 {
-                                    uint ch = ((Converters.Byte2uInt(TQDC2File.ReadByte(pospl, pospl + 1, FS))) << 28) >> 28;
-                                    AddSummary(ATS, ch, Converters.Byte2uInt(TQDC2File.ReadByte(pospl + 6, pospl + 8, FS)));
-                                    pospl += Converters.Byte2uInt(TQDC2File.ReadByte(pospl + 2, pospl + 4, FS));
+                                    uint ch = (((Converters.Byte2uInt(TQDC2File.ReadByte(pospl, pospl + 1, FS))) << 28) >> 28);
+                                    if (IsNeedChannel(ch))
+                                        {
+                                            pospl = pospl + DataPLLeng + 4;
+                                            break;
+                                        }
+                                    //AddSummary(CHANNEL, ch,); //Запись канала в блок данных
+                                    long apospl = pospl; // Запись положения Header ADC
+                                    pospl += 4; //переход на новую строку
+                                    if (pospl == apospl + DataPLLeng) { pospl += 4; break; } // Проверка на отсуствие данных в Data Block
+                                    while (pospl != apospl + DataPLLeng + 4) // Цикл на чтение данных ADC (пока позиция в блоке Data Block не в конце блока ADC)
+                                    {
+                                        string Databuf = ""; // Буфер для данных ADC
+                                        uint DataLen = Converters.Byte2uInt(TQDC2File.ReadByte(pospl, pospl + 2, FS)); //Длина в блоке ADC в байтах
+                                        bool odd = false; // переменная четности количества данных ( в строках 32 байта)
+                                        if (DataLen % 4 != 0) // проверка на нечетность 
+                                        {
+                                            odd = true;
+                                        }
+                                        uint Timestamp = Converters.Byte2uInt(TQDC2File.ReadByte(pospl + 2, pospl + 4, FS)) * 8; // Чтение временной метки ADC
+                                        AddSummary(TIMESTAMP,ch, Timestamp); // Добавление временной метки в блок данных
+                                        pospl += 4; //переход на новую строку
+                                    }
                                     break;
                                 }
                         }
@@ -112,10 +132,13 @@ namespace TQDC16_Summary_Rev_1
             FS.Close();
         }
 
-        public static byte TDC { get; } = 1;
-        public static byte MIN { get; } = 2;
-        public static byte MAX { get; } = 3;
-        public static byte ATS { get; } = 4;
+        public static byte EVENT { get; } = 1;          //Константы 
+        public static byte TIMESTAMP { get; } = 2;      //
+        public static byte CHANNEL { get; } = 3;        //
+        public static byte TDC { get; } = 4;            //
+        public static byte MIN { get; } = 5;            //
+        public static byte MAX { get; } = 6;            //
+        public static byte ATS { get; } = 7;            //
 
         static void AddSummary(byte Type, uint ch, uint value)
         {
@@ -217,6 +240,11 @@ namespace TQDC16_Summary_Rev_1
 
         }
 
+
+        static bool IsNeedChannel(uint i)
+        {
+            return Form1.CChannel[i - 1];
+        }
 
         public static void Record_Clear(Summary record)
         {

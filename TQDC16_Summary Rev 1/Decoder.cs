@@ -23,7 +23,7 @@ namespace TQDC16_Summary_Rev_1
             long pos = 0;            // Позиция в блоке файла
             long pospl = 0;          // Позиция в блоке DataPayload
             long prog = 0;           // Позициця для Progress Bar
-            var FS = new FileStream(String.Format("{0}", TQDC2File.Path), FileMode.Open); // Экземпляр потока чтения
+            var FS = new FileStream(String.Format("{0}", TQDC2File.ReadFilePath), FileMode.Open); // Экземпляр потока чтения
             long prog_st = FS.Length / 999;  // шаг для Progress Bar 
             using (CSV_Output.writer) // поток для записи
             using (CSV_Output.csv)    // поток для записи #csvhelper
@@ -128,7 +128,7 @@ namespace TQDC16_Summary_Rev_1
                                         pospl = pospl + DataPLLeng + 4;
                                         break;
                                     }
-                                    AddData(CHANNEL, ch.ToString()); //Запись канала в блок данных
+                                    //AddData(CHANNEL, ch.ToString()); //Запись канала в блок данных
                                     long apospl = pospl; // Запись положения Header ADC
                                     pospl += 4; //переход на новую строку
                                     if (pospl == apospl + DataPLLeng) { pospl += 4; break; } // Проверка на отсуствие данных в Data Block
@@ -143,6 +143,7 @@ namespace TQDC16_Summary_Rev_1
                                         }
                                         uint Timestamp = Converters.Byte2uInt(TQDC2File.ReadByte(pospl + 2, pospl + 4, FS))*8; // Чтение временной метки ADC
                                         AddData(TIMESTAMP, Timestamp.ToString()); // Добавление временной метки в блок данных
+                                        AddData(CHANNEL, ch.ToString()); //Запись канала в блок данных
                                         pospl += 4; //переход на новую строку
                                         for (uint i = 0; i < ((DataLen / 4) * 4 == DataLen ? (DataLen / 4) : (DataLen / 4) + 1); i++) //цикл на чтение Sample ADC
                                         {
@@ -192,7 +193,7 @@ namespace TQDC16_Summary_Rev_1
 
         static bool IsNeedChannel(uint i)
         {
-            return Form1.Channel[i-1];
+            return Form1.DChannel[i-1];
         }
 
         static void AddData(byte Type, string String) // Функция добавление данных в блок данных

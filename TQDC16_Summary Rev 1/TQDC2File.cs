@@ -10,8 +10,9 @@ namespace TQDC16_Summary_Rev_1
 {
     class TQDC2File
     {
-        public static String Path { get; set; } = "";
+        public static String ReadFilePath { get; set; } = "";
         public static bool[] Ch { get; set; } = new bool[16];
+        public static long FileLen { get; set; } = 0;
 
         public static OpenResult Open_File()
         {
@@ -47,7 +48,8 @@ namespace TQDC16_Summary_Rev_1
                     }
                     if (openresult.Selected)
                     {
-                        Path = TQDC_DATA.FileName;
+                        ReadFilePath = TQDC_DATA.FileName;
+                        FileLen = FSD.Length;
                         openresult.Serial = Converters.Byte2Str(ReadByte(12, 16, FSD));
                         openresult.ID = Converters.Id2Str(ReadByte(16, 17, FSD)[0]);
                         FSD.Close();

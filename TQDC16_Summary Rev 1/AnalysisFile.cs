@@ -22,8 +22,8 @@ namespace TQDC16_Summary_Rev_1
             long pos = 0;
             long pospl = 0;
             long prog = 0;
-            var FS = new FileStream(String.Format("{0}", TQDC2File.Path), FileMode.Open);
-            long prog_st = FS.Length / 999;
+            var FS = new FileStream(String.Format("{0}", TQDC2File.ReadFilePath), FileMode.Open);
+            long prog_st = FS.Length / 1000;
             while (pos < FS.Length)
             {
                 EvLeng = Converters.Byte2Int(TQDC2File.ReadByte(pos + 4, pos + 8, FS));

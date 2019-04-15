@@ -25,7 +25,7 @@ namespace TQDC16_Summary_Rev_1
                 SaveFileDialog OutFile = new SaveFileDialog();
                 OutFile.Filter = "Comma Separated Value(*.csv) | *.csv";
                 OutFile.FileName = String.Format("TQDC2-Summary {0}", DateTime.Now.ToString("dd.MM.yyyy_hh.mm.ss"));
-                OutFile.InitialDirectory = TQDC2File.Path;
+                OutFile.InitialDirectory = TQDC2File.ReadFilePath;
                 dialogResult = OutFile.ShowDialog();
                 Path = OutFile.FileName;
             }));

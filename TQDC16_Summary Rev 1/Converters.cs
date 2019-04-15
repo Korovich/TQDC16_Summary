@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace TQDC16_Summary_Rev_1
 {
+    
     class Converters
     {
         public static string Byte2Str(byte[] ba)

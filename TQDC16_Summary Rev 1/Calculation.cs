@@ -81,7 +81,7 @@ namespace TQDC16_Summary_Rev_1
                                                 {
                                                     int ch = ((Byte2Int(ReadByte(pospl, pospl + 4, FS))) << 7) >> 28;
                                                     if (!IsNeedChannel(ch+1)) break;
-                                                    uint value = (((Byte2uInt(ReadByte(pospl + 4, pospl + 8, FS))) << 11) >> 11) * 25;
+                                                    uint value = (((Byte2uInt(ReadByte(pospl, pospl + 4, FS))) << 11) >> 11) * 25;
                                                     tdcbuffer.Newrecord(ch, new Tdc_Interface(LEADING_FRONT, value));
                                                     //.Add(new BufferTdc { Channel = ch, Front = LEADING_FRONT, Data = value });
                                                     pospl += 4;
@@ -91,7 +91,7 @@ namespace TQDC16_Summary_Rev_1
                                                 {
                                                     int ch = ((Byte2Int(ReadByte(pospl, pospl + 4, FS))) << 7) >> 28;
                                                     if (!IsNeedChannel(ch+1)) break;
-                                                    uint value = (((Byte2uInt(ReadByte(pospl + 4, pospl + 8, FS))) << 11) >> 11) * 25;
+                                                    uint value = (((Byte2uInt(ReadByte(pospl, pospl + 4, FS))) << 11) >> 11) * 25;
                                                     tdcbuffer.Newrecord(ch, new Tdc_Interface(TRAILING_FRONT, value));
                                                     pospl += 4;
                                                     break;
@@ -303,6 +303,7 @@ namespace TQDC16_Summary_Rev_1
                 {
                     if (IsNeedChannel(buferfiledata.position + 1))
                     {
+                       if (buferfiledata.position !=0)  writer.Write(";");
                         if (i < Item.Count)
                         {
                             writer.Write(Item[i].ReturnStringInterfClass());

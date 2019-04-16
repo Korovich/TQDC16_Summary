@@ -17,14 +17,14 @@ namespace TQDC16_Summary_Rev_1
         public static StreamWriter writer;
         public static CsvWriter csv;
         public static List<dynamic> records = new List<dynamic>();
-        public static DialogResult Create_CSV ()
+        public static DialogResult Create_CSV (string infixName = "")
         {
             DialogResult dialogResult = new DialogResult();
             var t = new Thread((ThreadStart)(() =>
             {
                 SaveFileDialog OutFile = new SaveFileDialog();
                 OutFile.Filter = "Comma Separated Value(*.csv) | *.csv";
-                OutFile.FileName = String.Format("TQDC2-Summary {0}", DateTime.Now.ToString("dd.MM.yyyy_hh.mm.ss"));
+                OutFile.FileName = String.Format("{0} TQDC2-Summary {1}-{2}",TQDC2File.FileName, DateTime.Now.ToString("dd.MM.yyyy_hh.mm.ss"),infixName);
                 OutFile.InitialDirectory = TQDC2File.ReadFilePath;
                 dialogResult = OutFile.ShowDialog();
                 Path = OutFile.FileName;

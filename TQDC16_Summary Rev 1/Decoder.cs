@@ -13,7 +13,7 @@ namespace TQDC16_Summary_Rev_1
         static DecData data = new DecData(); //Файл хранения выводимых данных
         public static void StartDecoding(BackgroundWorker ProgressBar, DoWorkEventArgs e) //функция декодирования (1 - экземпляр класса BGW, в котором была запущена функция
         {                                                                                 // 2 - аргумент для хранения результата BGW
-            CSV_Output.Create_CSV(); // Создание файла CSV
+            CSV_Output.Create_CSV("Декодер"); // Создание файла CSV
             CSV_Output.InitCsv();    // Инициирование экземпляров записи
             int EvLeng = 0;          // Длина глобального Event в байтах
             int MSLeng = 0;          // Длина блока MStream
@@ -83,9 +83,9 @@ namespace TQDC16_Summary_Rev_1
                                                         pospl += 4;
                                                         break;
                                                     }
-                                                    uint value = ((Converters.Byte2uInt(TQDC2File.ReadByte(pospl, pospl + 4, FS))) << 11) >> 13; // Значение TDC с канала #ch
+                                                    uint value = (((Converters.Byte2uInt(TQDC2File.ReadByte(pospl, pospl + 4, FS))) << 11) >> 11) * 25; // Значение TDC с канала #ch
                                                     AddData(CHANNEL, ch.ToString());                                              //Добавление канала, данных,
-                                                    AddData(DATA, (value / 10).ToString() + "," + (value % 10).ToString());       //и типа данных в блок данных
+                                                    AddData(DATA, value.ToString());       //и типа данных в блок данных
                                                     AddData(TYPE_DATA, TDC);                                                      //
                                                     CSV_Output.csv.WriteRecord(data);                      // Запись блока данных            
                                                     CSV_Output.csv.NextRecord();                           // в файл
@@ -100,9 +100,9 @@ namespace TQDC16_Summary_Rev_1
                                                         pospl += 4;
                                                         break;
                                                     }
-                                                    uint value = ((Converters.Byte2uInt(TQDC2File.ReadByte(pospl, pospl + 4, FS))) << 11) >> 13;// Значение TDC с канала #ch
+                                                    uint value = (((Converters.Byte2uInt(TQDC2File.ReadByte(pospl, pospl + 4, FS))) << 11) >> 11) *25;// Значение TDC с канала #ch
                                                     AddData(CHANNEL, ch.ToString());                                        //Добавление канала, данных,
-                                                    AddData(DATA, (value / 10).ToString() + "," + (value % 10).ToString()); //и типа данных в блок данных
+                                                    AddData(DATA, value.ToString()); //и типа данных в блок данных
                                                     AddData(TYPE_DATA, TDC);                                                //
                                                     CSV_Output.csv.WriteRecord(data);               // Запись блока данных   
                                                     Record_Clear();                                 // в файл

@@ -10,7 +10,8 @@ namespace TQDC16_Summary_Rev_1
 {
     class TQDC2File
     {
-        public static String ReadFilePath { get; set; } = "";
+        public static string ReadFilePath { get; set; } = "";
+        public static string FileName { get; set; } = "";
         public static bool[] Ch { get; set; } = new bool[16];
         public static long FileLen { get; set; } = 0;
 
@@ -35,6 +36,7 @@ namespace TQDC16_Summary_Rev_1
                 {
                     DialogResult ResultMes;
                     var FSD = new FileStream(String.Format("{0}", TQDC_DATA.FileName), FileMode.Open);
+                    FileName = TQDC_DATA.SafeFileName;
                     byte[] bbyte = new byte[4];
                     byte[] fbyte = new byte[4] { 0x50, 0x2a, 0x50, 0x2a };
 

@@ -17,7 +17,7 @@ namespace TQDC16_Summary_Rev_1
 
         public static void StartCalc(BackgroundWorker ProgressBar, bool[] EnableChannel, DoWorkEventArgs e)
         {
-            Create_CSV(); // Создание файла CSV
+            Create_CSV("Вычисление"); // Создание файла CSV
             InitCsv();    // Инициирование экземпляров записи
             int EvLeng = 0;          // Длина глобального Event в байтах
             int MSLeng = 0;          // Длина блока MStream
@@ -27,7 +27,7 @@ namespace TQDC16_Summary_Rev_1
             long pos = 0;            // Позиция в блоке файла
             long pospl = 0;          // Позиция в блоке DataPayload
             long prog = 0;           // Позициця для Progress Bar
-            ulong StartTimeStampnSec = 0;
+            //ulong StartTimeStampnSec = 0;
             ulong TimeStampnSec = 0;
             ulong TimeStampSec = 0;
             var FS = new FileStream(string.Format("{0}", ReadFilePath), FileMode.Open); // Экземпляр потока чтения
@@ -182,7 +182,7 @@ namespace TQDC16_Summary_Rev_1
                 {
                     for (int j = 0; j < Header.Length; j++)
                     {
-                        result += Header[j] + string.Format("{0}", i) + ";";
+                        result += Header[j] + string.Format("{0}", i+1) + ";";
                     }
                     n++;
                 }
@@ -252,7 +252,7 @@ namespace TQDC16_Summary_Rev_1
                 if (data[i] > result[0]) { result[0] = data[i]; }//max
                 if (data[i] < result[1]) { result[1] = data[i]; }//min
             }
-            integral = CalculationIntegral(data);//integral                                                                                           //!!!!!!!!!!!Настроить приведение типов
+            integral = CalculationIntegral(data);//integral                                                                                           
             buferfiledata[channel].Add(new InterfClass { timestamp = timestamp, tdc = tdc, max = result[0], min = result[1], integral = integral });
         }
         
@@ -281,6 +281,7 @@ namespace TQDC16_Summary_Rev_1
                         CalculationMMI(buferfiledata, bufferadc[ch][i].bufsamples, buffertdc[ch][i].data, bufferadc[ch][i].timestamp, ch);
                     }
                 }
+
                 if (bufferadc[ch].Count() < buffertdc[ch].Count())
                 {
                     for (int i = 0; i < bufferadc[ch].Count(); i++)
@@ -297,12 +298,11 @@ namespace TQDC16_Summary_Rev_1
             buferfiledata.WriteStringHeaderEvent(writer);
             for (int i = 0; i < max; i++)
             {
-                if (i != 0) writer.Write(";;");
+                writer.Write(";;");
                 foreach (List<InterfClass> Item in buferfiledata)
                 {
                     if (IsNeedChannel(buferfiledata.position + 1))
                     {
-                        if (buferfiledata.position != 0) writer.Write(";");
                         if (i < Item.Count)
                         {
                             writer.Write(Item[i].ReturnStringInterfClass());
@@ -314,7 +314,6 @@ namespace TQDC16_Summary_Rev_1
                 buferfiledata.Reset();
             }
         }
-
 
 
         internal static uint LEADING_FRONT = 1;
@@ -417,7 +416,7 @@ namespace TQDC16_Summary_Rev_1
 
             internal void WriteStringHeaderEvent (StreamWriter writer)
             {
-                writer.Write(string.Format("{0};{1}", numEvent, timeStampSec.ToString() + ":" + timeStampnSec.ToString()));
+                writer.WriteLine(string.Format("{0};{1}", numEvent, timeStampSec.ToString() + "|" + timeStampnSec.ToString()));
             }
 
             internal BufferData(ulong numEvent = 0, ulong timeStampSec = 0, ulong timeStampnSec = 0, int position = -1)

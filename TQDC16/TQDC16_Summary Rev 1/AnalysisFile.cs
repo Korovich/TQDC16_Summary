@@ -17,32 +17,32 @@ namespace TQDC16_Summary_Rev_1
         public static int NumCh = 0;
         public static void AnChannel(BackgroundWorker ProgressBar, DoWorkEventArgs e)
         {
-            int EvLeng = 0;
-            int PLLeng = 0;
+            int EvLeng;
+            int PLLeng;
             long pos = 0;
-            long pospl = 0;
+            long pospl;
             long prog = 0;
             var FS = new FileStream(String.Format("{0}", TQDC2File.ReadFilePath), FileMode.Open);
             long prog_st = FS.Length / 1000;
             while (pos < FS.Length)
             {
-                EvLeng = Converters.Byte2Int(TQDC2File.ReadByte(pos + 4, pos + 8, FS));
-                NumEv = Converters.Byte2Int(TQDC2File.ReadByte(pos + 8, pos + 12, FS));
+                EvLeng = Converters.Byte2Int(TQDC2File.ReadByte(pos + 4, 4, FS));
+                NumEv = Converters.Byte2Int(TQDC2File.ReadByte(pos + 8, 4, FS));
                 pospl = pos+32;
                 while (pospl != pos+ EvLeng + 12)
                 {
-                    PLLeng = Converters.Byte2Int(TQDC2File.ReadByte(pospl + 2, pospl + 4, FS));
-                    switch ((Converters.Byte2Int(TQDC2File.ReadByte(pospl, pospl + 1, FS)))>>4)
+                    PLLeng = Converters.Byte2Int(TQDC2File.ReadByte(pospl + 2, 2, FS));
+                    switch ((Converters.Byte2Int(TQDC2File.ReadByte(pospl, 1, FS)))>>4)
                     {
                         case 0:
                             {
                                 pospl += 4;
                                 for (int i = 0; i < PLLeng / 4; i++)
                                 {
-                                    if ((Converters.Byte2Int(TQDC2File.ReadByte(pospl , pospl + 1, FS)) >> 4 == 4) |
-                                        (Converters.Byte2Int(TQDC2File.ReadByte(pospl , pospl + 1, FS)) >> 4 == 5))
+                                    if ((Converters.Byte2Int(TQDC2File.ReadByte(pospl , 1, FS)) >> 4 == 4) |
+                                        (Converters.Byte2Int(TQDC2File.ReadByte(pospl , 1, FS)) >> 4 == 5))
                                     {
-                                        uint ch = (Converters.Byte2uInt(TQDC2File.ReadByte(pospl, pospl + 4, FS)) << 7) >> 28;
+                                        uint ch = (Converters.Byte2uInt(TQDC2File.ReadByte(pospl, 4, FS)) << 7) >> 28;
                                         if (Channel[ch] == false)
                                         {
                                             Channel[ch] = true;
@@ -55,13 +55,13 @@ namespace TQDC16_Summary_Rev_1
                             }
                         case 1:
                             {
-                                uint ch = ((Converters.Byte2uInt(TQDC2File.ReadByte(pospl , pospl + 1, FS))) << 28) >> 28;
+                                uint ch = ((Converters.Byte2uInt(TQDC2File.ReadByte(pospl , 1, FS))) << 28) >> 28;
                                 if (Channel[ch] == false)
                                 {
                                     Channel[ch] = true;
                                     NumCh++;
                                 }
-                                pospl += Converters.Byte2Int(TQDC2File.ReadByte(pospl + 2, pospl + 4, FS)) + 4;
+                                pospl += Converters.Byte2Int(TQDC2File.ReadByte(pospl + 2, 2, FS)) + 4;
                                 break;
                             }
                     }

@@ -22,10 +22,12 @@ namespace TQDC16_Summary_Rev_1
             DialogResult dialogResult = new DialogResult();
             var t = new Thread((ThreadStart)(() =>
             {
-                SaveFileDialog OutFile = new SaveFileDialog();
-                OutFile.Filter = "Comma Separated Value(*.csv) | *.csv";
-                OutFile.FileName = String.Format("{0} TQDC2-Summary {1}-{2}",TQDC2File.FileName, DateTime.Now.ToString("dd.MM.yyyy_hh.mm.ss"),infixName);
-                OutFile.InitialDirectory = TQDC2File.ReadFilePath;
+                SaveFileDialog OutFile = new SaveFileDialog
+                {
+                    Filter = "Comma Separated Value(*.csv) | *.csv",
+                    FileName = String.Format("{0} TQDC2-Summary {1}-{2}", TQDC2File.FileName, DateTime.Now.ToString("dd.MM.yyyy_hh.mm.ss"), infixName),
+                    InitialDirectory = TQDC2File.ReadFilePath
+                };
                 dialogResult = OutFile.ShowDialog();
                 Path = OutFile.FileName;
             }));

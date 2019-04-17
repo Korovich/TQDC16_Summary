@@ -21,7 +21,7 @@ namespace TQDC16_Summary_Rev_1
         public static bool[] DChannel = new bool[16];
         public static bool[] CChannel = new bool[16];
         public static bool isAnalysis = false;
-        Color CheckBoxChColor = SystemColors.ButtonShadow;
+        readonly Color CheckBoxChColor = SystemColors.ButtonShadow;
         private void label1_Click(object sender, EventArgs e)
         {
 

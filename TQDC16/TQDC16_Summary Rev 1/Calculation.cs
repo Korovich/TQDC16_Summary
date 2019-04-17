@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using static TQDC16_Summary_Rev_1.Converters;
 using static TQDC16_Summary_Rev_1.CSV_Output;
 using static TQDC16_Summary_Rev_1.TQDC2File;
@@ -17,19 +18,20 @@ namespace TQDC16_Summary_Rev_1
 
         public static void StartCalc(BackgroundWorker ProgressBar, bool[] EnableChannel, DoWorkEventArgs e)
         {
-            Create_CSV("Вычисление"); // Создание файла CSV
+            if (Create_CSV("Вычисление") != DialogResult.OK) // Создание файла CSV
+            {
+                return;
+            }
             InitCsv();    // Инициирование экземпляров записи
-            int EvLeng = 0;          // Длина глобального Event в байтах
-            int MSLeng = 0;          // Длина блока MStream
-            int DataPLLeng = 0;      // Длина блока DataPayload
-            ulong NumEv = 0;         // Номер Event
-            //string Date = "";        // Дата 
-            long pos = 0;            // Позиция в блоке файла
-            long pospl = 0;          // Позиция в блоке DataPayload
-            long prog = 0;           // Позициця для Progress Bar
-            //ulong StartTimeStampnSec = 0;
-            ulong TimeStampnSec = 0;
-            ulong TimeStampSec = 0;
+            int EvLeng;             // Длина глобального Event в байтах
+            int MSLeng;             // Длина блока MStream
+            int DataPLLeng;         // Длина блока DataPayload
+            ulong NumEv;            // Номер Event
+            long pos = 0;           // Позиция в блоке файла
+            long pospl;             // Позиция в блоке DataPayload
+            long prog = 0;          // Позиция для Progress Bar
+            ulong TimeStampnSec;    // Время тригера сек
+            ulong TimeStampSec;     // Время ригера нсек
             var FS = new FileStream(string.Format("{0}", ReadFilePath), FileMode.Open); // Экземпляр потока чтения
             long prog_st = FS.Length / 999;  // шаг для Progress Bar 
             using (writer) // поток для записи
@@ -40,32 +42,29 @@ namespace TQDC16_Summary_Rev_1
 
                 while (pos < FS.Length) // Главный цикл (пока позиция в блоке Event меньше длины файла в байтах)
                 {
-                    BufferData buferfiledata = new BufferData();
-                    EvLeng = Byte2Int(ReadByte(pos + 4, pos + 8, FS));  //Чтение длины Event
-                    NumEv = (ulong)Byte2Int(ReadByte(pos + 8, pos + 12, FS));  // Номер Event
+                    BufferData buferfiledata = new BufferData();  // Экземпляр для хранения данных вычслений
+                    EvLeng = Byte2Int(ReadByte(pos + 4, 4, FS));  // Чтение длины Event
+                    NumEv = (ulong)Byte2Int(ReadByte(pos + 8, 4, FS));  // Номер Event
 
-                    MSLeng = Byte2Int(ReadByte(pos + 21, pos + 24, FS)) >> 2; // Чтение длины блока MStream
+                    MSLeng = Byte2Int(ReadByte(pos + 21, 3, FS)) >> 2; // Чтение длины блока MStream
 
-                    TimeStampSec = Byte2uInt(ReadByte(pos + 24, pos + 28, FS));
-                    TimeStampnSec = Byte2uInt(ReadByte(pos + 28, pos + 32, FS))>>2;
-                    buferfiledata.AddHeaderEvent(NumEv, TimeStampSec, TimeStampnSec);
-                    //TimeStampnSec = Byte2uInt(ReadByte(pos + 24, pos + 28, FS)) * (ulong)100000000000
-                    //+ Byte2uInt(ReadByte(pos + 28, pos + 32, FS)) >> 2;
-                    // TimeStampnSec -= StartTimeStampnSec;
+                    TimeStampSec = Byte2uInt(ReadByte(pos + 24, 4, FS));    // Запись время триггера сек
+                    TimeStampnSec = Byte2uInt(ReadByte(pos + 28, 4, FS))>>2;    // Запись время триггера нсек
+                    buferfiledata.AddHeaderEvent(NumEv, TimeStampSec, TimeStampnSec);  //Запись данных триггера
                     pospl = pos + 32; // присваивание поцизии в блоке MSPayload начального значения
-                    BufferData<Adc_Interface> adcbuffer = new BufferData<Adc_Interface>();
-                    BufferData<Tdc_Interface> tdcbuffer = new BufferData<Tdc_Interface>();
+                    BufferData<Adc_Interface> adcbuffer = new BufferData<Adc_Interface>(); // экземпляр данных adc в блоке event
+                    BufferData<Tdc_Interface> tdcbuffer = new BufferData<Tdc_Interface>(); // экземпляр данных tdc в блоке event
                     while (pospl != pos + EvLeng + 12) // Цикл на чтение Data Block ( пока позиция в блоке Data block не в конце блока Data block) 
                     {
-                        DataPLLeng = Byte2Int(ReadByte(pospl + 2, pospl + 4, FS)); //Чтение длины DataPayload
-                        switch ((Byte2Int(ReadByte(pospl, pospl + 1, FS))) >> 4) // Проверка типа DataPayload ( 0 TDC, 1 ADC)
+                        DataPLLeng = Byte2Int(ReadByte(pospl + 2, 2, FS)); //Чтение длины DataPayload
+                        switch ((Byte2Int(ReadByte(pospl, 1, FS))) >> 4) // Проверка типа DataPayload ( 0 TDC, 1 ADC)
                         {
                             case 0:
                                 {
                                     pospl += 4; //переход на новую строку
                                     for (int i = 0; i < DataPLLeng / 4; i++) // Чтение данных с Data Block
                                     {
-                                        switch (Byte2Int(ReadByte(pospl, pospl + 1, FS)) >> 4) // Проверка на тип Header записи TDC
+                                        switch (Byte2Int(ReadByte(pospl, 1, FS)) >> 4) // Проверка на тип Header записи TDC
                                         {
                                             case 2:
                                                 {
@@ -79,20 +78,19 @@ namespace TQDC16_Summary_Rev_1
                                                 }
                                             case 4:
                                                 {
-                                                    int ch = ((Byte2Int(ReadByte(pospl, pospl + 4, FS))) << 7) >> 28;
-                                                    if (!IsNeedChannel(ch+1)) break;
-                                                    uint value = (((Byte2uInt(ReadByte(pospl, pospl + 4, FS))) << 11) >> 11) * 25;
-                                                    tdcbuffer.Newrecord(ch, new Tdc_Interface(LEADING_FRONT, value));
-                                                    //.Add(new BufferTdc { Channel = ch, Front = LEADING_FRONT, Data = value });
+                                                    int ch = ((Byte2Int(ReadByte(pospl, 4, FS))) << 7) >> 28;                   //чтение канала данных
+                                                    if (!IsNeedChannel(ch+1)) break;                                            //проверка нужды канала
+                                                    uint value = (((Byte2uInt(ReadByte(pospl, 4, FS))) << 11) >> 11) * 25;      //чтение данных tdc
+                                                    tdcbuffer.Newrecord(ch, new Tdc_Interface(LEADING_FRONT, value));           //Запись данных в блок данных tdc
                                                     pospl += 4;
                                                     break;
                                                 }
                                             case 5:
                                                 {
-                                                    int ch = ((Byte2Int(ReadByte(pospl, pospl + 4, FS))) << 7) >> 28;
-                                                    if (!IsNeedChannel(ch+1)) break;
-                                                    uint value = (((Byte2uInt(ReadByte(pospl, pospl + 4, FS))) << 11) >> 11) * 25;
-                                                    tdcbuffer.Newrecord(ch, new Tdc_Interface(TRAILING_FRONT, value));
+                                                    int ch = ((Byte2Int(ReadByte(pospl, 4, FS))) << 7) >> 28;                   //чтение канала данных
+                                                    if (!IsNeedChannel(ch+1)) break;                                            //проверка нужды канала
+                                                    uint value = (((Byte2uInt(ReadByte(pospl, 4, FS))) << 11) >> 11) * 25;      //чтение данных tdc
+                                                    tdcbuffer.Newrecord(ch, new Tdc_Interface(TRAILING_FRONT, value));          //Запись данных в блок данных tdc
                                                     pospl += 4;
                                                     break;
                                                 }
@@ -107,8 +105,8 @@ namespace TQDC16_Summary_Rev_1
                                 }
                             case 1:
                                 {
-                                    int ch = (int)(((Byte2Int(ReadByte(pospl, pospl + 1, FS))) << 28) >> 28); // Считываемый канал данных
-                                    if (!IsNeedChannel(ch+1))
+                                    int ch = (int)(((Byte2Int(ReadByte(pospl, 1, FS))) << 28) >> 28); // Считываемый канал данных
+                                    if (!IsNeedChannel(ch+1))       //проверка нужды канала
                                     {
                                         pospl = pospl + DataPLLeng + 4;
                                         break;
@@ -119,22 +117,22 @@ namespace TQDC16_Summary_Rev_1
                                     if (pospl == apospl + DataPLLeng) { pospl += 4; break; } // Проверка на отсуствие данных в Data Block
                                     while (pospl != apospl + DataPLLeng + 4) // Цикл на чтение данных ADC (пока позиция в блоке Data Block не в конце блока ADC)
                                     {
-                                        List<int> buf = new List<int>();
-                                        uint DataLen = Byte2uInt(ReadByte(pospl, pospl + 2, FS)); //Длина в блоке ADC в байтах
+                                        List<int> buf = new List<int>();    //Массив для sample adc
+                                        uint DataLen = Byte2uInt(ReadByte(pospl, 2, FS)); //Длина в блоке ADC в байтах
                                         bool odd = false; // переменная четности количества данных ( в строках 32 байта)
-                                        ulong timestamp = Byte2uInt(ReadByte(pospl + 2, pospl + 4, FS)) * 8;
+                                        ulong timestamp = Byte2uInt(ReadByte(pospl + 2, 2, FS)) * 8; //чтение метки времени
                                         if (DataLen % 4 != 0) // проверка на нечетность 
                                         {
                                             odd = true;
                                         }
                                         for (uint i = 0; i < ((DataLen / 4) * 4 == DataLen ? (DataLen / 4) : (DataLen / 4) + 1); i++) //цикл на чтение Sample ADC
                                         {
-                                            buf.Add(Byte2Int(ReadByte(pospl, pospl + 2, FS)));
+                                            buf.Add(Byte2Int(ReadByte(pospl, 2, FS)));
                                             if (odd & i == (DataLen / 4)) // если данные нечетные и последняя строка данных, то последнее 16 битный sample не читается
                                             {
 
                                             }
-                                            else buf.Add(Byte2Int(ReadByte(pospl, pospl + 2, FS))); // Запись первого Sample в лист
+                                            else buf.Add(Byte2Int(ReadByte(pospl, 2, FS))); // Запись первого Sample в лист
                                             pospl += 4;//переход на новую строку
                                         }
                                         adcbuffer.Newrecord(ch, new Adc_Interface(buf, timestamp));// Чтение временной метки ADC в нС
@@ -144,33 +142,33 @@ namespace TQDC16_Summary_Rev_1
                                 }
                         }
                     }
-                    AddRecord(buferfiledata, tdcbuffer, adcbuffer);
-                    WriteFile(buferfiledata,writer);
-                    prog += EvLeng + 12;
-                    pos = pos + EvLeng + 12;
-                    if (prog > prog_st)
+                    AddRecord(buferfiledata, tdcbuffer, adcbuffer); // запись данных event в блок вычисленных данных
+                    WriteFile(buferfiledata,writer); //запись в файл
+                    prog += EvLeng + 12;    //Повышение позиции для Progress Bar
+                    pos = pos + EvLeng + 12;    // Запись новой позиции в файле
+                    if (prog > prog_st) // Проверка на превышение шага в позиции Progress Bar
                     {
                         prog = 0;
-                        ProgressBar.ReportProgress(1);
+                        ProgressBar.ReportProgress(1);   // Возращение прогресса в BackgroundWorker ProgressBar ( повышение строки прогресса в окне)
                     }
                 }
-                //WriteFile(buferfiledata);
             }
-            FS.Close();
-            CloseCsv();
+            e.Result = 3; //Возращение переменной для различия процесса
+            FS.Close();     //Закрытие чтение
+            CloseCsv();     //и записи
         }
 
-        static bool IsNeedChannel(int i)
+        static bool IsNeedChannel(int i) //метод проверки в надобности канала
         {
             return Form1.CChannel[i - 1];
         }
 
-        static void AddHeaderCalcData(bool[] EnableChannel)
+        static void AddHeaderCalcData(bool[] EnableChannel) //метод записи header файла
         {
-            string result = "";
+            string result;
             int n = 0;
             string[] Header = new string[5] {"TimeStampADC", "Tdc", "Max", "Min", "Integral" };
-            string[] Comment = new string[5] {"Метка времени ADC", "Время от тригера до Hit", "Максимальное значение АЦП", "Минимальное значение АЦП", "Интеграл от блока АЦП" };
+            //string[] Comment = new string[5] {"Метка времени ADC", "Время от тригера до Hit", "Максимальное значение АЦП", "Минимальное значение АЦП", "Интеграл от блока АЦП" };
             if (EnableChannel.Length != 16)
             {
                 throw new InvalidOperationException();
@@ -198,7 +196,7 @@ namespace TQDC16_Summary_Rev_1
             writer.WriteLine(result);
         }
 
-        internal class InterfClass
+        internal class InterfClass //класс хранения данных для записи
         {
             internal ulong timestamp;
             internal ulong tdc;
@@ -206,7 +204,7 @@ namespace TQDC16_Summary_Rev_1
             internal int min;
             internal double integral;
 
-            internal InterfClass ( ulong timestamp = 0, ulong tdc = 0, int max = 0, int min = 0, double integral = 0)
+            internal InterfClass ( ulong timestamp = 0, ulong tdc = 0, int max = 0, int min = 0, double integral = 0) //конструктор
             {
                 this.timestamp = timestamp;
                 this.tdc = tdc;
@@ -215,22 +213,12 @@ namespace TQDC16_Summary_Rev_1
                 this.integral = integral;
             }
 
-            internal string ReturnStringInterfClass()
+            public override string ToString()// Метод в строку
             {
                 return string.Format("{0};{1};{2};{3};{4}", this.timestamp, this.tdc, this.max, this.min, this.integral);
             }
         }
 
-        static int ReturnMaxLen(BufferData buferfiledata)
-        {
-            int result = 0;
-            foreach (List<InterfClass> list in buferfiledata)
-            {
-                result = list.Count > result ? list.Count : result;
-            }
-            buferfiledata.Reset();
-            return result;
-        }
 
         internal static double CalculationIntegral(List<int> samples)
         {
@@ -246,7 +234,7 @@ namespace TQDC16_Summary_Rev_1
         internal static void CalculationMMI(BufferData buferfiledata , List<int> data, ulong tdc, ulong timestamp, int channel)
         {
             int[] result = new int[2] { 0, 2147483647 }; //max min 
-            double integral = 0;
+            double integral;
             for (int i = 0; i < data.Count; i++)
             {
                 if (data[i] > result[0]) { result[0] = data[i]; }//max
@@ -254,11 +242,6 @@ namespace TQDC16_Summary_Rev_1
             }
             integral = CalculationIntegral(data);//integral                                                                                           
             buferfiledata[channel].Add(new InterfClass { timestamp = timestamp, tdc = tdc, max = result[0], min = result[1], integral = integral });
-        }
-        
-        internal static void WriteHeaderEvent(BufferData buferfiledata)
-        {
-
         }
 
         internal static void AddRecord(BufferData buferfiledata, BufferData<Tdc_Interface> buffertdc, BufferData<Adc_Interface> bufferadc)
@@ -294,7 +277,7 @@ namespace TQDC16_Summary_Rev_1
         
         internal static void WriteFile(BufferData buferfiledata, StreamWriter writer)
         {
-            int max = ReturnMaxLen(buferfiledata);
+            int max = buferfiledata.MaxLen();
             buferfiledata.WriteStringHeaderEvent(writer);
             for (int i = 0; i < max; i++)
             {
@@ -306,7 +289,7 @@ namespace TQDC16_Summary_Rev_1
                        if (buferfiledata.position !=0)  writer.Write(";");
                         if (i < Item.Count)
                         {
-                            writer.Write(Item[i].ReturnStringInterfClass());
+                            writer.Write(Item[i].ToString());
                         }
                         else writer.Write(";;;;");
                     }
@@ -343,7 +326,7 @@ namespace TQDC16_Summary_Rev_1
 
         internal class BufferData<T>
         {
-            private List<T>[] buffer;
+            private readonly List<T>[] buffer;
 
             internal BufferData ()
             {
@@ -413,6 +396,16 @@ namespace TQDC16_Summary_Rev_1
                 this.numEvent = numEvent;
                 this.timeStampSec = timeStampSec;
                 this.timeStampnSec = timeStampnSec;
+            }
+
+            internal int MaxLen() //метод возврата максимальной длины
+            {
+                int result = 0;
+                for (int i=0;i<16;i++)
+                {
+                    result = this[i].Count > result ? this[i].Count : result;
+                }
+                return result;
             }
 
             internal void WriteStringHeaderEvent (StreamWriter writer)

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.BitConverter;
 
 namespace TQDC16_Summary_Rev_1
 {
@@ -30,21 +31,70 @@ namespace TQDC16_Summary_Rev_1
         }
         public static int Byte2Int(byte[] iByte)
         {
-            int OutI = 0;
-            for (int i=0;i<iByte.Length;i++)
+            if (iByte.Count() != 4)
             {
-                OutI += iByte[i] << ((iByte.Length-i-1) * 8);
+                switch (iByte.Count())
+                {
+                    case 3:
+                        {
+                            iByte = new byte[4] {0,iByte[0], iByte[1], iByte[2]};
+                            break;
+                        }
+                    case 2:
+                        {
+                            iByte = new byte[4] { 0, 0, iByte[0], iByte[1] };
+                            break;
+                        }
+                    case 1:
+                        {
+                            iByte = new byte[4] { 0, 0, 0, iByte[0] };
+                            break;
+                        }
+                    case 0:
+                        {
+                            throw new InvalidOperationException();
+                        }
+
+                }
             }
-            return OutI;
+            Array.Reverse(iByte);
+            return BitConverter.ToInt32(iByte,0);
+        }
+        public static int Byte2Int16(byte[] iByte)
+        {
+
+            return BitConverter.ToInt16(iByte, 0);
         }
         public static uint Byte2uInt(byte[] iByte)
         {
-            uint OutI = 0;
-            for (uint i = 0; i < iByte.Length; i++)
+            if (iByte.Count() != 4)
             {
-                OutI += (uint)iByte[i] << (int)(((uint)iByte.Length - i - 1) * 8);
+                switch (iByte.Count())
+                {
+                    case 3:
+                        {
+                            iByte = new byte[4] { 0, iByte[0], iByte[1], iByte[2] };
+                            break;
+                        }
+                    case 2:
+                        {
+                            iByte = new byte[4] { 0, 0, iByte[0], iByte[1] };
+                            break;
+                        }
+                    case 1:
+                        {
+                            iByte = new byte[4] { 0, 0, 0, iByte[0] };
+                            break;
+                        }
+                    case 0:
+                        {
+                            throw new InvalidOperationException();
+                        }
+
+                }
             }
-            return OutI;
+            Array.Reverse(iByte);
+            return BitConverter.ToUInt32(iByte,0);
         }
 
         public static DateTime UnixTimeStampToDateTime(uint unixTimeStamp)

@@ -41,13 +41,13 @@ namespace TQDC16_Summary_Rev_1
                 csv.NextRecord();                    //
                 while (pos < FS.Length) // Главный цикл (пока позиция в блоке Event меньше длины файла в байтах)
                 {
-                    EvLeng = Byte2Int(ReadByte(pos + 4, 4, FS));  //Чтение длины Event
-                    NumEv = (ulong)Byte2Int(ReadByte(pos + 8, 4, FS));  // Номер Event
+                    EvLeng = Byte2Int(ReadBytes(pos + 4, 4, FS));  //Чтение длины Event
+                    NumEv = (ulong)Byte2Int(ReadBytes(pos + 8, 4, FS));  // Номер Event
                     Record_Clear(); // очистка данных
                     AddData(EVENT, NumEv.ToString()); // Добавление номера Event в блок данных
-                    MSLeng = Byte2Int(ReadByte(pos + 21, 3, FS)) >> 2; // Чтение длины блока MStream
-                    Date = UnixTimeStampToDateTime(Byte2uInt(ReadByte(pos + 24, 4, FS))).ToString(); // Чтение даты и времени глобального Event  и конвертация из unix в стандратный вид
-                    Date += ":" + (Byte2uInt(ReadByte(pos + 28, 4, FS)) >> 2).ToString(); // добавление к дате времени в нс
+                    MSLeng = Byte2Int(ReadBytes(pos + 21, 3, FS)) >> 2; // Чтение длины блока MStream
+                    Date = UnixTimeStampToDateTime(Byte2uInt(ReadBytes(pos + 24, 4, FS))).ToString(); // Чтение даты и времени глобального Event  и конвертация из unix в стандратный вид
+                    Date += ":" + (Byte2uInt(ReadBytes(pos + 28, 4, FS)) >> 2).ToString(); // добавление к дате времени в нс
                     AddData(TIMESTAMP, Date); // Добавление временной метки Event в блок данных
                     csv.WriteRecord(data); //запись блока данных в файл 
                     Record_Clear(); //Очистка блока данных
@@ -55,20 +55,20 @@ namespace TQDC16_Summary_Rev_1
                     pospl = pos + 32; // присваивание поцизии в блоке MSPayload начального значения
                     while (pospl != pos + EvLeng + 12) // Цикл на чтение Data Block ( пока позиция в блоке Data block не в конце блока Data block) 
                     {
-                        DataPLLeng = Byte2Int(ReadByte(pospl + 2, 2, FS)); //Чтение длины DataPayload
-                        switch ((Byte2Int(ReadByte(pospl, 1, FS))) >> 4) // Проверка типа DataPayload ( 0 TDC, 1 ADC)
+                        DataPLLeng = Byte2Int(ReadBytes(pospl + 2, 2, FS)); //Чтение длины DataPayload
+                        switch ((Byte2Int(ReadBytes(pospl, 1, FS))) >> 4) // Проверка типа DataPayload ( 0 TDC, 1 ADC)
                         {
                             case 0: //TDC
                                 {
                                     pospl += 4; //переход на новую строку
                                     for (int i = 0; i < DataPLLeng / 4; i++) // Чтение данных с Data Block
                                     {
-                                        switch (Byte2Int(ReadByte(pospl, 1, FS)) >> 4) // Проверка на тип Header записи TDC
+                                        switch (Byte2Int(ReadBytes(pospl, 1, FS)) >> 4) // Проверка на тип Header записи TDC
                                         {
                                             case 2: //TDC event header
                                                 {
                                                     Record_Clear();
-                                                    uint TimeStamp = ((Byte2uInt(ReadByte(pospl + 2, 2, FS)) << 4) >> 4) * 25; // Чтение временной метки TDC
+                                                    uint TimeStamp = ((Byte2uInt(ReadBytes(pospl + 2, 2, FS)) << 4) >> 4) * 25; // Чтение временной метки TDC
                                                     AddData(TIMESTAMP, TimeStamp.ToString());  // Добавление временной метки в блок данных
                                                     pospl += 4; //переход на новую строку
                                                     break;
@@ -80,13 +80,13 @@ namespace TQDC16_Summary_Rev_1
                                                 }
                                             case 4: //TDC data, leading edge
                                                 {
-                                                    uint ch = (((Byte2uInt(ReadByte(pospl, 4, FS))) << 7) >> 28)+1; // Считываемый канал данных
+                                                    uint ch = (((Byte2uInt(ReadBytes(pospl, 4, FS))) << 7) >> 28)+1; // Считываемый канал данных
                                                     if (!IsNeedChannel(ch)) //проверка на нужду записанного канала
                                                     {
                                                         pospl += 4;
                                                         break;
                                                     }
-                                                    uint value = (((Byte2uInt(ReadByte(pospl, 4, FS))) << 11) >> 11) * 25; // Значение TDC с канала #ch
+                                                    uint value = (((Byte2uInt(ReadBytes(pospl, 4, FS))) << 11) >> 11) * 25; // Значение TDC с канала #ch
                                                     AddData(CHANNEL, ch.ToString());             //Добавление канала, данных,
                                                     AddData(DATA, value.ToString());             //и типа данных в блок данных
                                                     AddData(TYPE_DATA, TDC);                     //
@@ -97,13 +97,13 @@ namespace TQDC16_Summary_Rev_1
                                                 }
                                             case 5: //TDC data, trailing edge
                                                 {
-                                                    uint ch = (((Byte2uInt(ReadByte(pospl, 4, FS))) << 7) >> 28)+1;// Считываемый канал данных
+                                                    uint ch = (((Byte2uInt(ReadBytes(pospl, 4, FS))) << 7) >> 28)+1;// Считываемый канал данных
                                                     if (!IsNeedChannel(ch)) //проверка на нужду записанного канала
                                                     {
                                                         pospl += 4;
                                                         break;
                                                     }
-                                                    uint value = (((Byte2uInt(ReadByte(pospl, 4, FS))) << 11) >> 11) *25;// Значение TDC с канала #ch
+                                                    uint value = (((Byte2uInt(ReadBytes(pospl, 4, FS))) << 11) >> 11) *25;// Значение TDC с канала #ch
                                                     AddData(CHANNEL, ch.ToString());        //Добавление канала, данных,
                                                     AddData(DATA, value.ToString());        //и типа данных в блок данных
                                                     AddData(TYPE_DATA, TDC);                //
@@ -124,7 +124,7 @@ namespace TQDC16_Summary_Rev_1
                                 }
                             case 1: //ADC
                                 {
-                                    uint ch = (((Byte2uInt(ReadByte(pospl, 1, FS))) << 28) >> 28)+1; // Считываемый канал данных
+                                    uint ch = (((Byte2uInt(ReadBytes(pospl, 1, FS))) << 28) >> 28)+1; // Считываемый канал данных
                                     if (!IsNeedChannel(ch))
                                     {
                                         pospl = pospl + DataPLLeng + 4;
@@ -137,25 +137,25 @@ namespace TQDC16_Summary_Rev_1
                                     while (pospl != apospl + DataPLLeng + 4) // Цикл на чтение данных ADC (пока позиция в блоке Data Block не в конце блока ADC)
                                     {
                                         string Databuf = ""; // Буфер для данных ADC
-                                        uint DataLen = Byte2uInt(ReadByte(pospl, 2, FS)); //Длина в блоке ADC в байтах
+                                        uint DataLen = Byte2uInt(ReadBytes(pospl, 2, FS)); //Длина в блоке ADC в байтах
                                         bool odd = false; // переменная четности количества данных ( в строках 32 байта)
                                         if (DataLen % 4 !=0) // проверка на нечетность 
                                         {
                                             odd = true;
                                         }
-                                        uint Timestamp = Byte2uInt(ReadByte(pospl + 2, 2, FS))*8; // Чтение временной метки ADC
+                                        uint Timestamp = Byte2uInt(ReadBytes(pospl + 2, 2, FS))*8; // Чтение временной метки ADC
                                         AddData(TIMESTAMP, Timestamp.ToString()); // Добавление временной метки в блок данных
                                         AddData(CHANNEL, ch.ToString()); //Запись канала в блок данных
                                         pospl += 4; //переход на новую строку
                                         for (uint i = 0; i < ((DataLen / 4) * 4 == DataLen ? (DataLen / 4) : (DataLen / 4) + 1); i++) //цикл на чтение Sample ADC
                                         {
-                                            Databuf += Byte2uInt(ReadByte(pospl, 2, FS)).ToString() + ";"; // Запись первого Sample в строку
+                                            Databuf += Byte2uInt(ReadBytes(pospl, 2, FS)).ToString() + ";"; // Запись первого Sample в строку
                                             if (odd & i == (DataLen / 4)) // если данные нечетные и последняя строка данных, то последнее 16 битный sample не читается
                                             {
 
                                             }
                                             else
-                                            Databuf += Byte2uInt(ReadByte(pospl + 2, 2, FS)).ToString();  // Запись второго Sample в строку
+                                            Databuf += Byte2uInt(ReadBytes(pospl + 2, 2, FS)).ToString();  // Запись второго Sample в строку
                                             Databuf += i != (DataLen / 4) - 1 ? ";" : ""; // запись разделителя в строку ( при последнем слове разделитель не добавляется)
                                             pospl += 4;//переход на новую строку
                                         }

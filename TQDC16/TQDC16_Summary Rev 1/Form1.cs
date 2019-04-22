@@ -22,6 +22,7 @@ namespace TQDC16_Summary_Rev_1
         public static bool[] CChannel = new bool[16];
         public static bool isAnalysis = false;
         readonly Color CheckBoxChColor = SystemColors.ButtonShadow;
+        TQDC2File.OpenResult result;
         private void label1_Click(object sender, EventArgs e)
         {
 
@@ -54,9 +55,8 @@ namespace TQDC16_Summary_Rev_1
 
         private void StartAnalys_Click(object sender, EventArgs e)
         {
-            int Type = 2;
             if (BackGrWorkProgressBar.IsBusy != true)
-                BackGrWorkProgressBar.RunWorkerAsync(Type);
+                BackGrWorkProgressBar.RunWorkerAsync(new BackGroundWorkerTask(2, result.Format));
         }
 
         private void label3_Click(object sender, EventArgs e)
@@ -71,9 +71,8 @@ namespace TQDC16_Summary_Rev_1
 
         private void StartWrite_Click(object sender, EventArgs e)
         {
-            int Type = 3;
             if (BackGrWorkProgressBar.IsBusy != true)
-                BackGrWorkProgressBar.RunWorkerAsync(Type);
+                BackGrWorkProgressBar.RunWorkerAsync(new BackGroundWorkerTask(3, result.Format));
             OpenFileBtn.Enabled = false;
             StartDecoder.Enabled = false;
             StartWrite.Enabled = false;
@@ -81,28 +80,69 @@ namespace TQDC16_Summary_Rev_1
 
         private void BackGrWorkProgressBar_DoWork(object sender, DoWorkEventArgs e)
         {
-            var Type = e.Argument;
-            switch (Type)
+            BackGroundWorkerTask Task;
+            if (e.Argument is BackGroundWorkerTask)
+            {
+                Task = e.Argument as BackGroundWorkerTask;
+                
+            }
+            else { throw new InvalidOperationException(); }
+            switch (Task.Type)
             {
                 case 1:
                     {
-                        Decoder.StartDecoding(BackGrWorkProgressBar,e);
+                        switch (Task.Format)
+                        {
+                            case "txt":
+                                {
+                                    Decoder.StartDecodingText(BackGrWorkProgressBar, e);
+                                    break;
+                                }
+                            case "dat":
+                                {
+                                    Decoder.StartDecodingBinary(BackGrWorkProgressBar, e);
+                                    break;
+                                }
+                        }
                         break;
                     }
                 case 2:
                     {
-                        AnalysisFile.AnChannel(BackGrWorkProgressBar, e);
+                        switch (Task.Format)
+                        {
+                            case "txt":
+                                {
+                                    AnalysisFile.AnChannelText(BackGrWorkProgressBar, e);
+                                    break;
+                                }
+                            case "dat":
+                                {
+                                    AnalysisFile.AnChannelBinary(BackGrWorkProgressBar, e);
+                                    break;
+                                }
+                        }
                         break;
                     }
                 case 3:
                     {
-                        Calculation.StartCalc(BackGrWorkProgressBar, AnalysisFile.Channel, e);
-                        //OutSummaryFile.StartSummary(BackGrWorkProgressBar,e);
+                        switch(Task.Format)
+                        {
+                            case "txt":
+                                {
+                                    Calculation.StartCalcText(BackGrWorkProgressBar, AnalysisFile.Channel, e);
+                                    break;
+                                }
+                            case "dat":
+                                {
+                                    Calculation.StartCalcBinary(BackGrWorkProgressBar, AnalysisFile.Channel, e);
+                                    break;
+                                }
+                        }
                         break;
                     }
                 default:
                     {
-                        MessageBox.Show(Type.ToString(), "Ошибка", MessageBoxButtons.RetryCancel);
+                        MessageBox.Show(Task.Type.ToString(), "Ошибка", MessageBoxButtons.RetryCancel);
                         break;
                     }
             }
@@ -268,9 +308,8 @@ namespace TQDC16_Summary_Rev_1
 
         private void StartDecoder_Click(object sender, EventArgs e)
         {
-            int Type = 1;
             if (BackGrWorkProgressBar.IsBusy != true)
-                BackGrWorkProgressBar.RunWorkerAsync(Type);
+                BackGrWorkProgressBar.RunWorkerAsync(new BackGroundWorkerTask(1,result.Format));
             OpenFileBtn.Enabled = false;
             StartDecoder.Enabled = false;
             StartWrite.Enabled = false;
@@ -444,21 +483,31 @@ namespace TQDC16_Summary_Rev_1
 
         private void OpenFileBtn_Click(object sender, EventArgs e)
         {
-            TQDC2File.OpenResult result = TQDC2File.Open_File();
+            result = TQDC2File.Open_File();
             if (result.Selected)
             {
-                int Type = 2;
                 if (BackGrWorkProgressBar.IsBusy != true)
                 {
                     OpenFileBtn.Enabled = false;
                     StartDecoder.Enabled = false;
                     StartWrite.Enabled = false;
-                    BackGrWorkProgressBar.RunWorkerAsync(Type);
+                    BackGrWorkProgressBar.RunWorkerAsync(new BackGroundWorkerTask(2,result.Format));
                 }
                 IDText.Text = result.ID;
                 SerialText.Text = result.Serial;
             }
 
+        }
+        public class BackGroundWorkerTask
+        {
+            public int Type {  get; set; }
+            public string Format { get; set; }
+
+            public BackGroundWorkerTask(int type, string format)
+            {
+                Type = type;
+                Format = format;
+            }
         }
     }
 }

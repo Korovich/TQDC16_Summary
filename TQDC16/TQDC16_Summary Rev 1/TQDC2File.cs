@@ -54,6 +54,8 @@ namespace TQDC16_Summary_Rev_1
                         FileLen = FSD.Length;
                         openresult.Serial = Converters.Byte2Str(ReadBytes(12, 4, FSD));
                         openresult.ID = Converters.Id2Str(ReadBytes(16, 1, FSD)[0]);
+                        openresult.Format = String.Format("{0},",TQDC_DATA.SafeFileName);
+                        openresult.Format = openresult.Format.Substring(openresult.Format.LastIndexOf('.') + 1, 3);
                         FSD.Close();
                         break;
                     }
@@ -79,25 +81,10 @@ namespace TQDC16_Summary_Rev_1
             {
                 public string Serial { get; set; } = "";
                 public string ID { get; set; } = "";
+                public string Format { get; set; } = "";
                 public Boolean Selected { get; set; } = false;
             }
 
-        /*
-        public static byte ReadByte(long x, long y, FileStream FS)
-        {
-            y += x;
-            if ((x > y) | (((x / 4) * 4) + 4 < y))
-            {
-                MessageBox.Show(String.Format("x-{0}:y-{1}", x, y), "Ошибка", MessageBoxButtons.RetryCancel);
-                throw new InvalidOperationException();
-            }
-
-            byte[] Ibuf = new byte[4];
-            FS.Position = (x / 4) * 4;
-            FS.Read(Ibuf, 0, 4);
-            Array.Reverse(Ibuf);
-            return cpB2B(Ibuf, (int)(x % 4), (int)(x % 4 + y - x));
-        }*/
         public static byte[] ReadBytes (long x,long y,FileStream FS)
         {
             y += x;

@@ -11,7 +11,7 @@ namespace TQDC16_Summary_Rev_1
     class Decoder
     {
         static readonly DecData data = new DecData(); //Файл хранения выводимых данных
-        public static void StartDecoding(BackgroundWorker ProgressBar, DoWorkEventArgs e) //функция декодирования (1 - экземпляр класса BGW, в котором была запущена функция
+        public static void StartDecodingBinary(BackgroundWorker ProgressBar, DoWorkEventArgs e) //функция декодирования (1 - экземпляр класса BGW, в котором была запущена функция
         {                                                                                 // 2 - аргумент для хранения результата BGW
             if (Create_CSV("Декодер") != DialogResult.OK) // Создание файла CSV проверка на отмену)
             {
@@ -149,13 +149,13 @@ namespace TQDC16_Summary_Rev_1
                                         pospl += 4; //переход на новую строку
                                         for (uint i = 0; i < ((DataLen / 4) * 4 == DataLen ? (DataLen / 4) : (DataLen / 4) + 1); i++) //цикл на чтение Sample ADC
                                         {
-                                            Databuf += Byte2uInt(ReadBytes(pospl, 2, FS)).ToString() + ";"; // Запись первого Sample в строку
+                                            Databuf += Byte2Sample(ReadBytes(pospl, 2, FS)).ToString() + ";"; // Запись первого Sample в строку
                                             if (odd & i == (DataLen / 4)) // если данные нечетные и последняя строка данных, то последнее 16 битный sample не читается
                                             {
 
                                             }
                                             else
-                                            Databuf += Byte2uInt(ReadBytes(pospl + 2, 2, FS)).ToString();  // Запись второго Sample в строку
+                                            Databuf += Byte2Sample(ReadBytes(pospl + 2, 2, FS)).ToString();  // Запись второго Sample в строку
                                             Databuf += i != (DataLen / 4) - 1 ? ";" : ""; // запись разделителя в строку ( при последнем слове разделитель не добавляется)
                                             pospl += 4;//переход на новую строку
                                         }
@@ -183,6 +183,11 @@ namespace TQDC16_Summary_Rev_1
             e.Result = 1; //Возращение переменной для различия процесса
             CSV_Output.CloseCsv(); // закрытие потока записи
             FS.Close(); // закрытие потока чтения
+        }
+
+        public static void StartDecodingText(BackgroundWorker ProgressBar, DoWorkEventArgs e)
+        {
+
         }
 
         public static byte EVENT { get; } = 1;          //Константы 

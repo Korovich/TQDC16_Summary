@@ -29,6 +29,13 @@ namespace TQDC16_Summary_Rev_1
             }
             return null;
         }
+
+        public static int Byte2Sample(byte[] iByte)
+        {
+            Array.Reverse(iByte);
+            return (int)ToInt16(iByte, 0);
+        }
+
         public static int Byte2Int(byte[] iByte)
         {
             if (iByte.Count() != 4)

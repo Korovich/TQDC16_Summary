@@ -17,7 +17,7 @@ namespace TQDC16_Summary_Rev_1
         public static bool[] Channel = new bool[16] ;
         public static int NumEv = 0;
         public static int NumCh = 0;
-        public static void AnChannel(BackgroundWorker ProgressBar, DoWorkEventArgs e)
+        public static void AnChannelBinary(BackgroundWorker ProgressBar, DoWorkEventArgs e)
         {
             int EvLeng;
             int PLLeng;
@@ -79,6 +79,10 @@ namespace TQDC16_Summary_Rev_1
             }
             e.Result = 2; //Возращение переменной для различия процесса
             FS.Close();
+        }
+        public static void AnChannelText(BackgroundWorker ProgressBar, DoWorkEventArgs e)
+        {
+
         }
     }
 }

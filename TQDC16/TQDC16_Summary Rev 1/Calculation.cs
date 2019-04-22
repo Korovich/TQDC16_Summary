@@ -16,7 +16,7 @@ namespace TQDC16_Summary_Rev_1
     class Calculation
     {
 
-        public static void StartCalc(BackgroundWorker ProgressBar, bool[] EnableChannel, DoWorkEventArgs e)
+        public static void StartCalcBinary(BackgroundWorker ProgressBar, bool[] EnableChannel, DoWorkEventArgs e)
         {
             if (Create_CSV("Вычисление") != DialogResult.OK) // Создание файла CSV
             {
@@ -121,22 +121,23 @@ namespace TQDC16_Summary_Rev_1
                                         uint DataLen = Byte2uInt(ReadBytes(pospl, 2, FS)); //Длина в блоке ADC в байтах
                                         bool odd = false; // переменная четности количества данных ( в строках 32 байта)
                                         ulong timestamp = Byte2uInt(ReadBytes(pospl + 2, 2, FS)) * 8; //чтение метки времени
+                                        pospl += 4;
                                         if (DataLen % 4 != 0) // проверка на нечетность 
                                         {
                                             odd = true;
                                         }
                                         for (uint i = 0; i < ((DataLen / 4) * 4 == DataLen ? (DataLen / 4) : (DataLen / 4) + 1); i++) //цикл на чтение Sample ADC
                                         {
-                                            buf.Add(Byte2Int(ReadBytes(pospl, 2, FS)));
+                                            buf.Add(Byte2Sample(ReadBytes(pospl, 2, FS)));
                                             if (odd & i == (DataLen / 4)) // если данные нечетные и последняя строка данных, то последнее 16 битный sample не читается
                                             {
 
                                             }
-                                            else buf.Add(Byte2Int(ReadBytes(pospl, 2, FS))); // Запись первого Sample в лист
+                                            else buf.Add(Byte2Sample(ReadBytes(pospl, 2, FS))); // Запись первого Sample в лист
                                             pospl += 4;//переход на новую строку
                                         }
                                         adcbuffer.Newrecord(ch, new Adc_Interface(buf, timestamp));// Чтение временной метки ADC в нС
-                                        pospl += 4; //переход на новую строку
+                                        //pospl += 4; //переход на новую строку
                                     }
                                     break;
                                 }
@@ -156,6 +157,11 @@ namespace TQDC16_Summary_Rev_1
             e.Result = 3; //Возращение переменной для различия процесса
             FS.Close();     //Закрытие чтение
             CloseCsv();     //и записи
+        }
+
+        public static void StartCalcText(BackgroundWorker ProgressBar, bool[] EnableChannel, DoWorkEventArgs e)
+        {
+
         }
 
         static bool IsNeedChannel(int i) //метод проверки в надобности канала
@@ -234,9 +240,9 @@ namespace TQDC16_Summary_Rev_1
         //Метод вычисления статистики из данных(мин макс интеграл)
         internal static void CalculationMMI(BufferData buferfiledata , List<int> data, ulong tdc, ulong timestamp, int channel)
         {
-            int[] result = new int[2] { 0, 2147483647 }; //max min 
+            int[] result = new int[2] { data[0], data[0] }; //max min 
             double integral;
-            for (int i = 0; i < data.Count; i++)
+            for (int i = 1; i < data.Count; i++)
             {
                 if (data[i] > result[0]) { result[0] = data[i]; }//max
                 if (data[i] < result[1]) { result[1] = data[i]; }//min
@@ -282,14 +288,25 @@ namespace TQDC16_Summary_Rev_1
         {
             int max = buferfiledata.MaxLen();
             buferfiledata.WriteStringHeaderEvent(writer);
-            for (int i = 0; i < max; i++)
+            if (max == 0)
             {
-                writer.Write(";;");
                 foreach (List<InterfClass> Item in buferfiledata)
                 {
                     if (IsNeedChannel(buferfiledata.position + 1))
                     {
-                       if (buferfiledata.position !=0)  writer.Write(";");
+                        writer.Write(";;;;");
+                    }
+                }
+                writer.WriteLine();
+
+            }
+            for (int i = 0; i < max; i++)
+            {
+                foreach (List<InterfClass> Item in buferfiledata)
+                {
+                    if (IsNeedChannel(buferfiledata.position + 1))
+                    {
+                        writer.Write(";");
                         if (i < Item.Count)
                         {
                             writer.Write(Item[i].ToString());
@@ -414,12 +431,12 @@ namespace TQDC16_Summary_Rev_1
             internal void WriteStringHeaderEvent (StreamWriter writer)
             {
                 writer.Write(string.Format("{0};{1}", numEvent, timeStampSec.ToString() + "|" + timeStampnSec.ToString()));
-                for (int i=1;i<17;i++)
-                {
-                    if (IsNeedChannel(i))
-                        writer.Write(";;;;;;");
-                }
-                writer.WriteLine();
+                //for (int i=1;i<17;i++)
+                //{
+                    //if (IsNeedChannel(i))
+                        //writer.Write(";;;;;;");
+                //}
+                //writer.WriteLine();
             }
 
             internal BufferData(ulong numEvent = 0, ulong timeStampSec = 0, ulong timeStampnSec = 0, int position = -1)

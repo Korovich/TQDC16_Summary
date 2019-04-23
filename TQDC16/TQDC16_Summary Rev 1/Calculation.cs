@@ -32,14 +32,14 @@ namespace TQDC16_Summary_Rev_1
             long prog = 0;          // Позиция для Progress Bar
             ulong TimeStampnSec;    // Время тригера сек
             ulong TimeStampSec;     // Время ригера нсек
+            ulong StartTimeStampnSec;    // Время тригера сек
             var FS = new FileStream(string.Format("{0}", ReadFilePath), FileMode.Open); // Экземпляр потока чтения
             long prog_st = FS.Length / 999;  // шаг для Progress Bar 
             using (writer) // поток для записи
             using (csv)    // поток для записи #csvhelper
             {
                 AddHeaderCalcData(EnableChannel);// Запись загаловка файл
-                //StartTimeStampnSec = Byte2uInt(ReadByte(28, 32, FS)) >> 2;
-
+                StartTimeStampnSec = ((ulong)Byte2uInt(ReadBytes(24, 4, FS)) * 1000000000) + (ulong)(Byte2uInt(ReadBytes(28, 4, FS)) >> 2);    // Запись время триггера нсек
                 while (pos < FS.Length) // Главный цикл (пока позиция в блоке Event меньше длины файла в байтах)
                 {
                     BufferData buferfiledata = new BufferData();  // Экземпляр для хранения данных вычислений
@@ -144,7 +144,7 @@ namespace TQDC16_Summary_Rev_1
                         }
                     }
                     AddRecord(buferfiledata, tdcbuffer, adcbuffer); // запись данных event в блок вычисленных данных
-                    WriteFile(buferfiledata,writer); //запись в файл
+                    WriteFile(buferfiledata,writer, StartTimeStampnSec); //запись в файл
                     prog += EvLeng + 12;    //Повышение позиции для Progress Bar
                     pos = pos + EvLeng + 12;    // Запись новой позиции в файле
                     if (prog > prog_st) // Проверка на превышение шага в позиции Progress Bar
@@ -196,7 +196,7 @@ namespace TQDC16_Summary_Rev_1
             result = "№;Сек:нСек;";
             for (int i = 0; i < n; i++)
             {
-                result += "Время;нСек;В;В;В;";  //Запись unit
+                result += "нСек;пСек;В;В;В;";  //Запись unit
             }
             result = result.Remove(result.Length - 1);
             writer.WriteLine(result);
@@ -284,12 +284,12 @@ namespace TQDC16_Summary_Rev_1
             }
         }
         
-        internal static void WriteFile(BufferData buferfiledata, StreamWriter writer) //Метод записи данных в файл
+        internal static void WriteFile(BufferData buferfiledata, StreamWriter writer, ulong starttimestamp) //Метод записи данных в файл
         {
             int max = buferfiledata.MaxLen();
-            buferfiledata.WriteStringHeaderEvent(writer);
             if (max == 0)
             {
+                buferfiledata.WriteStringHeaderEvent(writer, starttimestamp);
                 foreach (List<InterfClass> Item in buferfiledata)
                 {
                     if (IsNeedChannel(buferfiledata.position + 1))
@@ -298,10 +298,11 @@ namespace TQDC16_Summary_Rev_1
                     }
                 }
                 writer.WriteLine();
-
+                return;
             }
             for (int i = 0; i < max; i++)
             {
+                buferfiledata.WriteStringHeaderEvent(writer, starttimestamp);
                 foreach (List<InterfClass> Item in buferfiledata)
                 {
                     if (IsNeedChannel(buferfiledata.position + 1))
@@ -428,15 +429,11 @@ namespace TQDC16_Summary_Rev_1
                 return result;
             }
 
-            internal void WriteStringHeaderEvent (StreamWriter writer)
+            internal void WriteStringHeaderEvent (StreamWriter writer, ulong starttimestamp)
             {
-                writer.Write(string.Format("{0};{1}", numEvent, timeStampSec.ToString() + "|" + timeStampnSec.ToString()));
-                //for (int i=1;i<17;i++)
-                //{
-                    //if (IsNeedChannel(i))
-                        //writer.Write(";;;;;;");
-                //}
-                //writer.WriteLine();
+                ulong timestamp = ((ulong)timeStampSec * 1000000000) + (ulong)timeStampnSec;
+                timestamp -= starttimestamp;
+                writer.Write(string.Format("{0};{1}", numEvent, timestamp));
             }
 
             internal BufferData(ulong numEvent = 0, ulong timeStampSec = 0, ulong timeStampnSec = 0, int position = -1)

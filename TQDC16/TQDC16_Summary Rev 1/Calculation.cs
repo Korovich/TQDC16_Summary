@@ -36,7 +36,6 @@ namespace TQDC16_Summary_Rev_1
             var FS = new FileStream(string.Format("{0}", ReadFilePath), FileMode.Open); // Экземпляр потока чтения
             long prog_st = FS.Length / 999;  // шаг для Progress Bar 
             using (writer) // поток для записи
-            using (csv)    // поток для записи #csvhelper
             {
                 AddHeaderCalcData(EnableChannel);// Запись загаловка файл
                 StartTimeStampnSec = ((ulong)Byte2uInt(ReadBytes(24, 4, FS)) * 1000000000) + (ulong)(Byte2uInt(ReadBytes(28, 4, FS)) >> 2);    // Запись время триггера нсек
@@ -128,12 +127,12 @@ namespace TQDC16_Summary_Rev_1
                                         }
                                         for (uint i = 0; i < ((DataLen / 4) * 4 == DataLen ? (DataLen / 4) : (DataLen / 4) + 1); i++) //цикл на чтение Sample ADC
                                         {
-                                            buf.Add(Byte2Sample(ReadBytes(pospl + 2, 2, FS))); // Запись первого Sample в лист
+                                            buf.Add(Byte2Sample(ReadBytes(pospl + 2, 2, FS)) - (int)TQDC2Configs.x1[ch]); // Запись первого Sample в лист
                                             if (odd & i == (DataLen / 4)) // если данные нечетные и последняя строка данных, то последнее 16 битный sample не читается
                                             {
 
                                             }
-                                            else buf.Add(Byte2Sample(ReadBytes(pospl, 2, FS))); // Запись второго Sample в лист
+                                            else buf.Add(Byte2Sample(ReadBytes(pospl, 2, FS)) - (int)TQDC2Configs.x1[ch]); // Запись второго Sample в лист
                                             pospl += 4;//переход на новую строку
                                         }
                                         adcbuffer.Newrecord(ch, new Adc_Interface(buf, timestamp));// Чтение временной метки ADC в нС
@@ -161,7 +160,30 @@ namespace TQDC16_Summary_Rev_1
 
         public static void StartCalcText(BackgroundWorker ProgressBar, bool[] EnableChannel, DoWorkEventArgs e)
         {
-
+            ulong numEv;
+            ulong timeStampnSec;    // Время тригера сек
+            ulong timeStampSec;     // Время ригера нсек
+            ulong startTimeStampnSec;    // Время тригера сек
+            var fs = new FileStream(string.Format("{0}", ReadFilePath), FileMode.Open); // Экземпляр потока чтения
+            var fsr = new StreamReader(fs);
+            string readerLine = "";
+            long prog_st = fs.Length / 999;  // шаг для Progress Bar 
+            using (writer) // поток для записи
+            {
+                while (true)
+                {
+                    readerLine = fsr.ReadLine();
+                    try
+                    {
+                        readerLine = readerLine.Substring(readerLine.LastIndexOf("Ev: "));
+                    }
+                    catch
+                    {
+                        MessageBox.Show(readerLine, "Ошибка", MessageBoxButtons.RetryCancel);
+                    }
+                    BufferData buferfiledata = new BufferData();  // Экземпляр для хранения данных вычислений
+                }
+            }
         }
 
         static bool IsNeedChannel(int i) //метод проверки в надобности канала

@@ -509,5 +509,10 @@ namespace TQDC16_Summary_Rev_1
                 Format = format;
             }
         }
+
+        private void ReadConfigFile_Click(object sender, EventArgs e)
+        {
+            TQDC2Configs.ReadConfigFile();
+        }
     }
 }

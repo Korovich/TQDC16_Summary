@@ -84,6 +84,8 @@
             this.StartWrite = new System.Windows.Forms.Button();
             this.Progress = new System.Windows.Forms.ProgressBar();
             this.BackGrWorkProgressBar = new System.ComponentModel.BackgroundWorker();
+            this.ConConfigFile = new System.Windows.Forms.TabPage();
+            this.ReadConfigFile = new System.Windows.Forms.Button();
             this.ConfiguireWindow.SuspendLayout();
             this.ConReadFile.SuspendLayout();
             this.ConSaveFile.SuspendLayout();
@@ -93,17 +95,20 @@
             this.ConCalc.SuspendLayout();
             this.OpenPanel.SuspendLayout();
             this.MainPanel.SuspendLayout();
+            this.ConConfigFile.SuspendLayout();
             this.SuspendLayout();
             // 
             // ConfiguireWindow
             // 
             this.ConfiguireWindow.Controls.Add(this.ConReadFile);
             this.ConfiguireWindow.Controls.Add(this.ConSaveFile);
+            this.ConfiguireWindow.Controls.Add(this.ConConfigFile);
             this.ConfiguireWindow.Enabled = false;
-            this.ConfiguireWindow.Location = new System.Drawing.Point(13, 12);
+            this.ConfiguireWindow.Location = new System.Drawing.Point(10, 10);
+            this.ConfiguireWindow.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.ConfiguireWindow.Name = "ConfiguireWindow";
             this.ConfiguireWindow.SelectedIndex = 0;
-            this.ConfiguireWindow.Size = new System.Drawing.Size(351, 428);
+            this.ConfiguireWindow.Size = new System.Drawing.Size(263, 348);
             this.ConfiguireWindow.TabIndex = 1;
             // 
             // ConReadFile
@@ -117,53 +122,59 @@
             this.ConReadFile.Controls.Add(this.label4);
             this.ConReadFile.Controls.Add(this.SerialText);
             this.ConReadFile.Controls.Add(this.label1);
-            this.ConReadFile.Location = new System.Drawing.Point(4, 25);
+            this.ConReadFile.Location = new System.Drawing.Point(4, 22);
+            this.ConReadFile.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.ConReadFile.Name = "ConReadFile";
-            this.ConReadFile.Padding = new System.Windows.Forms.Padding(3);
-            this.ConReadFile.Size = new System.Drawing.Size(343, 399);
+            this.ConReadFile.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.ConReadFile.Size = new System.Drawing.Size(255, 322);
             this.ConReadFile.TabIndex = 0;
             this.ConReadFile.Text = "Описание файла";
             // 
             // NumEvText
             // 
-            this.NumEvText.Location = new System.Drawing.Point(198, 91);
+            this.NumEvText.Location = new System.Drawing.Point(148, 74);
+            this.NumEvText.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.NumEvText.Name = "NumEvText";
             this.NumEvText.ReadOnly = true;
-            this.NumEvText.Size = new System.Drawing.Size(139, 22);
+            this.NumEvText.Size = new System.Drawing.Size(105, 20);
             this.NumEvText.TabIndex = 23;
             // 
             // IDText
             // 
-            this.IDText.Location = new System.Drawing.Point(198, 14);
+            this.IDText.Location = new System.Drawing.Point(148, 11);
+            this.IDText.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.IDText.Name = "IDText";
             this.IDText.ReadOnly = true;
-            this.IDText.Size = new System.Drawing.Size(139, 22);
+            this.IDText.Size = new System.Drawing.Size(105, 20);
             this.IDText.TabIndex = 3;
             this.IDText.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(6, 91);
+            this.label3.Location = new System.Drawing.Point(4, 74);
+            this.label3.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(104, 17);
+            this.label3.Size = new System.Drawing.Size(81, 13);
             this.label3.TabIndex = 22;
             this.label3.Text = "Кол.  тригеров";
             // 
             // NumUsCh
             // 
-            this.NumUsCh.Location = new System.Drawing.Point(198, 131);
+            this.NumUsCh.Location = new System.Drawing.Point(148, 106);
+            this.NumUsCh.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.NumUsCh.Name = "NumUsCh";
             this.NumUsCh.ReadOnly = true;
-            this.NumUsCh.Size = new System.Drawing.Size(139, 22);
+            this.NumUsCh.Size = new System.Drawing.Size(105, 20);
             this.NumUsCh.TabIndex = 21;
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(6, 14);
+            this.label2.Location = new System.Drawing.Point(4, 11);
+            this.label2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(64, 17);
+            this.label2.Size = new System.Drawing.Size(51, 13);
             this.label2.TabIndex = 2;
             this.label2.Text = "ID TQDC";
             this.label2.Click += new System.EventHandler(this.label2_Click);
@@ -171,26 +182,29 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(6, 131);
+            this.label4.Location = new System.Drawing.Point(4, 106);
+            this.label4.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(90, 17);
+            this.label4.Size = new System.Drawing.Size(70, 13);
             this.label4.TabIndex = 20;
             this.label4.Text = "Кол. каналы";
             // 
             // SerialText
             // 
-            this.SerialText.Location = new System.Drawing.Point(198, 54);
+            this.SerialText.Location = new System.Drawing.Point(148, 44);
+            this.SerialText.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.SerialText.Name = "SerialText";
             this.SerialText.ReadOnly = true;
-            this.SerialText.Size = new System.Drawing.Size(139, 22);
+            this.SerialText.Size = new System.Drawing.Size(105, 20);
             this.SerialText.TabIndex = 1;
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(6, 54);
+            this.label1.Location = new System.Drawing.Point(4, 44);
+            this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(163, 17);
+            this.label1.Size = new System.Drawing.Size(126, 13);
             this.label1.TabIndex = 0;
             this.label1.Text = "Серийный номер TQDC";
             this.label1.Click += new System.EventHandler(this.label1_Click_1);
@@ -199,10 +213,11 @@
             // 
             this.ConSaveFile.BackColor = System.Drawing.Color.Silver;
             this.ConSaveFile.Controls.Add(this.panel2);
-            this.ConSaveFile.Location = new System.Drawing.Point(4, 25);
+            this.ConSaveFile.Location = new System.Drawing.Point(4, 22);
+            this.ConSaveFile.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.ConSaveFile.Name = "ConSaveFile";
-            this.ConSaveFile.Padding = new System.Windows.Forms.Padding(3);
-            this.ConSaveFile.Size = new System.Drawing.Size(343, 399);
+            this.ConSaveFile.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.ConSaveFile.Size = new System.Drawing.Size(255, 322);
             this.ConSaveFile.TabIndex = 1;
             this.ConSaveFile.Text = "Выходной файл";
             // 
@@ -210,8 +225,9 @@
             // 
             this.panel2.Controls.Add(this.tabControl1);
             this.panel2.Location = new System.Drawing.Point(0, 0);
+            this.panel2.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(347, 399);
+            this.panel2.Size = new System.Drawing.Size(260, 324);
             this.panel2.TabIndex = 6;
             // 
             // tabControl1
@@ -219,9 +235,10 @@
             this.tabControl1.Controls.Add(this.ConDecoder);
             this.tabControl1.Controls.Add(this.ConCalc);
             this.tabControl1.Location = new System.Drawing.Point(0, 0);
+            this.tabControl1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(347, 403);
+            this.tabControl1.Size = new System.Drawing.Size(260, 327);
             this.tabControl1.TabIndex = 6;
             // 
             // ConDecoder
@@ -242,19 +259,21 @@
             this.ConDecoder.Controls.Add(this.DChannel11);
             this.ConDecoder.Controls.Add(this.DChannel9);
             this.ConDecoder.Controls.Add(this.DChannel10);
-            this.ConDecoder.Location = new System.Drawing.Point(4, 25);
+            this.ConDecoder.Location = new System.Drawing.Point(4, 22);
+            this.ConDecoder.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.ConDecoder.Name = "ConDecoder";
-            this.ConDecoder.Padding = new System.Windows.Forms.Padding(3);
-            this.ConDecoder.Size = new System.Drawing.Size(339, 374);
+            this.ConDecoder.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.ConDecoder.Size = new System.Drawing.Size(252, 301);
             this.ConDecoder.TabIndex = 0;
             this.ConDecoder.Text = "Декодер";
             // 
             // DChannel16
             // 
             this.DChannel16.AutoSize = true;
-            this.DChannel16.Location = new System.Drawing.Point(6, 305);
+            this.DChannel16.Location = new System.Drawing.Point(4, 248);
+            this.DChannel16.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.DChannel16.Name = "DChannel16";
-            this.DChannel16.Size = new System.Drawing.Size(91, 21);
+            this.DChannel16.Size = new System.Drawing.Size(72, 17);
             this.DChannel16.TabIndex = 15;
             this.DChannel16.Text = "16 Канал";
             this.DChannel16.UseVisualStyleBackColor = true;
@@ -263,9 +282,10 @@
             // DChannel1
             // 
             this.DChannel1.AutoSize = true;
-            this.DChannel1.Location = new System.Drawing.Point(6, 5);
+            this.DChannel1.Location = new System.Drawing.Point(4, 4);
+            this.DChannel1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.DChannel1.Name = "DChannel1";
-            this.DChannel1.Size = new System.Drawing.Size(83, 21);
+            this.DChannel1.Size = new System.Drawing.Size(66, 17);
             this.DChannel1.TabIndex = 0;
             this.DChannel1.Text = "1 Канал";
             this.DChannel1.UseVisualStyleBackColor = true;
@@ -274,9 +294,10 @@
             // DChannel2
             // 
             this.DChannel2.AutoSize = true;
-            this.DChannel2.Location = new System.Drawing.Point(6, 25);
+            this.DChannel2.Location = new System.Drawing.Point(4, 20);
+            this.DChannel2.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.DChannel2.Name = "DChannel2";
-            this.DChannel2.Size = new System.Drawing.Size(83, 21);
+            this.DChannel2.Size = new System.Drawing.Size(66, 17);
             this.DChannel2.TabIndex = 1;
             this.DChannel2.Text = "2 Канал";
             this.DChannel2.UseVisualStyleBackColor = true;
@@ -285,9 +306,10 @@
             // DChannel3
             // 
             this.DChannel3.AutoSize = true;
-            this.DChannel3.Location = new System.Drawing.Point(6, 45);
+            this.DChannel3.Location = new System.Drawing.Point(4, 37);
+            this.DChannel3.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.DChannel3.Name = "DChannel3";
-            this.DChannel3.Size = new System.Drawing.Size(83, 21);
+            this.DChannel3.Size = new System.Drawing.Size(66, 17);
             this.DChannel3.TabIndex = 2;
             this.DChannel3.Text = "3 Канал";
             this.DChannel3.UseVisualStyleBackColor = true;
@@ -296,9 +318,10 @@
             // DChannel4
             // 
             this.DChannel4.AutoSize = true;
-            this.DChannel4.Location = new System.Drawing.Point(6, 65);
+            this.DChannel4.Location = new System.Drawing.Point(4, 53);
+            this.DChannel4.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.DChannel4.Name = "DChannel4";
-            this.DChannel4.Size = new System.Drawing.Size(83, 21);
+            this.DChannel4.Size = new System.Drawing.Size(66, 17);
             this.DChannel4.TabIndex = 3;
             this.DChannel4.Text = "4 Канал";
             this.DChannel4.UseVisualStyleBackColor = true;
@@ -307,9 +330,10 @@
             // DChannel15
             // 
             this.DChannel15.AutoSize = true;
-            this.DChannel15.Location = new System.Drawing.Point(6, 285);
+            this.DChannel15.Location = new System.Drawing.Point(4, 232);
+            this.DChannel15.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.DChannel15.Name = "DChannel15";
-            this.DChannel15.Size = new System.Drawing.Size(91, 21);
+            this.DChannel15.Size = new System.Drawing.Size(72, 17);
             this.DChannel15.TabIndex = 14;
             this.DChannel15.Text = "15 Канал";
             this.DChannel15.UseVisualStyleBackColor = true;
@@ -318,9 +342,10 @@
             // DChannel5
             // 
             this.DChannel5.AutoSize = true;
-            this.DChannel5.Location = new System.Drawing.Point(6, 85);
+            this.DChannel5.Location = new System.Drawing.Point(4, 69);
+            this.DChannel5.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.DChannel5.Name = "DChannel5";
-            this.DChannel5.Size = new System.Drawing.Size(83, 21);
+            this.DChannel5.Size = new System.Drawing.Size(66, 17);
             this.DChannel5.TabIndex = 4;
             this.DChannel5.Text = "5 Канал";
             this.DChannel5.UseVisualStyleBackColor = true;
@@ -329,9 +354,10 @@
             // DChannel14
             // 
             this.DChannel14.AutoSize = true;
-            this.DChannel14.Location = new System.Drawing.Point(6, 265);
+            this.DChannel14.Location = new System.Drawing.Point(4, 215);
+            this.DChannel14.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.DChannel14.Name = "DChannel14";
-            this.DChannel14.Size = new System.Drawing.Size(91, 21);
+            this.DChannel14.Size = new System.Drawing.Size(72, 17);
             this.DChannel14.TabIndex = 13;
             this.DChannel14.Text = "14 Канал";
             this.DChannel14.UseVisualStyleBackColor = true;
@@ -341,9 +367,10 @@
             // 
             this.DChannel6.AutoSize = true;
             this.DChannel6.BackColor = System.Drawing.SystemColors.Control;
-            this.DChannel6.Location = new System.Drawing.Point(6, 105);
+            this.DChannel6.Location = new System.Drawing.Point(4, 85);
+            this.DChannel6.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.DChannel6.Name = "DChannel6";
-            this.DChannel6.Size = new System.Drawing.Size(83, 21);
+            this.DChannel6.Size = new System.Drawing.Size(66, 17);
             this.DChannel6.TabIndex = 5;
             this.DChannel6.Text = "6 Канал";
             this.DChannel6.UseVisualStyleBackColor = false;
@@ -352,9 +379,10 @@
             // DChannel13
             // 
             this.DChannel13.AutoSize = true;
-            this.DChannel13.Location = new System.Drawing.Point(6, 245);
+            this.DChannel13.Location = new System.Drawing.Point(4, 199);
+            this.DChannel13.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.DChannel13.Name = "DChannel13";
-            this.DChannel13.Size = new System.Drawing.Size(91, 21);
+            this.DChannel13.Size = new System.Drawing.Size(72, 17);
             this.DChannel13.TabIndex = 12;
             this.DChannel13.Text = "13 Канал";
             this.DChannel13.UseVisualStyleBackColor = true;
@@ -363,9 +391,10 @@
             // DChannel7
             // 
             this.DChannel7.AutoSize = true;
-            this.DChannel7.Location = new System.Drawing.Point(6, 125);
+            this.DChannel7.Location = new System.Drawing.Point(4, 102);
+            this.DChannel7.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.DChannel7.Name = "DChannel7";
-            this.DChannel7.Size = new System.Drawing.Size(83, 21);
+            this.DChannel7.Size = new System.Drawing.Size(66, 17);
             this.DChannel7.TabIndex = 6;
             this.DChannel7.Text = "7 Канал";
             this.DChannel7.UseVisualStyleBackColor = true;
@@ -374,9 +403,10 @@
             // DChannel12
             // 
             this.DChannel12.AutoSize = true;
-            this.DChannel12.Location = new System.Drawing.Point(6, 225);
+            this.DChannel12.Location = new System.Drawing.Point(4, 183);
+            this.DChannel12.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.DChannel12.Name = "DChannel12";
-            this.DChannel12.Size = new System.Drawing.Size(91, 21);
+            this.DChannel12.Size = new System.Drawing.Size(72, 17);
             this.DChannel12.TabIndex = 11;
             this.DChannel12.Text = "12 Канал";
             this.DChannel12.UseVisualStyleBackColor = true;
@@ -385,9 +415,10 @@
             // DChannel8
             // 
             this.DChannel8.AutoSize = true;
-            this.DChannel8.Location = new System.Drawing.Point(6, 145);
+            this.DChannel8.Location = new System.Drawing.Point(4, 118);
+            this.DChannel8.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.DChannel8.Name = "DChannel8";
-            this.DChannel8.Size = new System.Drawing.Size(83, 21);
+            this.DChannel8.Size = new System.Drawing.Size(66, 17);
             this.DChannel8.TabIndex = 7;
             this.DChannel8.Text = "8 Канал";
             this.DChannel8.UseVisualStyleBackColor = true;
@@ -396,9 +427,10 @@
             // DChannel11
             // 
             this.DChannel11.AutoSize = true;
-            this.DChannel11.Location = new System.Drawing.Point(6, 205);
+            this.DChannel11.Location = new System.Drawing.Point(4, 167);
+            this.DChannel11.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.DChannel11.Name = "DChannel11";
-            this.DChannel11.Size = new System.Drawing.Size(91, 21);
+            this.DChannel11.Size = new System.Drawing.Size(72, 17);
             this.DChannel11.TabIndex = 10;
             this.DChannel11.Text = "11 Канал";
             this.DChannel11.UseVisualStyleBackColor = true;
@@ -407,9 +439,10 @@
             // DChannel9
             // 
             this.DChannel9.AutoSize = true;
-            this.DChannel9.Location = new System.Drawing.Point(6, 165);
+            this.DChannel9.Location = new System.Drawing.Point(4, 134);
+            this.DChannel9.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.DChannel9.Name = "DChannel9";
-            this.DChannel9.Size = new System.Drawing.Size(83, 21);
+            this.DChannel9.Size = new System.Drawing.Size(66, 17);
             this.DChannel9.TabIndex = 8;
             this.DChannel9.Text = "9 Канал";
             this.DChannel9.UseVisualStyleBackColor = true;
@@ -418,9 +451,10 @@
             // DChannel10
             // 
             this.DChannel10.AutoSize = true;
-            this.DChannel10.Location = new System.Drawing.Point(6, 185);
+            this.DChannel10.Location = new System.Drawing.Point(4, 150);
+            this.DChannel10.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.DChannel10.Name = "DChannel10";
-            this.DChannel10.Size = new System.Drawing.Size(91, 21);
+            this.DChannel10.Size = new System.Drawing.Size(72, 17);
             this.DChannel10.TabIndex = 9;
             this.DChannel10.Text = "10 Канал";
             this.DChannel10.UseVisualStyleBackColor = true;
@@ -446,10 +480,11 @@
             this.ConCalc.Controls.Add(this.CChannel11);
             this.ConCalc.Controls.Add(this.CChannel9);
             this.ConCalc.Controls.Add(this.CChannel10);
-            this.ConCalc.Location = new System.Drawing.Point(4, 25);
+            this.ConCalc.Location = new System.Drawing.Point(4, 22);
+            this.ConCalc.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.ConCalc.Name = "ConCalc";
-            this.ConCalc.Padding = new System.Windows.Forms.Padding(3);
-            this.ConCalc.Size = new System.Drawing.Size(339, 374);
+            this.ConCalc.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.ConCalc.Size = new System.Drawing.Size(252, 301);
             this.ConCalc.TabIndex = 1;
             this.ConCalc.Text = "Вычисление";
             this.ConCalc.UseVisualStyleBackColor = true;
@@ -457,9 +492,10 @@
             // CalcMin
             // 
             this.CalcMin.AutoSize = true;
-            this.CalcMin.Location = new System.Drawing.Point(166, 36);
+            this.CalcMin.Location = new System.Drawing.Point(124, 29);
+            this.CalcMin.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.CalcMin.Name = "CalcMin";
-            this.CalcMin.Size = new System.Drawing.Size(163, 21);
+            this.CalcMin.Size = new System.Drawing.Size(128, 17);
             this.CalcMin.TabIndex = 33;
             this.CalcMin.Text = "Минимальная точка";
             this.CalcMin.UseVisualStyleBackColor = true;
@@ -467,9 +503,10 @@
             // CalcMax
             // 
             this.CalcMax.AutoSize = true;
-            this.CalcMax.Location = new System.Drawing.Point(166, 6);
+            this.CalcMax.Location = new System.Drawing.Point(124, 5);
+            this.CalcMax.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.CalcMax.Name = "CalcMax";
-            this.CalcMax.Size = new System.Drawing.Size(169, 21);
+            this.CalcMax.Size = new System.Drawing.Size(134, 17);
             this.CalcMax.TabIndex = 32;
             this.CalcMax.Text = "Максимальная точка";
             this.CalcMax.UseVisualStyleBackColor = true;
@@ -477,9 +514,10 @@
             // CChannel16
             // 
             this.CChannel16.AutoSize = true;
-            this.CChannel16.Location = new System.Drawing.Point(6, 305);
+            this.CChannel16.Location = new System.Drawing.Point(4, 248);
+            this.CChannel16.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.CChannel16.Name = "CChannel16";
-            this.CChannel16.Size = new System.Drawing.Size(91, 21);
+            this.CChannel16.Size = new System.Drawing.Size(72, 17);
             this.CChannel16.TabIndex = 31;
             this.CChannel16.Text = "16 Канал";
             this.CChannel16.UseVisualStyleBackColor = true;
@@ -488,9 +526,10 @@
             // CChannel1
             // 
             this.CChannel1.AutoSize = true;
-            this.CChannel1.Location = new System.Drawing.Point(6, 5);
+            this.CChannel1.Location = new System.Drawing.Point(4, 4);
+            this.CChannel1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.CChannel1.Name = "CChannel1";
-            this.CChannel1.Size = new System.Drawing.Size(83, 21);
+            this.CChannel1.Size = new System.Drawing.Size(66, 17);
             this.CChannel1.TabIndex = 16;
             this.CChannel1.Text = "1 Канал";
             this.CChannel1.UseVisualStyleBackColor = true;
@@ -499,9 +538,10 @@
             // CChannel2
             // 
             this.CChannel2.AutoSize = true;
-            this.CChannel2.Location = new System.Drawing.Point(6, 25);
+            this.CChannel2.Location = new System.Drawing.Point(4, 20);
+            this.CChannel2.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.CChannel2.Name = "CChannel2";
-            this.CChannel2.Size = new System.Drawing.Size(83, 21);
+            this.CChannel2.Size = new System.Drawing.Size(66, 17);
             this.CChannel2.TabIndex = 17;
             this.CChannel2.Text = "2 Канал";
             this.CChannel2.UseVisualStyleBackColor = true;
@@ -510,9 +550,10 @@
             // CChannel3
             // 
             this.CChannel3.AutoSize = true;
-            this.CChannel3.Location = new System.Drawing.Point(6, 45);
+            this.CChannel3.Location = new System.Drawing.Point(4, 37);
+            this.CChannel3.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.CChannel3.Name = "CChannel3";
-            this.CChannel3.Size = new System.Drawing.Size(83, 21);
+            this.CChannel3.Size = new System.Drawing.Size(66, 17);
             this.CChannel3.TabIndex = 18;
             this.CChannel3.Text = "3 Канал";
             this.CChannel3.UseVisualStyleBackColor = true;
@@ -521,9 +562,10 @@
             // CChannel4
             // 
             this.CChannel4.AutoSize = true;
-            this.CChannel4.Location = new System.Drawing.Point(6, 65);
+            this.CChannel4.Location = new System.Drawing.Point(4, 53);
+            this.CChannel4.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.CChannel4.Name = "CChannel4";
-            this.CChannel4.Size = new System.Drawing.Size(83, 21);
+            this.CChannel4.Size = new System.Drawing.Size(66, 17);
             this.CChannel4.TabIndex = 19;
             this.CChannel4.Text = "4 Канал";
             this.CChannel4.UseVisualStyleBackColor = true;
@@ -532,9 +574,10 @@
             // CChannel15
             // 
             this.CChannel15.AutoSize = true;
-            this.CChannel15.Location = new System.Drawing.Point(6, 285);
+            this.CChannel15.Location = new System.Drawing.Point(4, 232);
+            this.CChannel15.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.CChannel15.Name = "CChannel15";
-            this.CChannel15.Size = new System.Drawing.Size(91, 21);
+            this.CChannel15.Size = new System.Drawing.Size(72, 17);
             this.CChannel15.TabIndex = 30;
             this.CChannel15.Text = "15 Канал";
             this.CChannel15.UseVisualStyleBackColor = true;
@@ -543,9 +586,10 @@
             // CChannel5
             // 
             this.CChannel5.AutoSize = true;
-            this.CChannel5.Location = new System.Drawing.Point(6, 85);
+            this.CChannel5.Location = new System.Drawing.Point(4, 69);
+            this.CChannel5.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.CChannel5.Name = "CChannel5";
-            this.CChannel5.Size = new System.Drawing.Size(83, 21);
+            this.CChannel5.Size = new System.Drawing.Size(66, 17);
             this.CChannel5.TabIndex = 20;
             this.CChannel5.Text = "5 Канал";
             this.CChannel5.UseVisualStyleBackColor = true;
@@ -554,9 +598,10 @@
             // CChannel14
             // 
             this.CChannel14.AutoSize = true;
-            this.CChannel14.Location = new System.Drawing.Point(6, 265);
+            this.CChannel14.Location = new System.Drawing.Point(4, 215);
+            this.CChannel14.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.CChannel14.Name = "CChannel14";
-            this.CChannel14.Size = new System.Drawing.Size(91, 21);
+            this.CChannel14.Size = new System.Drawing.Size(72, 17);
             this.CChannel14.TabIndex = 29;
             this.CChannel14.Text = "14 Канал";
             this.CChannel14.UseVisualStyleBackColor = true;
@@ -565,9 +610,10 @@
             // CChannel6
             // 
             this.CChannel6.AutoSize = true;
-            this.CChannel6.Location = new System.Drawing.Point(6, 105);
+            this.CChannel6.Location = new System.Drawing.Point(4, 85);
+            this.CChannel6.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.CChannel6.Name = "CChannel6";
-            this.CChannel6.Size = new System.Drawing.Size(83, 21);
+            this.CChannel6.Size = new System.Drawing.Size(66, 17);
             this.CChannel6.TabIndex = 21;
             this.CChannel6.Text = "6 Канал";
             this.CChannel6.UseVisualStyleBackColor = true;
@@ -576,9 +622,10 @@
             // CChannel13
             // 
             this.CChannel13.AutoSize = true;
-            this.CChannel13.Location = new System.Drawing.Point(6, 245);
+            this.CChannel13.Location = new System.Drawing.Point(4, 199);
+            this.CChannel13.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.CChannel13.Name = "CChannel13";
-            this.CChannel13.Size = new System.Drawing.Size(91, 21);
+            this.CChannel13.Size = new System.Drawing.Size(72, 17);
             this.CChannel13.TabIndex = 28;
             this.CChannel13.Text = "13 Канал";
             this.CChannel13.UseVisualStyleBackColor = true;
@@ -587,9 +634,10 @@
             // CChannel7
             // 
             this.CChannel7.AutoSize = true;
-            this.CChannel7.Location = new System.Drawing.Point(6, 125);
+            this.CChannel7.Location = new System.Drawing.Point(4, 102);
+            this.CChannel7.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.CChannel7.Name = "CChannel7";
-            this.CChannel7.Size = new System.Drawing.Size(83, 21);
+            this.CChannel7.Size = new System.Drawing.Size(66, 17);
             this.CChannel7.TabIndex = 22;
             this.CChannel7.Text = "7 Канал";
             this.CChannel7.UseVisualStyleBackColor = true;
@@ -598,9 +646,10 @@
             // CChannel12
             // 
             this.CChannel12.AutoSize = true;
-            this.CChannel12.Location = new System.Drawing.Point(6, 225);
+            this.CChannel12.Location = new System.Drawing.Point(4, 183);
+            this.CChannel12.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.CChannel12.Name = "CChannel12";
-            this.CChannel12.Size = new System.Drawing.Size(91, 21);
+            this.CChannel12.Size = new System.Drawing.Size(72, 17);
             this.CChannel12.TabIndex = 27;
             this.CChannel12.Text = "12 Канал";
             this.CChannel12.UseVisualStyleBackColor = true;
@@ -609,9 +658,10 @@
             // CChannel8
             // 
             this.CChannel8.AutoSize = true;
-            this.CChannel8.Location = new System.Drawing.Point(6, 145);
+            this.CChannel8.Location = new System.Drawing.Point(4, 118);
+            this.CChannel8.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.CChannel8.Name = "CChannel8";
-            this.CChannel8.Size = new System.Drawing.Size(83, 21);
+            this.CChannel8.Size = new System.Drawing.Size(66, 17);
             this.CChannel8.TabIndex = 23;
             this.CChannel8.Text = "8 Канал";
             this.CChannel8.UseVisualStyleBackColor = true;
@@ -620,9 +670,10 @@
             // CChannel11
             // 
             this.CChannel11.AutoSize = true;
-            this.CChannel11.Location = new System.Drawing.Point(6, 205);
+            this.CChannel11.Location = new System.Drawing.Point(4, 167);
+            this.CChannel11.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.CChannel11.Name = "CChannel11";
-            this.CChannel11.Size = new System.Drawing.Size(91, 21);
+            this.CChannel11.Size = new System.Drawing.Size(72, 17);
             this.CChannel11.TabIndex = 26;
             this.CChannel11.Text = "11 Канал";
             this.CChannel11.UseVisualStyleBackColor = true;
@@ -631,9 +682,10 @@
             // CChannel9
             // 
             this.CChannel9.AutoSize = true;
-            this.CChannel9.Location = new System.Drawing.Point(6, 165);
+            this.CChannel9.Location = new System.Drawing.Point(4, 134);
+            this.CChannel9.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.CChannel9.Name = "CChannel9";
-            this.CChannel9.Size = new System.Drawing.Size(83, 21);
+            this.CChannel9.Size = new System.Drawing.Size(66, 17);
             this.CChannel9.TabIndex = 24;
             this.CChannel9.Text = "9 Канал";
             this.CChannel9.UseVisualStyleBackColor = true;
@@ -642,9 +694,10 @@
             // CChannel10
             // 
             this.CChannel10.AutoSize = true;
-            this.CChannel10.Location = new System.Drawing.Point(6, 185);
+            this.CChannel10.Location = new System.Drawing.Point(4, 150);
+            this.CChannel10.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.CChannel10.Name = "CChannel10";
-            this.CChannel10.Size = new System.Drawing.Size(91, 21);
+            this.CChannel10.Size = new System.Drawing.Size(72, 17);
             this.CChannel10.TabIndex = 25;
             this.CChannel10.Text = "10 Канал";
             this.CChannel10.UseVisualStyleBackColor = true;
@@ -653,16 +706,18 @@
             // OpenPanel
             // 
             this.OpenPanel.Controls.Add(this.OpenFileBtn);
-            this.OpenPanel.Location = new System.Drawing.Point(17, 459);
+            this.OpenPanel.Location = new System.Drawing.Point(13, 373);
+            this.OpenPanel.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.OpenPanel.Name = "OpenPanel";
-            this.OpenPanel.Size = new System.Drawing.Size(347, 68);
+            this.OpenPanel.Size = new System.Drawing.Size(260, 55);
             this.OpenPanel.TabIndex = 2;
             // 
             // OpenFileBtn
             // 
-            this.OpenFileBtn.Location = new System.Drawing.Point(3, 17);
+            this.OpenFileBtn.Location = new System.Drawing.Point(2, 14);
+            this.OpenFileBtn.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.OpenFileBtn.Name = "OpenFileBtn";
-            this.OpenFileBtn.Size = new System.Drawing.Size(155, 35);
+            this.OpenFileBtn.Size = new System.Drawing.Size(116, 28);
             this.OpenFileBtn.TabIndex = 6;
             this.OpenFileBtn.Text = "Открыть файл";
             this.OpenFileBtn.UseVisualStyleBackColor = true;
@@ -672,16 +727,18 @@
             // 
             this.MainPanel.Controls.Add(this.StartDecoder);
             this.MainPanel.Controls.Add(this.StartWrite);
-            this.MainPanel.Location = new System.Drawing.Point(393, 459);
+            this.MainPanel.Location = new System.Drawing.Point(295, 373);
+            this.MainPanel.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.MainPanel.Name = "MainPanel";
-            this.MainPanel.Size = new System.Drawing.Size(784, 67);
+            this.MainPanel.Size = new System.Drawing.Size(588, 54);
             this.MainPanel.TabIndex = 3;
             // 
             // StartDecoder
             // 
-            this.StartDecoder.Location = new System.Drawing.Point(3, 17);
+            this.StartDecoder.Location = new System.Drawing.Point(2, 14);
+            this.StartDecoder.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.StartDecoder.Name = "StartDecoder";
-            this.StartDecoder.Size = new System.Drawing.Size(155, 35);
+            this.StartDecoder.Size = new System.Drawing.Size(116, 28);
             this.StartDecoder.TabIndex = 6;
             this.StartDecoder.Text = "Декодировать файл";
             this.StartDecoder.UseVisualStyleBackColor = true;
@@ -689,9 +746,10 @@
             // 
             // StartWrite
             // 
-            this.StartWrite.Location = new System.Drawing.Point(626, 17);
+            this.StartWrite.Location = new System.Drawing.Point(470, 14);
+            this.StartWrite.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.StartWrite.Name = "StartWrite";
-            this.StartWrite.Size = new System.Drawing.Size(155, 35);
+            this.StartWrite.Size = new System.Drawing.Size(116, 28);
             this.StartWrite.TabIndex = 5;
             this.StartWrite.Text = "Запись файла";
             this.StartWrite.UseVisualStyleBackColor = true;
@@ -699,10 +757,11 @@
             // 
             // Progress
             // 
-            this.Progress.Location = new System.Drawing.Point(393, 433);
+            this.Progress.Location = new System.Drawing.Point(295, 352);
+            this.Progress.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.Progress.Maximum = 1000;
             this.Progress.Name = "Progress";
-            this.Progress.Size = new System.Drawing.Size(784, 20);
+            this.Progress.Size = new System.Drawing.Size(588, 16);
             this.Progress.TabIndex = 4;
             // 
             // BackGrWorkProgressBar
@@ -713,17 +772,36 @@
             this.BackGrWorkProgressBar.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.BackGrWorkProgressBar_ProgressChanged);
             this.BackGrWorkProgressBar.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.BackGrWorkProgressBar_RunWorkerCompleted);
             // 
+            // ConConfigFile
+            // 
+            this.ConConfigFile.Controls.Add(this.ReadConfigFile);
+            this.ConConfigFile.Location = new System.Drawing.Point(4, 22);
+            this.ConConfigFile.Name = "ConConfigFile";
+            this.ConConfigFile.Size = new System.Drawing.Size(255, 322);
+            this.ConConfigFile.TabIndex = 2;
+            this.ConConfigFile.Text = "Файл настроек";
+            this.ConConfigFile.UseVisualStyleBackColor = true;
+            // 
+            // ReadConfigFile
+            // 
+            this.ReadConfigFile.Location = new System.Drawing.Point(3, 3);
+            this.ReadConfigFile.Name = "ReadConfigFile";
+            this.ReadConfigFile.Size = new System.Drawing.Size(249, 23);
+            this.ReadConfigFile.TabIndex = 5;
+            this.ReadConfigFile.Text = "Загрузить конфигурационный файл";
+            this.ReadConfigFile.UseVisualStyleBackColor = true;
+            this.ReadConfigFile.Click += new System.EventHandler(this.ReadConfigFile_Click);
+            // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1189, 539);
+            this.ClientSize = new System.Drawing.Size(892, 438);
             this.Controls.Add(this.Progress);
             this.Controls.Add(this.MainPanel);
             this.Controls.Add(this.OpenPanel);
             this.Controls.Add(this.ConfiguireWindow);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "Form1";
             this.Text = "Form1";
             this.ConfiguireWindow.ResumeLayout(false);
@@ -738,6 +816,7 @@
             this.ConCalc.PerformLayout();
             this.OpenPanel.ResumeLayout(false);
             this.MainPanel.ResumeLayout(false);
+            this.ConConfigFile.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -799,6 +878,8 @@
         private System.Windows.Forms.CheckBox CalcMin;
         private System.Windows.Forms.CheckBox CalcMax;
         private System.Windows.Forms.Button OpenFileBtn;
+        private System.Windows.Forms.TabPage ConConfigFile;
+        private System.Windows.Forms.Button ReadConfigFile;
     }
 }
 

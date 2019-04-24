@@ -25,7 +25,7 @@ namespace TQDC16_Summary_Rev_1
             long pospl;
             long prog = 0;
             var FS = new FileStream(String.Format("{0}", TQDC2File.ReadFilePath), FileMode.Open);
-            long prog_st = FS.Length / 1000;
+            long prog_st = FS.Length / 999;
             while (pos < FS.Length)
             {
                 EvLeng = Byte2Int(ReadBytes(pos + 4, 4, FS));
@@ -82,7 +82,56 @@ namespace TQDC16_Summary_Rev_1
         }
         public static void AnChannelText(BackgroundWorker ProgressBar, DoWorkEventArgs e)
         {
-
+            var fs = new FileStream(string.Format("{0}", ReadFilePath), FileMode.Open); // Экземпляр потока чтения
+            var fsr = new StreamReader(fs);
+            long prog_st = fs.Length / 999;
+            long prog = 0;
+            while (!fsr.EndOfStream)
+            {
+                string readerLine = fsr.ReadLine();
+                switch (readerLine.Substring(0, readerLine.IndexOf(" ")))
+                {
+                    case "Ev:":
+                        {
+                            readerLine = readerLine.Substring(readerLine.IndexOf(" "));
+                            readerLine = readerLine.Remove(0,1);
+                            NumEv = int.Parse(readerLine.Substring(0, readerLine.IndexOf(" ")));
+                            break;
+                        }
+                    case "Tdc":
+                        {
+                            readerLine = readerLine.Substring(readerLine.IndexOf(" "));
+                            readerLine = readerLine.Remove(0, 1);
+                            uint ch = uint.Parse(readerLine.Substring(0, readerLine.IndexOf(":")));
+                            if (Channel[ch] == false)
+                            {
+                                Channel[ch] = true;
+                                NumCh++;
+                            }
+                            break;
+                        }
+                    case "Adc":
+                        {
+                            readerLine = readerLine.Substring(readerLine.IndexOf(" "));
+                            readerLine = readerLine.Remove(0, 1);
+                            uint ch = uint.Parse(readerLine.Substring(0, readerLine.IndexOf(":")));
+                            if (Channel[ch] == false)
+                            {
+                                Channel[ch] = true;
+                                NumCh++;
+                            }
+                            break;
+                        }
+                }
+                if (fs.Position - prog > prog_st)
+                {
+                    prog = fs.Position;
+                    ProgressBar.ReportProgress(1);
+                }
+            }
+            e.Result = 2; //Возращение переменной для различия процесса
+            fsr.Close();
+            fs.Close();
         }
     }
 }

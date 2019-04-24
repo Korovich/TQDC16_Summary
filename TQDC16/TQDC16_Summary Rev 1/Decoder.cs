@@ -187,7 +187,43 @@ namespace TQDC16_Summary_Rev_1
 
         public static void StartDecodingText(BackgroundWorker ProgressBar, DoWorkEventArgs e)
         {
-
+            if (Create_CSV("Декодер") != DialogResult.OK) // Создание файла CSV проверка на отмену)
+            {
+                return;
+            }
+            ulong NumEv;         // Номер Event
+            string Date;        // Дата
+            long pos = 0;            // Позиция в блоке файла
+            long prog = 0;           // Позициця для Progress Bar
+            var fs = new FileStream(String.Format("{0}", ReadFilePath), FileMode.Open); // Экземпляр потока чтения
+            var fsr = new StreamReader(fs);
+            string readerLine = "";
+            long prog_st = fs.Length / 999;  // шаг для Progress Bar 
+            using (writer)
+            using (csv) 
+            {
+                csv.WriteHeader<DecData>(); // Запись загаловка файла
+                csv.NextRecord();           //
+                AddData(TIMESTAMP, "Время(ns)");                //
+                AddData(EVENT, "№");                            //
+                AddData(TYPE_DATA, "Тип данных");               // Запись размерностей столбцов
+                csv.WriteRecord(data);               //
+                Record_Clear();                                 //
+                csv.NextRecord();                    //
+                while (!fsr.EndOfStream)
+                {
+                    readerLine = fsr.ReadLine();
+                    if (readerLine.Substring(0, 3) == "Ev:")
+                    {
+                        readerLine = readerLine.Substring(readerLine.IndexOf("Ev: "));
+                        AddData(EVENT, readerLine.Substring(0,readerLine.IndexOf(" ")));
+                        readerLine = readerLine.Substring(readerLine.IndexOf(" "));
+                        Date = UnixTimeStampToDateTime(uint.Parse(readerLine.Substring(0,readerLine.IndexOf('.')))).ToString(); // Чтение даты и времени глобального Event  и конвертация из unix в стандратный вид
+                        readerLine = readerLine.Substring(readerLine.IndexOf('.'));
+                        Date += ":" + readerLine.ToString(); // добавление к дате времени в нс
+                    }
+                }
+            }
         }
 
         public static byte EVENT { get; } = 1;          //Константы 

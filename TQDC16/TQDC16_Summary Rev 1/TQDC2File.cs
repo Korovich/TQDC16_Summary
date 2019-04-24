@@ -20,7 +20,7 @@ namespace TQDC16_Summary_Rev_1
             OpenResult openresult = new OpenResult();
             OpenFileDialog TQDC_DATA = new OpenFileDialog();
             openresult.Selected = true;
-            TQDC_DATA.Filter = "Raw files (*.dat)|*.dat|Decoded files (*.txt)|*.txt|All files (*.*)|*.*";
+            TQDC_DATA.Filter = "Raw files (*.dat)|*.dat|Decoded files (*.txt)|*.txt";
             while (true)
             {
                 DialogResult ResultDil;
@@ -32,9 +32,8 @@ namespace TQDC16_Summary_Rev_1
                     openresult.ID = "CancelEr";
                     break;
                 }
-                if (ResultDil == DialogResult.OK)
+                if (ResultDil == DialogResult.OK && (TQDC_DATA.SafeFileName.Substring(TQDC_DATA.SafeFileName.LastIndexOf('.')) == ".dat"))
                 {
-                    DialogResult ResultMes;
                     var FSD = new FileStream(String.Format("{0}", TQDC_DATA.FileName), FileMode.Open);
                     FileName = TQDC_DATA.SafeFileName;
                     byte[] bbyte = new byte[4];
@@ -51,7 +50,6 @@ namespace TQDC16_Summary_Rev_1
                     if (openresult.Selected)
                     {
                         ReadFilePath = TQDC_DATA.FileName;
-                        FileLen = FSD.Length;
                         openresult.Serial = Converters.Byte2Str(ReadBytes(12, 4, FSD));
                         openresult.ID = Converters.Id2Str(ReadBytes(16, 1, FSD)[0]);
                         openresult.Format = String.Format("{0},",TQDC_DATA.SafeFileName);
@@ -60,6 +58,7 @@ namespace TQDC16_Summary_Rev_1
                         break;
                     }
                     FSD.Close();
+                    DialogResult ResultMes;
                     ResultMes = MessageBox.Show("Выберете другой файл", "Неправильный файл", MessageBoxButtons.RetryCancel);
                     if (ResultMes == DialogResult.Retry)
                     {
@@ -70,6 +69,20 @@ namespace TQDC16_Summary_Rev_1
                         openresult.Selected = false;
                         openresult.Serial = "/n";
                         openresult.ID = "CancelEr";
+                        break;
+                    }
+                }
+
+                if (ResultDil == DialogResult.OK && (TQDC_DATA.SafeFileName.Substring(TQDC_DATA.SafeFileName.LastIndexOf('.')) == ".txt"))
+                {
+                    openresult.Selected = true; //временно
+                    if (openresult.Selected)
+                    {
+                        ReadFilePath = TQDC_DATA.FileName;
+                        openresult.Serial = "Отсуствует";
+                        openresult.ID = "Отсуствует";
+                        openresult.Format = String.Format("{0},", TQDC_DATA.SafeFileName);
+                        openresult.Format = openresult.Format.Substring(openresult.Format.LastIndexOf('.') + 1, 3);
                         break;
                     }
                 }

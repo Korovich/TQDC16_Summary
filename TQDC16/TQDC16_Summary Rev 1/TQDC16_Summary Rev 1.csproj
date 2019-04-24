@@ -80,6 +80,7 @@
     <Compile Include="Converters.cs" />
     <Compile Include="Decoder.cs" />
     <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="TQDC2Configs.cs" />
     <Compile Include="TQDC2File.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>

@@ -11,6 +11,7 @@ using static TQDC16_Summary_Rev_1.Converters;
 using static TQDC16_Summary_Rev_1.CSV_Output;
 using static TQDC16_Summary_Rev_1.TQDC2File;
 
+
 namespace TQDC16_Summary_Rev_1
 {
     class Calculation
@@ -127,12 +128,12 @@ namespace TQDC16_Summary_Rev_1
                                         }
                                         for (uint i = 0; i < ((DataLen / 4) * 4 == DataLen ? (DataLen / 4) : (DataLen / 4) + 1); i++) //цикл на чтение Sample ADC
                                         {
-                                            buf.Add(Byte2Sample(ReadBytes(pospl + 2, 2, FS)) - (int)TQDC2Configs.x1[ch]); // Запись первого Sample в лист
+                                            buf.Add(TQDC2Configs.chGain[ch] ?(Byte2Sample(ReadBytes(pospl + 2, 2, FS)) - (int)TQDC2Configs.x4[ch]): (Byte2Sample(ReadBytes(pospl + 2, 2, FS)) - (int)TQDC2Configs.x1[ch])); // Запись первого Sample в лист
                                             if (odd & i == (DataLen / 4)) // если данные нечетные и последняя строка данных, то последнее 16 битный sample не читается
                                             {
 
                                             }
-                                            else buf.Add(Byte2Sample(ReadBytes(pospl, 2, FS)) - (int)TQDC2Configs.x1[ch]); // Запись второго Sample в лист
+                                            else buf.Add(TQDC2Configs.chGain[ch] ? (Byte2Sample(ReadBytes(pospl, 2, FS)) - (int)TQDC2Configs.x4[ch]) : (Byte2Sample(ReadBytes(pospl + 2, 2, FS)) - (int)TQDC2Configs.x1[ch])); // Запись второго Sample в лист
                                             pospl += 4;//переход на новую строку
                                         }
                                         adcbuffer.Newrecord(ch, new Adc_Interface(buf, timestamp));// Чтение временной метки ADC в нС
@@ -182,6 +183,9 @@ namespace TQDC16_Summary_Rev_1
                         MessageBox.Show(readerLine, "Ошибка", MessageBoxButtons.RetryCancel);
                     }
                     BufferData buferfiledata = new BufferData();  // Экземпляр для хранения данных вычислений
+                    timeStampSec = ulong.Parse(readerLine.Substring(0,readerLine.IndexOf('.')));    // Запись время триггера сек
+                    timeStampnSec = ulong.Parse(readerLine.Substring(readerLine.IndexOf('.'), readerLine.IndexOf('\n')));   // Запись время триггера нсек
+                    //buferfiledata.AddHeaderEvent(NumEv, TimeStampSec, TimeStampnSec);  //Запись данных триггера
                 }
             }
         }

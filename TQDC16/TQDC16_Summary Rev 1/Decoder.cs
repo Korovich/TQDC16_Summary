@@ -191,9 +191,9 @@ namespace TQDC16_Summary_Rev_1
             {
                 return;
             }
+            InitCsv();
             ulong NumEv;         // Номер Event
             string Date;        // Дата
-            long pos = 0;            // Позиция в блоке файла
             long prog = 0;           // Позициця для Progress Bar
             var fs = new FileStream(String.Format("{0}", ReadFilePath), FileMode.Open); // Экземпляр потока чтения
             var fsr = new StreamReader(fs);
@@ -215,12 +215,40 @@ namespace TQDC16_Summary_Rev_1
                     readerLine = fsr.ReadLine();
                     if (readerLine.Substring(0, 3) == "Ev:")
                     {
-                        readerLine = readerLine.Substring(readerLine.IndexOf("Ev: "));
+                        readerLine = readerLine.Substring(readerLine.IndexOf("Ev: "));      ////////////////SUBSTRING (индекс вхождение,!!!!КОЛИЧЕСТВО ЧИСЕЛ!!!)
                         AddData(EVENT, readerLine.Substring(0,readerLine.IndexOf(" ")));
-                        readerLine = readerLine.Substring(readerLine.IndexOf(" "));
-                        Date = UnixTimeStampToDateTime(uint.Parse(readerLine.Substring(0,readerLine.IndexOf('.')))).ToString(); // Чтение даты и времени глобального Event  и конвертация из unix в стандратный вид
-                        readerLine = readerLine.Substring(readerLine.IndexOf('.'));
+                        readerLine = readerLine.Substring(readerLine.IndexOf(' ')+1);
+                        Date = UnixTimeStampToDateTime(uint.Parse(readerLine.Substring(readerLine.IndexOf(" ")+1, readerLine.IndexOf('.')-2))).ToString(); // Чтение даты и времени глобального Event  и конвертация из unix в стандратный вид
+                        readerLine = readerLine.Substring(readerLine.IndexOf('.')+1);
                         Date += ":" + readerLine.ToString(); // добавление к дате времени в нс
+                        AddData(TIMESTAMP, Date); // Добавление временной метки Event в блок данных
+                        csv.WriteRecord(data); //запись блока данных в файл 
+                        Record_Clear(); //Очистка блока данных
+                        csv.NextRecord(); //переход на след строку в выходном файле
+                        readerLine = fsr.ReadLine();
+                        switch (readerLine.Substring(0,3))
+                        {
+                            case "Tdc":
+                                {
+                                    readerLine = readerLine.Substring(3);
+                                    AddData(CHANNEL,
+                                        readerLine.Substring(readerLine.IndexOf(' ')+1, readerLine.IndexOf(':'))
+                                        );             //Добавление канала, данных,
+                                    AddData(DATA,
+                                        readerLine.Substring(readerLine.IndexOf(": "))
+                                        );             //и типа данных в блок данных
+                                    AddData(TYPE_DATA, TDC);                     //
+                                    csv.WriteRecord(data);                   // Запись блока данных            
+                                    csv.NextRecord();
+                                    break;
+                                }
+                            case "Adc":
+                                {
+                                    readerLine = readerLine.Substring(3);
+                                    uint ch = uint.Parse(readerLine.Substring(readerLine.IndexOf(' '), readerLine.IndexOf(':')));
+                                    break;
+                                }
+                        }
                     }
                 }
             }

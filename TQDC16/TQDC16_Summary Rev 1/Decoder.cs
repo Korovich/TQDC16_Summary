@@ -192,9 +192,9 @@ namespace TQDC16_Summary_Rev_1
                 return;
             }
             InitCsv();
-            ulong NumEv;         // Номер Event
+            //ulong NumEv;         // Номер Event
             string Date;        // Дата
-            long prog = 0;           // Позициця для Progress Bar
+            long prog = 1;           // Позициця для Progress Bar
             var fs = new FileStream(String.Format("{0}", ReadFilePath), FileMode.Open); // Экземпляр потока чтения
             var fsr = new StreamReader(fs);
             string readerLine = "";
@@ -210,48 +210,92 @@ namespace TQDC16_Summary_Rev_1
                 csv.WriteRecord(data);               //
                 Record_Clear();                                 //
                 csv.NextRecord();                    //
+                readerLine = fsr.ReadLine();
                 while (!fsr.EndOfStream)
                 {
-                    readerLine = fsr.ReadLine();
+                    
                     if (readerLine.Substring(0, 3) == "Ev:")
                     {
-                        readerLine = readerLine.Substring(readerLine.IndexOf("Ev: "));      ////////////////SUBSTRING (индекс вхождение,!!!!КОЛИЧЕСТВО ЧИСЕЛ!!!)
+                        readerLine = readerLine.Substring(4);      ////////////////SUBSTRING (индекс вхождение,!!!!КОЛИЧЕСТВО ЧИСЕЛ!!!)
                         AddData(EVENT, readerLine.Substring(0,readerLine.IndexOf(" ")));
                         readerLine = readerLine.Substring(readerLine.IndexOf(' ')+1);
-                        Date = UnixTimeStampToDateTime(uint.Parse(readerLine.Substring(readerLine.IndexOf(" ")+1, readerLine.IndexOf('.')-2))).ToString(); // Чтение даты и времени глобального Event  и конвертация из unix в стандратный вид
+                        Date = UnixTimeStampToDateTime(uint.Parse(readerLine.Substring(readerLine.IndexOf(" ")+1, readerLine.IndexOf('.')-2 - readerLine.IndexOf(" ") + 1))).ToString(); // Чтение даты и времени глобального Event  и конвертация из unix в стандратный вид
                         readerLine = readerLine.Substring(readerLine.IndexOf('.')+1);
                         Date += ":" + readerLine.ToString(); // добавление к дате времени в нс
                         AddData(TIMESTAMP, Date); // Добавление временной метки Event в блок данных
                         csv.WriteRecord(data); //запись блока данных в файл 
                         Record_Clear(); //Очистка блока данных
                         csv.NextRecord(); //переход на след строку в выходном файле
-                        readerLine = fsr.ReadLine();
-                        switch (readerLine.Substring(0,3))
+                        bool isenddata = false;
+                        while (!isenddata)
                         {
-                            case "Tdc":
-                                {
-                                    readerLine = readerLine.Substring(3);
-                                    AddData(CHANNEL,
-                                        readerLine.Substring(readerLine.IndexOf(' ')+1, readerLine.IndexOf(':'))
-                                        );             //Добавление канала, данных,
-                                    AddData(DATA,
-                                        readerLine.Substring(readerLine.IndexOf(": "))
-                                        );             //и типа данных в блок данных
-                                    AddData(TYPE_DATA, TDC);                     //
-                                    csv.WriteRecord(data);                   // Запись блока данных            
-                                    csv.NextRecord();
-                                    break;
-                                }
-                            case "Adc":
-                                {
-                                    readerLine = readerLine.Substring(3);
-                                    uint ch = uint.Parse(readerLine.Substring(readerLine.IndexOf(' '), readerLine.IndexOf(':')));
-                                    break;
-                                }
+                            readerLine = fsr.ReadLine();
+                            if (readerLine is null) break;
+                            switch (readerLine.Substring(0, 3))
+                            {
+                                case "Tdc":
+                                    {
+                                        readerLine = readerLine.Substring(4);
+                                        AddData(CHANNEL,
+                                            readerLine.Substring(0, readerLine.IndexOf(':'))
+                                            );             //Добавление канала, данных,
+                                        AddData(DATA,
+                                            (uint.Parse(readerLine.Substring(readerLine.IndexOf(": ") + 2)) * 25).ToString()
+                                            );             //и типа данных в блок данных
+                                        AddData(TYPE_DATA, TDC);                     //
+                                        csv.WriteRecord(data);                   // Запись блока данных            
+                                        csv.NextRecord();
+                                        break;
+                                    }
+                                case "Adc":
+                                    {
+                                        readerLine = readerLine.Substring(4);
+                                        AddData(CHANNEL,
+                                            readerLine.Substring(0, readerLine.IndexOf(':'))
+                                            );             //Добавление канала, данных,
+                                        AddData(TIMESTAMP,
+                                            (uint.Parse(readerLine.Substring(readerLine.IndexOf(": ") + 1, readerLine.IndexOf(';') - (readerLine.IndexOf(": ") + 1))) *8).ToString()
+                                            );
+                                        readerLine = readerLine.Substring(readerLine.IndexOf(';') + 2);
+                                        string databuf = ""; // Буфер для данных ADC
+                                        while (true)
+                                        {
+                                            try
+                                            {
+                                                databuf += readerLine.Substring(0, readerLine.IndexOf(' ')) + ";";
+                                                readerLine = readerLine.Substring(readerLine.IndexOf(' ') + 1);
+                                            }
+                                            catch
+                                            {
+                                                databuf += readerLine;
+                                                break;
+                                            }
+                                        }
+                                        AddData(DATA, databuf);     //Запись данных в блок данных 
+                                        AddData(TYPE_DATA, ADC);    //
+                                        csv.WriteRecord(data);   // Запись блока данных в файл
+                                        Record_Clear();         // Очистка блока данных
+                                        csv.NextRecord();
+                                        break;
+                                    }
+                                case "Ev:":
+                                    {
+                                        isenddata = true;
+                                        break;
+                                    }
+                            }
                         }
+                    }
+                    if (fs.Position > prog_st * prog) // Проверка на превышение шага в позиции Progress Bar
+                    {
+                        prog++;
+                        ProgressBar.ReportProgress(1);   // Возращение прогресса в BackgroundWorker ProgressBar ( повышение строки прогресса в окне)
                     }
                 }
             }
+            e.Result = 1; //Возращение переменной для различия процесса
+            CSV_Output.CloseCsv(); // закрытие потока записи
+            fs.Close(); // закрытие потока чтения
         }
 
         public static byte EVENT { get; } = 1;          //Константы 

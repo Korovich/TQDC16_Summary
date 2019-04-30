@@ -79,6 +79,7 @@ namespace TQDC16_Summary_Rev_1
                     if (openresult.Selected)
                     {
                         ReadFilePath = TQDC_DATA.FileName;
+                        FileName = TQDC_DATA.SafeFileName;
                         openresult.Serial = "Отсуствует";
                         openresult.ID = "Отсуствует";
                         openresult.Format = String.Format("{0},", TQDC_DATA.SafeFileName);

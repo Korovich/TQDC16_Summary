@@ -144,7 +144,7 @@ namespace TQDC16_Summary_Rev_1
                         }
                     }
                     AddRecord(buferfiledata, tdcbuffer, adcbuffer); // запись данных event в блок вычисленных данных
-                    WriteFile(buferfiledata,writer, StartTimeStampnSec); //запись в файл
+                    WriteFile(buferfiledata, writer, StartTimeStampnSec); //запись в файл
                     prog += EvLeng + 12;    //Повышение позиции для Progress Bar
                     pos = pos + EvLeng + 12;    // Запись новой позиции в файле
                     if (prog > prog_st) // Проверка на превышение шага в позиции Progress Bar
@@ -161,33 +161,107 @@ namespace TQDC16_Summary_Rev_1
 
         public static void StartCalcText(BackgroundWorker ProgressBar, bool[] EnableChannel, DoWorkEventArgs e)
         {
-            ulong numEv;
-            ulong timeStampnSec;    // Время тригера сек
-            ulong timeStampSec;     // Время ригера нсек
-            ulong startTimeStampnSec;    // Время тригера сек
-            var fs = new FileStream(string.Format("{0}", ReadFilePath), FileMode.Open); // Экземпляр потока чтения
+            if (Create_CSV("Вычисление") != DialogResult.OK) // Создание файла CSV проверка на отмену)
+            {
+                return;
+            }
+            InitCsv();
+            //ulong NumEv;         // Номер Event
+            long prog = 1;           // Позициця для Progress Bar
+            var fs = new FileStream(String.Format("{0}", ReadFilePath), FileMode.Open); // Экземпляр потока чтения
             var fsr = new StreamReader(fs);
             string readerLine = "";
+            ulong TimeStampnSec;    // Время тригера сек
+            ulong NumEv;    // Время тригера сек
+            ulong TimeStampSec;     // Время ригера нсек
+            ulong StartTimeStampnSec;    // Время тригера сек
             long prog_st = fs.Length / 999;  // шаг для Progress Bar 
-            using (writer) // поток для записи
+            using (writer)
             {
-                while (true)
+                AddHeaderCalcData(EnableChannel);// Запись загаловка файл
+                readerLine = fsr.ReadLine();
+                readerLine = readerLine.Substring(4);
+                readerLine = readerLine.Substring(readerLine.IndexOf(' ') + 1);
+                StartTimeStampnSec = ulong.Parse(readerLine.Substring(readerLine.IndexOf(" ") + 1, readerLine.IndexOf('.') - 2 - readerLine.IndexOf(" ") + 1)) * 1000000000;    // Запись время триггера нсек*/
+                readerLine = readerLine.Substring(readerLine.IndexOf('.') + 1);
+                StartTimeStampnSec += ulong.Parse(readerLine.ToString());
+                fs.Position = 0;
+                fsr.DiscardBufferedData();
+                readerLine = fsr.ReadLine();
+                while (!fsr.EndOfStream)
                 {
-                    readerLine = fsr.ReadLine();
-                    try
-                    {
-                        readerLine = readerLine.Substring(readerLine.LastIndexOf("Ev: "));
-                    }
-                    catch
-                    {
-                        MessageBox.Show(readerLine, "Ошибка", MessageBoxButtons.RetryCancel);
-                    }
                     BufferData buferfiledata = new BufferData();  // Экземпляр для хранения данных вычислений
-                    timeStampSec = ulong.Parse(readerLine.Substring(0,readerLine.IndexOf('.')));    // Запись время триггера сек
-                    timeStampnSec = ulong.Parse(readerLine.Substring(readerLine.IndexOf('.'), readerLine.IndexOf('\n')));   // Запись время триггера нсек
-                    //buferfiledata.AddHeaderEvent(NumEv, TimeStampSec, TimeStampnSec);  //Запись данных триггера
+                    BufferData<Adc_Interface> adcbuffer = new BufferData<Adc_Interface>(); // экземпляр данных adc в блоке event
+                    BufferData<Tdc_Interface> tdcbuffer = new BufferData<Tdc_Interface>(); // экземпляр данных tdc в блоке event
+                    if (readerLine.Substring(0, 3) == "Ev:")
+                    {
+                        readerLine = readerLine.Substring(4);      
+                        NumEv = ulong.Parse(readerLine.Substring(0, readerLine.IndexOf(" ")));
+                        readerLine = readerLine.Substring(readerLine.IndexOf(' ') + 1);
+                        TimeStampSec = uint.Parse(readerLine.Substring(readerLine.IndexOf(" ") + 1, readerLine.IndexOf('.') - 2 - readerLine.IndexOf(" ") + 1)); // Чтение даты и времени глобального Event  и конвертация из unix в стандратный вид
+                        readerLine = readerLine.Substring(readerLine.IndexOf('.') + 1);
+                        TimeStampnSec = uint.Parse(readerLine.ToString()); // добавление к дате времени в нс
+                        buferfiledata.AddHeaderEvent(NumEv, TimeStampSec, TimeStampnSec);  //Запись данных триггера
+                        bool isenddata = false;
+                        while (!isenddata)
+                        {
+                            readerLine = fsr.ReadLine();
+                            if (readerLine is null) break;
+                            switch (readerLine.Substring(0, 3))
+                            {
+                                case "Tdc":
+                                    {
+                                        readerLine = readerLine.Substring(4);
+                                        int ch = int.Parse(readerLine.Substring(0, readerLine.IndexOf(':')));     //Добавление канала, данных,
+                                        if (!IsNeedChannel(ch + 1)) break;                                            //проверка нужды канала
+                                        uint value = uint.Parse(readerLine.Substring(readerLine.IndexOf(": ") + 2)) * 25;      //чтение данных tdc
+                                        tdcbuffer.Newrecord(ch, new Tdc_Interface(LEADING_FRONT, value));           //Запись данных в блок данных tdc
+                                        break;
+                                    }
+                                case "Adc":
+                                    {
+                                        readerLine = readerLine.Substring(4);
+                                        int ch = int.Parse(readerLine.Substring(0, readerLine.IndexOf(':')));             //чтение канала данных
+                                        if (!IsNeedChannel(ch + 1)) break;      //проверка нужды канала
+                                        ulong timestamp = uint.Parse(readerLine.Substring(readerLine.IndexOf(": ") + 1, readerLine.IndexOf(';') - (readerLine.IndexOf(": ") + 1))) *8;
+                                        readerLine = readerLine.Substring(readerLine.IndexOf(';') + 2);
+                                        List<int> databuf = new List<int>();    //Массив для sample adc
+                                        while (true)
+                                        {
+                                            try
+                                            {
+                                                databuf.Add(int.Parse(readerLine.Substring(0, readerLine.IndexOf(' '))));
+                                                readerLine = readerLine.Substring(readerLine.IndexOf(' ') + 1);
+                                            }
+                                            catch
+                                            {
+                                                databuf.Add(int.Parse(readerLine));
+                                                break;
+                                            }
+                                        }
+                                        adcbuffer.Newrecord(ch, new Adc_Interface(databuf, timestamp));// Чтение временной метки ADC в нС
+                                        break;
+                                    }
+                                case "Ev:":
+                                    {
+                                        isenddata = true;
+                                        break;
+                                    }
+                            }
+                        }
+                    }
+                    AddRecord(buferfiledata, tdcbuffer, adcbuffer); // запись данных event в блок вычисленных данных
+                    WriteFile(buferfiledata, writer, StartTimeStampnSec); //запись в файл
+                    if (fs.Position > prog_st * prog) // Проверка на превышение шага в позиции Progress Bar
+                    {
+                        prog++;
+                        ProgressBar.ReportProgress(1);   // Возращение прогресса в BackgroundWorker ProgressBar ( повышение строки прогресса в окне)
+                    }
                 }
             }
+            e.Result = 3; //Возращение переменной для различия процесса
+            CSV_Output.CloseCsv(); // закрытие потока записи
+            fs.Close(); // закрытие потока чтения
         }
 
         static bool IsNeedChannel(int i) //метод проверки в надобности канала

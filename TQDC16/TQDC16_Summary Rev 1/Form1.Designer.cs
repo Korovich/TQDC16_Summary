@@ -86,6 +86,7 @@
             this.StartWrite = new System.Windows.Forms.Button();
             this.Progress = new System.Windows.Forms.ProgressBar();
             this.BackGrWorkProgressBar = new System.ComponentModel.BackgroundWorker();
+            this.Inl_config = new System.Windows.Forms.CheckBox();
             this.ConfiguireWindow.SuspendLayout();
             this.ConReadFile.SuspendLayout();
             this.ConSaveFile.SuspendLayout();
@@ -217,7 +218,7 @@
             this.ConSaveFile.Margin = new System.Windows.Forms.Padding(2);
             this.ConSaveFile.Name = "ConSaveFile";
             this.ConSaveFile.Padding = new System.Windows.Forms.Padding(2);
-            this.ConSaveFile.Size = new System.Drawing.Size(275, 322);
+            this.ConSaveFile.Size = new System.Drawing.Size(275, 336);
             this.ConSaveFile.TabIndex = 1;
             this.ConSaveFile.Text = "Выходной файл";
             // 
@@ -706,10 +707,11 @@
             // ConConfigFile
             // 
             this.ConConfigFile.BackColor = System.Drawing.SystemColors.Control;
+            this.ConConfigFile.Controls.Add(this.Inl_config);
             this.ConConfigFile.Controls.Add(this.ReadConfigFile);
             this.ConConfigFile.Location = new System.Drawing.Point(4, 22);
             this.ConConfigFile.Name = "ConConfigFile";
-            this.ConConfigFile.Size = new System.Drawing.Size(275, 322);
+            this.ConConfigFile.Size = new System.Drawing.Size(275, 336);
             this.ConConfigFile.TabIndex = 2;
             this.ConConfigFile.Text = "Файл настроек";
             // 
@@ -794,6 +796,17 @@
             this.BackGrWorkProgressBar.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.BackGrWorkProgressBar_ProgressChanged);
             this.BackGrWorkProgressBar.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.BackGrWorkProgressBar_RunWorkerCompleted);
             // 
+            // Inl_config
+            // 
+            this.Inl_config.AutoSize = true;
+            this.Inl_config.Location = new System.Drawing.Point(3, 57);
+            this.Inl_config.Name = "Inl_config";
+            this.Inl_config.Size = new System.Drawing.Size(183, 17);
+            this.Inl_config.TabIndex = 5;
+            this.Inl_config.Text = "Использование Inl калибровки";
+            this.Inl_config.UseVisualStyleBackColor = true;
+            this.Inl_config.CheckedChanged += new System.EventHandler(this.CheckBox1_CheckedChanged);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -817,6 +830,7 @@
             this.ConCalc.ResumeLayout(false);
             this.ConCalc.PerformLayout();
             this.ConConfigFile.ResumeLayout(false);
+            this.ConConfigFile.PerformLayout();
             this.OpenPanel.ResumeLayout(false);
             this.MainPanel.ResumeLayout(false);
             this.ResumeLayout(false);
@@ -882,6 +896,7 @@
         private System.Windows.Forms.Button OpenFileBtn;
         private System.Windows.Forms.TabPage ConConfigFile;
         private System.Windows.Forms.Button ReadConfigFile;
+        private System.Windows.Forms.CheckBox Inl_config;
     }
 }
 

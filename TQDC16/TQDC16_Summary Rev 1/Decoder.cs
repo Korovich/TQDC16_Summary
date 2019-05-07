@@ -12,7 +12,7 @@ namespace TQDC16_Summary_Rev_1
     {
         public static void StartDecodingBinary(BackgroundWorker ProgressBar, DoWorkEventArgs e) //функция декодирования (1 - экземпляр класса BGW, в котором была запущена функция
         {                                                                                 // 2 - аргумент для хранения результата BGW
-            if (Create_CSV("Декодер") != DialogResult.OK) // Создание файла CSV проверка на отмену)
+            if (Create_CSV("Decoded") != DialogResult.OK) // Создание файла CSV проверка на отмену)
             {
                 return;
             }                                      
@@ -70,7 +70,7 @@ namespace TQDC16_Summary_Rev_1
                                                         break;
                                                     }
                                                     uint value = (((Byte2uInt(ReadBytes(pospl, 4, FS))) << 11) >> 11) * 25; // Значение TDC с канала #ch
-                                                    writer.WriteLine(string.Format(";;{0};TDC;{1}", ch + 1,value));
+                                                    writer.WriteLine(string.Format(";;{0};TDC;{1}", ch,value));
                                                     pospl += 4;//переход на новую строку
                                                     break;
                                                 }
@@ -144,13 +144,13 @@ namespace TQDC16_Summary_Rev_1
                 
             }
             e.Result = 1; //Возращение переменной для различия процесса
-            CSV_Output.CloseCsv(); // закрытие потока записи
+            CloseCsv(); // закрытие потока записи
             FS.Close(); // закрытие потока чтения
         }
 
         public static void StartDecodingText(BackgroundWorker ProgressBar, DoWorkEventArgs e)
         {
-            if (Create_CSV("Декодер") != DialogResult.OK) // Создание файла CSV проверка на отмену)
+            if (Create_CSV("Summary") != DialogResult.OK) // Создание файла CSV проверка на отмену)
             {
                 return;
             }
@@ -228,8 +228,9 @@ namespace TQDC16_Summary_Rev_1
                     ProgressBar.ReportProgress(NumEv);   // Возращение прогресса в BackgroundWorker ProgressBar ( повышение строки прогресса в окне)
                 }
             }
+
             e.Result = 1; //Возращение переменной для различия процесса
-            CSV_Output.CloseCsv(); // закрытие потока записи
+            CloseCsv(); // закрытие потока записи
             fs.Close(); // закрытие потока чтения
         }
 

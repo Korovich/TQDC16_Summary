@@ -165,149 +165,202 @@ namespace TQDC16_Summary_Rev_1
 
         private void BackGrWorkProgressBar_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            var Type = e.Result;
-            switch (Type)
+            BackGroundWorkerResult result;
+            if (e.Result is BackGroundWorkerResult)
             {
-                case 1:
-                    {
-                        break;
-                    }
-                case 2:
-                    {
-                        isAnalysis = true;
-                        NumEvText.Text = AnalysisFile.NumEv.ToString();
-                        NumUsCh.Text = AnalysisFile.NumCh.ToString();
+                result = (BackGroundWorkerResult)e.Result;
 
-
-                        ConReadFile.BackColor = System.Drawing.Color.White;
-                        ConSaveFile.BackColor = System.Drawing.Color.White;
-                        ConfiguireWindow.Enabled = true;
-
-                        //ConfiguireWindow.TabPages.Add(OutInfoFile);
-                        for (int i =0;i<16;i++)
+                switch (result.Type)
+                {
+                    case DECODER:
                         {
-                            switch(i)
-                            {
-                                case 0:
-                                    {
-                                        if (AnalysisFile.Channel[i]) { DChannel1.Checked = true; CChannel1.Checked = true; }
-                                        else { DChannel1.BackColor = CheckBoxChColor; DChannel1.Enabled = false;
-                                            CChannel1.BackColor = CheckBoxChColor; CChannel1.Enabled = false;}
-                                        break;
-                                    }
-                                case 1:
-                                    {
-                                        if (AnalysisFile.Channel[i]) { DChannel2.Checked = true; CChannel2.Checked = true; }
-                                        else { DChannel2.BackColor = CheckBoxChColor; DChannel2.Enabled = false;
-                                            CChannel2.BackColor = CheckBoxChColor; CChannel2.Enabled = false;}
-                                        break;
-                                    }
-                                case 2:
-                                    {
-                                        if (AnalysisFile.Channel[i]) { DChannel3.Checked = true; CChannel3.Checked = true; }
-                                        else { DChannel3.BackColor = CheckBoxChColor; DChannel3.Enabled = false;
-                                            CChannel3.BackColor = CheckBoxChColor; CChannel3.Enabled = false; }
-                                        break;
-                                    }
-                                case 3:
-                                    {
-                                        if (AnalysisFile.Channel[i]) { DChannel4.Checked = true; CChannel4.Checked = true; }
-                                        else { CChannel4.BackColor = CheckBoxChColor; CChannel4.Enabled = false;
-                                            DChannel4.BackColor = CheckBoxChColor; DChannel4.Enabled = false;}
-                                        break;
-                                    }
-                                case 4:
-                                    {
-                                        if (AnalysisFile.Channel[i]) { DChannel5.Checked = true; CChannel5.Checked = true; }
-                                        else { DChannel5.BackColor = CheckBoxChColor; DChannel5.Enabled = false;
-                                            CChannel5.BackColor = CheckBoxChColor; CChannel5.Enabled = false;}
-                                        break;
-                                    }
-                                case 5:
-                                    {
-                                        if (AnalysisFile.Channel[i]) { DChannel6.Checked = true; CChannel6.Checked = true; }
-                                        else { DChannel6.BackColor = CheckBoxChColor; DChannel6.Enabled = false;
-                                            CChannel6.BackColor = CheckBoxChColor; CChannel6.Enabled = false;}
-                                        break;
-                                    }
-                                case 6:
-                                    {
-                                        if (AnalysisFile.Channel[i]) { DChannel7.Checked = true; CChannel7.Checked = true; }
-                                        else { DChannel7.BackColor = CheckBoxChColor; DChannel7.Enabled = false;
-                                            CChannel7.BackColor = CheckBoxChColor; CChannel7.Enabled = false;}
-                                        break;
-                                    }
-                                case 7:
-                                    {
-                                        if (AnalysisFile.Channel[i]) { DChannel8.Checked = true; CChannel8.Checked = true; }
-                                        else { DChannel8.BackColor = CheckBoxChColor; DChannel8.Enabled = false;
-                                            CChannel8.BackColor = CheckBoxChColor; CChannel8.Enabled = false;}
-                                        break;
-                                    }
-                                case 8:
-                                    {
-                                        if (AnalysisFile.Channel[i]) { DChannel9.Checked = true; CChannel9.Checked = true; }
-                                        else { DChannel9.BackColor = CheckBoxChColor; DChannel9.Enabled = false;
-                                            CChannel9.BackColor = CheckBoxChColor; CChannel9.Enabled = false;}
-                                        break;
-                                    }
-                                case 9:
-                                    {
-                                        if (AnalysisFile.Channel[i]) { DChannel10.Checked = true; CChannel10.Checked = true; }
-                                        else { DChannel10.BackColor = CheckBoxChColor; DChannel10.Enabled = false;
-                                            CChannel10.BackColor = CheckBoxChColor; CChannel10.Enabled = false;}
-                                        break;
-                                    }
-                                case 10:
-                                    {
-                                        if (AnalysisFile.Channel[i]) { DChannel11.Checked = true; CChannel11.Checked = true; }
-                                        else { DChannel11.BackColor = CheckBoxChColor; DChannel11.Enabled = false;
-                                            CChannel11.BackColor = CheckBoxChColor; CChannel11.Enabled = false;}
-                                        break;
-                                    }
-                                case 11:
-                                    {
-                                        if (AnalysisFile.Channel[i]) { DChannel12.Checked = true; CChannel12.Checked = true; }
-                                        else { DChannel12.BackColor = CheckBoxChColor; DChannel12.Enabled = false;
-                                            CChannel12.BackColor = CheckBoxChColor; CChannel12.Enabled = false;}
-                                        break;
-                                    }
-                                case 12:
-                                    {
-                                        if (AnalysisFile.Channel[i]) { DChannel13.Checked = true; CChannel13.Checked = true; }
-                                        else { DChannel13.BackColor = CheckBoxChColor; DChannel13.Enabled = false;
-                                            CChannel13.BackColor = CheckBoxChColor; CChannel13.Enabled = false;}
-                                        break;
-                                    }
-                                case 13:
-                                    {
-                                        if (AnalysisFile.Channel[i]) { DChannel14.Checked = true; CChannel14.Checked = true; }
-                                        else { DChannel14.BackColor = CheckBoxChColor; DChannel14.Enabled = false;
-                                            CChannel14.BackColor = CheckBoxChColor; CChannel14.Enabled = false;}
-                                        break;
-                                    }
-                                case 14:
-                                    {
-                                        if (AnalysisFile.Channel[i]) { DChannel15.Checked = true; CChannel15.Checked = true; }
-                                        else { DChannel15.BackColor = CheckBoxChColor; DChannel15.Enabled = false;
-                                            CChannel15.BackColor = CheckBoxChColor; CChannel15.Enabled = false;}
-                                        break;
-                                    }
-                                case 15:
-                                    {
-                                        if (AnalysisFile.Channel[i]) { DChannel16.Checked = true; CChannel16.Checked = true; }
-                                        else { DChannel16.BackColor = CheckBoxChColor; DChannel16.Enabled = false;
-                                            CChannel16.BackColor = CheckBoxChColor; CChannel16.Enabled = false;}
-                                        break;
-                                    }
-                            }
+                            break;
                         }
-                        break;
-                    }
-                case 3:
-                    {
-                        break;
-                    }
+                    case ANALYS:
+                        {
+                            isAnalysis = true;
+                            NumEvText.Text = AnalysisFile.NumEv.ToString();
+                            NumUsCh.Text = AnalysisFile.NumCh.ToString();
+
+
+                            ConReadFile.BackColor = System.Drawing.Color.White;
+                            ConSaveFile.BackColor = System.Drawing.Color.White;
+                            ConfiguireWindow.Enabled = true;
+
+                            //ConfiguireWindow.TabPages.Add(OutInfoFile);
+                            for (int i = 0; i < 16; i++)
+                            {
+                                switch (i)
+                                {
+                                    case 0:
+                                        {
+                                            if (AnalysisFile.Channel[i]) { DChannel1.Checked = true; CChannel1.Checked = true; }
+                                            else
+                                            {
+                                                DChannel1.BackColor = CheckBoxChColor; DChannel1.Enabled = false;
+                                                CChannel1.BackColor = CheckBoxChColor; CChannel1.Enabled = false;
+                                            }
+                                            break;
+                                        }
+                                    case 1:
+                                        {
+                                            if (AnalysisFile.Channel[i]) { DChannel2.Checked = true; CChannel2.Checked = true; }
+                                            else
+                                            {
+                                                DChannel2.BackColor = CheckBoxChColor; DChannel2.Enabled = false;
+                                                CChannel2.BackColor = CheckBoxChColor; CChannel2.Enabled = false;
+                                            }
+                                            break;
+                                        }
+                                    case 2:
+                                        {
+                                            if (AnalysisFile.Channel[i]) { DChannel3.Checked = true; CChannel3.Checked = true; }
+                                            else
+                                            {
+                                                DChannel3.BackColor = CheckBoxChColor; DChannel3.Enabled = false;
+                                                CChannel3.BackColor = CheckBoxChColor; CChannel3.Enabled = false;
+                                            }
+                                            break;
+                                        }
+                                    case 3:
+                                        {
+                                            if (AnalysisFile.Channel[i]) { DChannel4.Checked = true; CChannel4.Checked = true; }
+                                            else
+                                            {
+                                                CChannel4.BackColor = CheckBoxChColor; CChannel4.Enabled = false;
+                                                DChannel4.BackColor = CheckBoxChColor; DChannel4.Enabled = false;
+                                            }
+                                            break;
+                                        }
+                                    case 4:
+                                        {
+                                            if (AnalysisFile.Channel[i]) { DChannel5.Checked = true; CChannel5.Checked = true; }
+                                            else
+                                            {
+                                                DChannel5.BackColor = CheckBoxChColor; DChannel5.Enabled = false;
+                                                CChannel5.BackColor = CheckBoxChColor; CChannel5.Enabled = false;
+                                            }
+                                            break;
+                                        }
+                                    case 5:
+                                        {
+                                            if (AnalysisFile.Channel[i]) { DChannel6.Checked = true; CChannel6.Checked = true; }
+                                            else
+                                            {
+                                                DChannel6.BackColor = CheckBoxChColor; DChannel6.Enabled = false;
+                                                CChannel6.BackColor = CheckBoxChColor; CChannel6.Enabled = false;
+                                            }
+                                            break;
+                                        }
+                                    case 6:
+                                        {
+                                            if (AnalysisFile.Channel[i]) { DChannel7.Checked = true; CChannel7.Checked = true; }
+                                            else
+                                            {
+                                                DChannel7.BackColor = CheckBoxChColor; DChannel7.Enabled = false;
+                                                CChannel7.BackColor = CheckBoxChColor; CChannel7.Enabled = false;
+                                            }
+                                            break;
+                                        }
+                                    case 7:
+                                        {
+                                            if (AnalysisFile.Channel[i]) { DChannel8.Checked = true; CChannel8.Checked = true; }
+                                            else
+                                            {
+                                                DChannel8.BackColor = CheckBoxChColor; DChannel8.Enabled = false;
+                                                CChannel8.BackColor = CheckBoxChColor; CChannel8.Enabled = false;
+                                            }
+                                            break;
+                                        }
+                                    case 8:
+                                        {
+                                            if (AnalysisFile.Channel[i]) { DChannel9.Checked = true; CChannel9.Checked = true; }
+                                            else
+                                            {
+                                                DChannel9.BackColor = CheckBoxChColor; DChannel9.Enabled = false;
+                                                CChannel9.BackColor = CheckBoxChColor; CChannel9.Enabled = false;
+                                            }
+                                            break;
+                                        }
+                                    case 9:
+                                        {
+                                            if (AnalysisFile.Channel[i]) { DChannel10.Checked = true; CChannel10.Checked = true; }
+                                            else
+                                            {
+                                                DChannel10.BackColor = CheckBoxChColor; DChannel10.Enabled = false;
+                                                CChannel10.BackColor = CheckBoxChColor; CChannel10.Enabled = false;
+                                            }
+                                            break;
+                                        }
+                                    case 10:
+                                        {
+                                            if (AnalysisFile.Channel[i]) { DChannel11.Checked = true; CChannel11.Checked = true; }
+                                            else
+                                            {
+                                                DChannel11.BackColor = CheckBoxChColor; DChannel11.Enabled = false;
+                                                CChannel11.BackColor = CheckBoxChColor; CChannel11.Enabled = false;
+                                            }
+                                            break;
+                                        }
+                                    case 11:
+                                        {
+                                            if (AnalysisFile.Channel[i]) { DChannel12.Checked = true; CChannel12.Checked = true; }
+                                            else
+                                            {
+                                                DChannel12.BackColor = CheckBoxChColor; DChannel12.Enabled = false;
+                                                CChannel12.BackColor = CheckBoxChColor; CChannel12.Enabled = false;
+                                            }
+                                            break;
+                                        }
+                                    case 12:
+                                        {
+                                            if (AnalysisFile.Channel[i]) { DChannel13.Checked = true; CChannel13.Checked = true; }
+                                            else
+                                            {
+                                                DChannel13.BackColor = CheckBoxChColor; DChannel13.Enabled = false;
+                                                CChannel13.BackColor = CheckBoxChColor; CChannel13.Enabled = false;
+                                            }
+                                            break;
+                                        }
+                                    case 13:
+                                        {
+                                            if (AnalysisFile.Channel[i]) { DChannel14.Checked = true; CChannel14.Checked = true; }
+                                            else
+                                            {
+                                                DChannel14.BackColor = CheckBoxChColor; DChannel14.Enabled = false;
+                                                CChannel14.BackColor = CheckBoxChColor; CChannel14.Enabled = false;
+                                            }
+                                            break;
+                                        }
+                                    case 14:
+                                        {
+                                            if (AnalysisFile.Channel[i]) { DChannel15.Checked = true; CChannel15.Checked = true; }
+                                            else
+                                            {
+                                                DChannel15.BackColor = CheckBoxChColor; DChannel15.Enabled = false;
+                                                CChannel15.BackColor = CheckBoxChColor; CChannel15.Enabled = false;
+                                            }
+                                            break;
+                                        }
+                                    case 15:
+                                        {
+                                            if (AnalysisFile.Channel[i]) { DChannel16.Checked = true; CChannel16.Checked = true; }
+                                            else
+                                            {
+                                                DChannel16.BackColor = CheckBoxChColor; DChannel16.Enabled = false;
+                                                CChannel16.BackColor = CheckBoxChColor; CChannel16.Enabled = false;
+                                            }
+                                            break;
+                                        }
+                                }
+                            }
+                            break;
+                        }
+                    case CALCULATION:
+                        {
+                            break;
+                        }
+                }
             }
             Progress.Value = 0;
             SystemSounds.Exclamation.Play();
@@ -523,9 +576,38 @@ namespace TQDC16_Summary_Rev_1
             }
         }
 
+        public const int OK = 0x01;
+        public const int CANCEL = 0x02;
+        public const int ERROR = 0x03;
+        public const int ANALYS = 0x04;
+        public const int DECODER = 0x05;
+        public const int CALCULATION = 0x06;
+
+
+        public class BackGroundWorkerResult
+        {
+            public BackGroundWorkerResult(int type, int percentprogress, int result)
+            {
+                Type = type;
+                Percentprogress = percentprogress;
+                Result = result;
+            }
+
+            public int Type { get; set; }
+            public int Percentprogress { get; set; }
+            public int Result { get; set; }
+
+
+        }
+
         private void ReadConfigFile_Click(object sender, EventArgs e)
         {
             TQDC2Configs.ReadConfigFile();
+        }
+
+        private void CheckBox1_CheckedChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

@@ -11,7 +11,7 @@ using static TQDC16_Summary_Rev_1.TQDC2File;
 
 namespace TQDC16_Summary_Rev_1
 {
-    public class AnalysisFile
+    public class AnalysisFile:Form1
     {
 
         public static bool[] Channel = new bool[16] ;
@@ -25,6 +25,7 @@ namespace TQDC16_Summary_Rev_1
             long pospl;
             long prog;
             var FS = new FileStream(String.Format("{0}", TQDC2File.ReadFilePath), FileMode.Open);
+            BackGroundWorkerResult analysisresult;
             //long prog_st = 0; 
             while (pos < FS.Length)
             {
@@ -79,7 +80,8 @@ namespace TQDC16_Summary_Rev_1
                  }*/
                 NumEv++;
             }
-            e.Result = 2; //Возращение переменной для различия процесса
+            analysisresult = new BackGroundWorkerResult(ANALYS,100,OK);
+            e.Result = analysisresult; //Возращение переменной для различия процесса
 
             FS.Close();
         }
@@ -87,6 +89,7 @@ namespace TQDC16_Summary_Rev_1
         {
             var fs = new FileStream(string.Format("{0}", ReadFilePath), FileMode.Open); // Экземпляр потока чтения
             var fsr = new StreamReader(fs);
+            BackGroundWorkerResult analysisresult;
             long prog_st = fs.Length / 999;
             long prog = 0;
             while (!fsr.EndOfStream)
@@ -132,7 +135,8 @@ namespace TQDC16_Summary_Rev_1
                     ProgressBar.ReportProgress(1);
                 }
             }
-            e.Result = 2; //Возращение переменной для различия процесса
+            analysisresult = new BackGroundWorkerResult(ANALYS, 100, OK);
+            e.Result = analysisresult; //Возращение переменной для различия процесса
             fsr.Close();
             fs.Close();
         }

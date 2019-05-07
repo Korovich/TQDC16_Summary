@@ -14,16 +14,17 @@ using static TQDC16_Summary_Rev_1.TQDC2File;
 
 namespace TQDC16_Summary_Rev_1
 {
-    class Calculation
+    class Calculation:Form1
     {
 
         public static void StartCalcBinary(BackgroundWorker ProgressBar, bool[] EnableChannel, DoWorkEventArgs e)
         {
-            if (Create_CSV("Вычисление") != DialogResult.OK) // Создание файла CSV
+            if (Create_CSV("Summary") != DialogResult.OK) // Создание файла CSV
             {
                 return;
             }
             InitCsv();    // Инициирование экземпляров записи
+            BackGroundWorkerResult calculationresult;
             int EvLeng;             // Длина глобального Event в байтах
             int MSLeng;             // Длина блока MStream
             int DataPLLeng;         // Длина блока DataPayload
@@ -127,12 +128,12 @@ namespace TQDC16_Summary_Rev_1
                                         }
                                         for (uint i = 0; i < ((DataLen / 4) * 4 == DataLen ? (DataLen / 4) : (DataLen / 4) + 1); i++) //цикл на чтение Sample ADC
                                         {
-                                            buf.Add(TQDC2Configs.chGain[ch] ?(Byte2Sample(ReadBytes(pospl + 2, 2, FS)) - (int)TQDC2Configs.x4[ch]): (Byte2Sample(ReadBytes(pospl + 2, 2, FS)) - (int)TQDC2Configs.x1[ch])); // Запись первого Sample в лист
+                                            buf.Add(TQDC2Configs.ChGain[ch] ?(Byte2Sample(ReadBytes(pospl + 2, 2, FS)) - (int)TQDC2Configs.X4[ch]): (Byte2Sample(ReadBytes(pospl + 2, 2, FS)) - (int)TQDC2Configs.X1[ch])); // Запись первого Sample в лист
                                             if (odd & i == (DataLen / 4)) // если данные нечетные и последняя строка данных, то последнее 16 битный sample не читается
                                             {
 
                                             }
-                                            else buf.Add(TQDC2Configs.chGain[ch] ? (Byte2Sample(ReadBytes(pospl, 2, FS)) - (int)TQDC2Configs.x4[ch]) : (Byte2Sample(ReadBytes(pospl + 2, 2, FS)) - (int)TQDC2Configs.x1[ch])); // Запись второго Sample в лист
+                                            else buf.Add(TQDC2Configs.ChGain[ch] ? (Byte2Sample(ReadBytes(pospl, 2, FS)) - (int)TQDC2Configs.X4[ch]) : (Byte2Sample(ReadBytes(pospl + 2, 2, FS)) - (int)TQDC2Configs.X1[ch])); // Запись второго Sample в лист
                                             pospl += 4;//переход на новую строку
                                         }
                                         adcbuffer.Newrecord(ch, new Adc_Interface(buf, timestamp));// Чтение временной метки ADC в нС
@@ -149,14 +150,15 @@ namespace TQDC16_Summary_Rev_1
                     ProgressBar.ReportProgress((int)NumEv);   // Возращение прогресса в BackgroundWorker ProgressBar ( повышение строки прогресса в окне)
                 }
             }
-            e.Result = 3; //Возращение переменной для различия процесса
+            calculationresult = new BackGroundWorkerResult(CALCULATION,100,OK);
+            e.Result = calculationresult; //Возращение переменной для различия процесса
             FS.Close();     //Закрытие чтение
             CloseCsv();     //и записи
         }
 
         public static void StartCalcText(BackgroundWorker ProgressBar, bool[] EnableChannel, DoWorkEventArgs e)
         {
-            if (Create_CSV("Вычисление") != DialogResult.OK) // Создание файла CSV проверка на отмену)
+            if (Create_CSV("Summary") != DialogResult.OK) // Создание файла CSV проверка на отмену)
             {
                 return;
             }
@@ -165,6 +167,7 @@ namespace TQDC16_Summary_Rev_1
             var fs = new FileStream(String.Format("{0}", ReadFilePath), FileMode.Open); // Экземпляр потока чтения
             var fsr = new StreamReader(fs);
             string readerLine = "";
+            BackGroundWorkerResult calculationresult;
             ulong TimeStampnSec;    // Время тригера сек
             uint NumEv = 0;    // Время тригера сек
             ulong TimeStampSec;     // Время ригера нсек
@@ -249,8 +252,9 @@ namespace TQDC16_Summary_Rev_1
                     ProgressBar.ReportProgress((int)NumEv);   // Возращение прогресса в BackgroundWorker ProgressBar ( повышение строки прогресса в окне)
                 }
             }
-            e.Result = 3; //Возращение переменной для различия процесса
-            CSV_Output.CloseCsv(); // закрытие потока записи
+            calculationresult = new BackGroundWorkerResult(CALCULATION, 100, OK);
+            e.Result = calculationresult; //Возращение переменной для различия процесса
+            CloseCsv(); // закрытие потока записи
             fs.Close(); // закрытие потока чтения
         }
 

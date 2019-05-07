@@ -50,6 +50,7 @@ namespace TQDC16_Summary_Rev_1
                     if (openresult.Selected)
                     {
                         ReadFilePath = TQDC_DATA.FileName;
+                        FileLen = FSD.Length;
                         openresult.Serial = Converters.Byte2Str(ReadBytes(12, 4, FSD));
                         openresult.ID = Converters.Id2Str(ReadBytes(16, 1, FSD)[0]);
                         openresult.Format = String.Format("{0},",TQDC_DATA.SafeFileName);

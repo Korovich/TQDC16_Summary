@@ -108,7 +108,7 @@
             this.ConfiguireWindow.Margin = new System.Windows.Forms.Padding(2);
             this.ConfiguireWindow.Name = "ConfiguireWindow";
             this.ConfiguireWindow.SelectedIndex = 0;
-            this.ConfiguireWindow.Size = new System.Drawing.Size(283, 348);
+            this.ConfiguireWindow.Size = new System.Drawing.Size(283, 362);
             this.ConfiguireWindow.TabIndex = 1;
             // 
             // ConReadFile
@@ -126,7 +126,7 @@
             this.ConReadFile.Margin = new System.Windows.Forms.Padding(2);
             this.ConReadFile.Name = "ConReadFile";
             this.ConReadFile.Padding = new System.Windows.Forms.Padding(2);
-            this.ConReadFile.Size = new System.Drawing.Size(275, 322);
+            this.ConReadFile.Size = new System.Drawing.Size(275, 336);
             this.ConReadFile.TabIndex = 0;
             this.ConReadFile.Text = "Описание файла";
             // 
@@ -779,9 +779,11 @@
             // 
             this.Progress.Location = new System.Drawing.Point(295, 352);
             this.Progress.Margin = new System.Windows.Forms.Padding(2);
-            this.Progress.Maximum = 1000;
+            this.Progress.MarqueeAnimationSpeed = 1000;
+            this.Progress.Maximum = 10000;
             this.Progress.Name = "Progress";
             this.Progress.Size = new System.Drawing.Size(588, 16);
+            this.Progress.Step = 1;
             this.Progress.TabIndex = 4;
             // 
             // BackGrWorkProgressBar

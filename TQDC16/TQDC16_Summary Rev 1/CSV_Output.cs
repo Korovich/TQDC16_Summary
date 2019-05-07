@@ -1,5 +1,4 @@
-﻿using CsvHelper;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Dynamic;
 using System.IO;
@@ -14,8 +13,8 @@ namespace TQDC16_Summary_Rev_1
     public class CSV_Output
     {
         public static string Path { get; set; } = null;
+
         public static StreamWriter writer;
-        public static CsvWriter csv;
         public static List<dynamic> records = new List<dynamic>();
         public static DialogResult Create_CSV (string infixName = "")
         {
@@ -40,7 +39,6 @@ namespace TQDC16_Summary_Rev_1
         public static void InitCsv ()
         {
             writer = new StreamWriter(Path);
-            csv = new CsvWriter(writer);
         }
 
         public static void CloseCsv()

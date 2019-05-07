@@ -23,9 +23,9 @@ namespace TQDC16_Summary_Rev_1
             int PLLeng;
             long pos = 0;
             long pospl;
-            long prog = 0;
+            long prog;
             var FS = new FileStream(String.Format("{0}", TQDC2File.ReadFilePath), FileMode.Open);
-            long prog_st = FS.Length / 999;
+            //long prog_st = 0; 
             while (pos < FS.Length)
             {
                 EvLeng = Byte2Int(ReadBytes(pos + 4, 4, FS));
@@ -68,16 +68,19 @@ namespace TQDC16_Summary_Rev_1
                             }
                     }
                 }
-                prog += EvLeng + 12;
+                //prog += EvLeng + 12;
                 pos = pos + EvLeng + 12;
-                if (prog > prog_st)
-                {
-                    prog = 0;
-                    ProgressBar.ReportProgress(1);
-                }
+                prog = ((FS.Position * 10000) / FS.Length);
+                ProgressBar.ReportProgress((int)prog);
+                /* if (pos > prog_st * prog)
+                 {
+                     prog ++;
+                     ProgressBar.ReportProgress(1);
+                 }*/
                 NumEv++;
             }
             e.Result = 2; //Возращение переменной для различия процесса
+
             FS.Close();
         }
         public static void AnChannelText(BackgroundWorker ProgressBar, DoWorkEventArgs e)

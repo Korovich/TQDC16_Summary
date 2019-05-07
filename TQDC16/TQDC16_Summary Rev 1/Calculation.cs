@@ -35,7 +35,6 @@ namespace TQDC16_Summary_Rev_1
             ulong TimeStampSec;     // Время ригера нсек
             ulong StartTimeStampnSec;    // Время тригера сек
             var FS = new FileStream(string.Format("{0}", ReadFilePath), FileMode.Open); // Экземпляр потока чтения
-            long prog_st = FS.Length / 999;  // шаг для Progress Bar 
             using (writer) // поток для записи
             {
                 AddHeaderCalcData(EnableChannel);// Запись загаловка файл
@@ -147,11 +146,7 @@ namespace TQDC16_Summary_Rev_1
                     WriteFile(buferfiledata, writer, StartTimeStampnSec); //запись в файл
                     prog += EvLeng + 12;    //Повышение позиции для Progress Bar
                     pos = pos + EvLeng + 12;    // Запись новой позиции в файле
-                    if (prog > prog_st) // Проверка на превышение шага в позиции Progress Bar
-                    {
-                        prog = 0;
-                        ProgressBar.ReportProgress(1);   // Возращение прогресса в BackgroundWorker ProgressBar ( повышение строки прогресса в окне)
-                    }
+                    ProgressBar.ReportProgress((int)NumEv);   // Возращение прогресса в BackgroundWorker ProgressBar ( повышение строки прогресса в окне)
                 }
             }
             e.Result = 3; //Возращение переменной для различия процесса
@@ -167,15 +162,14 @@ namespace TQDC16_Summary_Rev_1
             }
             InitCsv();
             //ulong NumEv;         // Номер Event
-            long prog = 1;           // Позициця для Progress Bar
             var fs = new FileStream(String.Format("{0}", ReadFilePath), FileMode.Open); // Экземпляр потока чтения
             var fsr = new StreamReader(fs);
             string readerLine = "";
             ulong TimeStampnSec;    // Время тригера сек
-            ulong NumEv;    // Время тригера сек
+            uint NumEv = 0;    // Время тригера сек
             ulong TimeStampSec;     // Время ригера нсек
             ulong StartTimeStampnSec;    // Время тригера сек
-            long prog_st = fs.Length / 999;  // шаг для Progress Bar 
+            //long prog_st = (fs.Length / 10000) - 1;  // шаг для Progress Bar 
             using (writer)
             {
                 AddHeaderCalcData(EnableChannel);// Запись загаловка файл
@@ -196,7 +190,7 @@ namespace TQDC16_Summary_Rev_1
                     if (readerLine.Substring(0, 3) == "Ev:")
                     {
                         readerLine = readerLine.Substring(4);      
-                        NumEv = ulong.Parse(readerLine.Substring(0, readerLine.IndexOf(" ")));
+                        NumEv = uint.Parse(readerLine.Substring(0, readerLine.IndexOf(" ")));
                         readerLine = readerLine.Substring(readerLine.IndexOf(' ') + 1);
                         TimeStampSec = uint.Parse(readerLine.Substring(readerLine.IndexOf(" ") + 1, readerLine.IndexOf('.') - 2 - readerLine.IndexOf(" ") + 1)); // Чтение даты и времени глобального Event  и конвертация из unix в стандратный вид
                         readerLine = readerLine.Substring(readerLine.IndexOf('.') + 1);
@@ -252,11 +246,7 @@ namespace TQDC16_Summary_Rev_1
                     }
                     AddRecord(buferfiledata, tdcbuffer, adcbuffer); // запись данных event в блок вычисленных данных
                     WriteFile(buferfiledata, writer, StartTimeStampnSec); //запись в файл
-                    if (fs.Position > prog_st * prog) // Проверка на превышение шага в позиции Progress Bar
-                    {
-                        prog++;
-                        ProgressBar.ReportProgress(1);   // Возращение прогресса в BackgroundWorker ProgressBar ( повышение строки прогресса в окне)
-                    }
+                    ProgressBar.ReportProgress((int)NumEv);   // Возращение прогресса в BackgroundWorker ProgressBar ( повышение строки прогресса в окне)
                 }
             }
             e.Result = 3; //Возращение переменной для различия процесса

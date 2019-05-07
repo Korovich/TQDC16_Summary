@@ -9,6 +9,8 @@ using System.IO;
 using System.Windows.Forms;
 using System.Media;
 
+
+
 namespace TQDC16_Summary_Rev_1
 {
 
@@ -23,6 +25,8 @@ namespace TQDC16_Summary_Rev_1
         public static bool isAnalysis = false;
         readonly Color CheckBoxChColor = SystemColors.ButtonShadow;
         TQDC2File.OpenResult result;
+
+        
         private void label1_Click(object sender, EventArgs e)
         {
 
@@ -56,7 +60,9 @@ namespace TQDC16_Summary_Rev_1
         private void StartAnalys_Click(object sender, EventArgs e)
         {
             if (BackGrWorkProgressBar.IsBusy != true)
+            {
                 BackGrWorkProgressBar.RunWorkerAsync(new BackGroundWorkerTask(2, result.Format));
+            }
         }
 
         private void label3_Click(object sender, EventArgs e)
@@ -72,10 +78,13 @@ namespace TQDC16_Summary_Rev_1
         private void StartWrite_Click(object sender, EventArgs e)
         {
             if (BackGrWorkProgressBar.IsBusy != true)
+            {
                 BackGrWorkProgressBar.RunWorkerAsync(new BackGroundWorkerTask(3, result.Format));
-            OpenFileBtn.Enabled = false;
-            StartDecoder.Enabled = false;
-            StartWrite.Enabled = false;
+                OpenFileBtn.Enabled = false;
+                StartDecoder.Enabled = false;
+                StartWrite.Enabled = false;
+                Progress.Maximum = AnalysisFile.NumEv;
+            }
         }
 
         private void BackGrWorkProgressBar_DoWork(object sender, DoWorkEventArgs e)
@@ -104,6 +113,7 @@ namespace TQDC16_Summary_Rev_1
                                     break;
                                 }
                         }
+                        
                         break;
                     }
                 case 2:
@@ -125,7 +135,7 @@ namespace TQDC16_Summary_Rev_1
                     }
                 case 3:
                     {
-                        switch(Task.Format)
+                        switch (Task.Format)
                         {
                             case "txt":
                                 {
@@ -150,7 +160,7 @@ namespace TQDC16_Summary_Rev_1
 
         private void BackGrWorkProgressBar_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            Progress.Value += 1;
+            Progress.Value = (e.ProgressPercentage);
         }
 
         private void BackGrWorkProgressBar_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -309,10 +319,13 @@ namespace TQDC16_Summary_Rev_1
         private void StartDecoder_Click(object sender, EventArgs e)
         {
             if (BackGrWorkProgressBar.IsBusy != true)
-                BackGrWorkProgressBar.RunWorkerAsync(new BackGroundWorkerTask(1,result.Format));
-            OpenFileBtn.Enabled = false;
-            StartDecoder.Enabled = false;
-            StartWrite.Enabled = false;
+            {
+                BackGrWorkProgressBar.RunWorkerAsync(new BackGroundWorkerTask(1, result.Format));
+                OpenFileBtn.Enabled = false;
+                StartDecoder.Enabled = false;
+                StartWrite.Enabled = false;
+                Progress.Maximum = AnalysisFile.NumEv;
+            }
         }
 
         private void label5_Click(object sender, EventArgs e)

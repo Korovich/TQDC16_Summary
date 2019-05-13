@@ -65,6 +65,7 @@
     <Reference Include="System.ValueTuple, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.ValueTuple.4.4.0\lib\net461\System.ValueTuple.dll</HintPath>
     </Reference>
+    <Reference Include="System.Windows.Forms.DataVisualization" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />
@@ -75,7 +76,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AnalysisFile.cs" />
-    <Compile Include="Calculation.cs" />
+    <Compile Include="Calculation.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="CSV_Output.cs" />
     <Compile Include="Converters.cs" />
     <Compile Include="Decoder.cs" />

@@ -19,13 +19,17 @@ namespace TQDC16_Summary_Rev_1
         public Form1()
         {
             InitializeComponent();
+            DChannel = new bool[16];
+            CChannel = new bool[16];
+            isAnalysis = false;
+            inl_config = false;
         }
-        public static bool[] DChannel = new bool[16];
-        public static bool[] CChannel = new bool[16];
-        public static bool isAnalysis = false;
+        public static bool[] DChannel;
+        public static bool[] CChannel;
+        public static bool isAnalysis;
         readonly Color CheckBoxChColor = SystemColors.ButtonShadow;
         TQDC2File.OpenResult result;
-
+        public static bool inl_config;
         
         private void label1_Click(object sender, EventArgs e)
         {
@@ -160,7 +164,14 @@ namespace TQDC16_Summary_Rev_1
 
         private void BackGrWorkProgressBar_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
+            Calculation.BlockData<Calculation.Adc_Interface> adcdata;
             Progress.Value = (e.ProgressPercentage);
+            ClearChartSample();
+            if (e.UserState is Calculation.BlockData<Calculation.Adc_Interface>)
+            {
+                adcdata = (Calculation.BlockData<Calculation.Adc_Interface>)e.UserState;
+                UpdateChartSample(adcdata);
+            }
         }
 
         private void BackGrWorkProgressBar_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -582,6 +593,7 @@ namespace TQDC16_Summary_Rev_1
         public const int ANALYS = 0x04;
         public const int DECODER = 0x05;
         public const int CALCULATION = 0x06;
+        public const int GRAPHIC = 0x10;
 
 
         public class BackGroundWorkerResult
@@ -600,14 +612,53 @@ namespace TQDC16_Summary_Rev_1
 
         }
 
+        void UpdateChartSample(Calculation.BlockData<Calculation.Adc_Interface> blockdata)
+        {
+            int index = 1;
+            foreach (List<Calculation.Adc_Interface> item in blockdata)
+            {
+                if (ReturnChartChooseChannel() == index)
+                {
+                    foreach (Calculation.Adc_Interface adc_Interface in item)
+                    {
+                        int x = 0;
+                        foreach (int sample in adc_Interface.bufsamples)
+                        {
+                            ChartSample.Series[0].Points.AddXY(12.5 * x, sample);
+                        }
+                    }
+                }
+                //ChartSample.Series[index];
+                index++;
+            }
+        }
+        void ClearChartSample()
+        {
+            ChartSample.Series.Clear();
+        }
+
         private void ReadConfigFile_Click(object sender, EventArgs e)
         {
             TQDC2Configs.ReadConfigFile();
         }
 
-        private void CheckBox1_CheckedChanged(object sender, EventArgs e)
+        private void Inl_config_CheckedChanged(object sender, EventArgs e)
         {
+            inl_config = Inl_config.Checked;
+        }
 
+        public int ReturnChartChooseChannel()
+        {
+            int index = 1;
+            foreach(RadioButton item in PanelRadioButtonChart.Container.Components)
+            {
+                if (item.Checked)
+                {
+                    return index;
+                }
+                index++;
+            }
+             return -1;
         }
     }
 }

@@ -16,7 +16,6 @@ namespace TQDC16_Summary_Rev_1
 {
     class Calculation:Form1
     {
-
         public static void StartCalcBinary(BackgroundWorker ProgressBar, bool[] EnableChannel, DoWorkEventArgs e)
         {
             if (Create_CSV("Summary") != DialogResult.OK) // Создание файла CSV
@@ -33,7 +32,7 @@ namespace TQDC16_Summary_Rev_1
             long pospl;             // Позиция в блоке DataPayload
             long prog = 0;          // Позиция для Progress Bar
             ulong TimeStampnSec;    // Время тригера сек
-            ulong TimeStampSec;     // Время ригера нсек
+            ulong TimeStampSec;     // Время тригера нсек
             ulong StartTimeStampnSec;    // Время тригера сек
             var FS = new FileStream(string.Format("{0}", ReadFilePath), FileMode.Open); // Экземпляр потока чтения
             using (writer) // поток для записи
@@ -52,8 +51,8 @@ namespace TQDC16_Summary_Rev_1
                     TimeStampnSec = Byte2uInt(ReadBytes(pos + 28, 4, FS))>>2;    // Запись время триггера нсек
                     buferfiledata.AddHeaderEvent(NumEv, TimeStampSec, TimeStampnSec);  //Запись данных триггера
                     pospl = pos + 32; // присваивание поцизии в блоке MSPayload начального значения
-                    BufferData<Adc_Interface> adcbuffer = new BufferData<Adc_Interface>(); // экземпляр данных adc в блоке event
-                    BufferData<Tdc_Interface> tdcbuffer = new BufferData<Tdc_Interface>(); // экземпляр данных tdc в блоке event
+                    BlockData<Adc_Interface> adcbuffer = new BlockData<Adc_Interface>(); // экземпляр данных adc в блоке event
+                    BlockData<Tdc_Interface> tdcbuffer = new BlockData<Tdc_Interface>(); // экземпляр данных tdc в блоке event
                     while (pospl != pos + EvLeng + 12) // Цикл на чтение Data Block ( пока позиция в блоке Data block не в конце блока Data block) 
                     {
                         DataPLLeng = Byte2Int(ReadBytes(pospl + 2, 2, FS)); //Чтение длины DataPayload
@@ -81,6 +80,10 @@ namespace TQDC16_Summary_Rev_1
                                                     int ch = ((Byte2Int(ReadBytes(pospl, 4, FS))) << 7) >> 28;                   //чтение канала данных
                                                     if (!IsNeedChannel(ch+1)) break;                                            //проверка нужды канала
                                                     uint value = (((Byte2uInt(ReadBytes(pospl, 4, FS))) << 11) >> 11) * 25;      //чтение данных tdc
+                                                    if (inl_config)
+                                                    {
+                                                        //value += TQDC2Configs.Inl[2][12];
+                                                    }
                                                     tdcbuffer.Newrecord(ch, new Tdc_Interface(LEADING_FRONT, value));           //Запись данных в блок данных tdc
                                                     pospl += 4;
                                                     break;
@@ -147,7 +150,7 @@ namespace TQDC16_Summary_Rev_1
                     WriteFile(buferfiledata, writer, StartTimeStampnSec); //запись в файл
                     prog += EvLeng + 12;    //Повышение позиции для Progress Bar
                     pos = pos + EvLeng + 12;    // Запись новой позиции в файле
-                    ProgressBar.ReportProgress((int)NumEv);   // Возращение прогресса в BackgroundWorker ProgressBar ( повышение строки прогресса в окне)
+                    ProgressBar.ReportProgress((int)NumEv,adcbuffer);   // Возращение прогресса в BackgroundWorker ProgressBar ( повышение строки прогресса в окне)
                 }
             }
             calculationresult = new BackGroundWorkerResult(CALCULATION,100,OK);
@@ -188,8 +191,8 @@ namespace TQDC16_Summary_Rev_1
                 while (!fsr.EndOfStream)
                 {
                     BufferData buferfiledata = new BufferData();  // Экземпляр для хранения данных вычислений
-                    BufferData<Adc_Interface> adcbuffer = new BufferData<Adc_Interface>(); // экземпляр данных adc в блоке event
-                    BufferData<Tdc_Interface> tdcbuffer = new BufferData<Tdc_Interface>(); // экземпляр данных tdc в блоке event
+                    BlockData<Adc_Interface> adcbuffer = new BlockData<Adc_Interface>(); // экземпляр данных adc в блоке event
+                    BlockData<Tdc_Interface> tdcbuffer = new BlockData<Tdc_Interface>(); // экземпляр данных tdc в блоке event
                     if (readerLine.Substring(0, 3) == "Ev:")
                     {
                         readerLine = readerLine.Substring(4);      
@@ -236,6 +239,7 @@ namespace TQDC16_Summary_Rev_1
                                                 break;
                                             }
                                         }
+                                        
                                         adcbuffer.Newrecord(ch, new Adc_Interface(databuf, timestamp));// Чтение временной метки ADC в нС
                                         break;
                                     }
@@ -249,7 +253,7 @@ namespace TQDC16_Summary_Rev_1
                     }
                     AddRecord(buferfiledata, tdcbuffer, adcbuffer); // запись данных event в блок вычисленных данных
                     WriteFile(buferfiledata, writer, StartTimeStampnSec); //запись в файл
-                    ProgressBar.ReportProgress((int)NumEv);   // Возращение прогресса в BackgroundWorker ProgressBar ( повышение строки прогресса в окне)
+                    ProgressBar.ReportProgress((int)NumEv);   // Возращение прогресса в BackgroundWorker ProgressBar (повышение строки прогресса в окне)
                 }
             }
             calculationresult = new BackGroundWorkerResult(CALCULATION, 100, OK);
@@ -347,7 +351,7 @@ namespace TQDC16_Summary_Rev_1
 
 
         //Добавление записи в блок данных вычислений
-        internal static void AddRecord(BufferData buferfiledata, BufferData<Tdc_Interface> buffertdc, BufferData<Adc_Interface> bufferadc)
+        internal static void AddRecord(BufferData buferfiledata, BlockData<Tdc_Interface> buffertdc, BlockData<Adc_Interface> bufferadc)
         {
             for (int ch = 0; ch < 16; ch++)
             {
@@ -439,11 +443,14 @@ namespace TQDC16_Summary_Rev_1
             }
         }
 
-        internal class BufferData<T> // Класс для хранения блока ADC или TDC
+        internal class BlockData<T>: IEnumerator // Класс для хранения блока ADC или TDC
         {
             private readonly List<T>[] buffer;
+            public int position;
 
-            internal BufferData ()
+            object IEnumerator.Current => Current;
+
+            internal BlockData ()
             {
                 buffer = new List<T>[16]; 
                 
@@ -452,7 +459,7 @@ namespace TQDC16_Summary_Rev_1
                     
                     buffer[i] = new List<T>();
                 }
-                
+                position = -1;
             }
 
             internal void Newrecord (int channel, T item)
@@ -464,6 +471,37 @@ namespace TQDC16_Summary_Rev_1
             internal T LastValue (int channel)
             {
                 return buffer[channel].Last();
+            }
+
+            public IEnumerator GetEnumerator()
+            {
+                return (IEnumerator)this;
+            }
+
+            public bool MoveNext()
+            {
+                position++;
+                return (position < 16);
+            }
+
+            public void Reset()
+            {
+                position = -1;
+            }
+
+            public List<T> Current
+            {
+                get
+                {
+                    try
+                    {
+                        return this[position];
+                    }
+                    catch (IndexOutOfRangeException)
+                    {
+                        throw new InvalidOperationException();
+                    }
+                }
             }
 
             internal List<T> this[int channel]
@@ -480,31 +518,31 @@ namespace TQDC16_Summary_Rev_1
 
         }
         
-        internal class BufferData : IEnumerator
+        public class BufferData : IEnumerator
         {
-            internal ulong numEvent;
-            internal ulong timeStampSec;
-            internal ulong timeStampnSec;
-            internal int position;
+            public ulong numEvent;
+            public ulong timeStampSec;
+            public ulong timeStampnSec;
+            public int position;
 
-            internal List<InterfClass> Channel1 = new List<InterfClass>();
-            internal List<InterfClass> Channel2 = new List<InterfClass>();
-            internal List<InterfClass> Channel3 = new List<InterfClass>();
-            internal List<InterfClass> Channel4 = new List<InterfClass>();
-            internal List<InterfClass> Channel5 = new List<InterfClass>();
-            internal List<InterfClass> Channel6 = new List<InterfClass>();
-            internal List<InterfClass> Channel7 = new List<InterfClass>();
-            internal List<InterfClass> Channel8 = new List<InterfClass>();
-            internal List<InterfClass> Channel9 = new List<InterfClass>();
-            internal List<InterfClass> Channel10 = new List<InterfClass>();
-            internal List<InterfClass> Channel11 = new List<InterfClass>();
-            internal List<InterfClass> Channel12 = new List<InterfClass>();
-            internal List<InterfClass> Channel13 = new List<InterfClass>();
-            internal List<InterfClass> Channel14 = new List<InterfClass>();
-            internal List<InterfClass> Channel15 = new List<InterfClass>();
-            internal List<InterfClass> Channel16 = new List<InterfClass>();
+            public List<InterfClass> Channel1 = new List<InterfClass>();
+            public List<InterfClass> Channel2 = new List<InterfClass>();
+            public List<InterfClass> Channel3 = new List<InterfClass>();
+            public List<InterfClass> Channel4 = new List<InterfClass>();
+            public List<InterfClass> Channel5 = new List<InterfClass>();
+            public List<InterfClass> Channel6 = new List<InterfClass>();
+            public List<InterfClass> Channel7 = new List<InterfClass>();
+            public List<InterfClass> Channel8 = new List<InterfClass>();
+            public List<InterfClass> Channel9 = new List<InterfClass>();
+            public List<InterfClass> Channel10 = new List<InterfClass>();
+            public List<InterfClass> Channel11 = new List<InterfClass>();
+            public List<InterfClass> Channel12 = new List<InterfClass>();
+            public List<InterfClass> Channel13 = new List<InterfClass>();
+            public List<InterfClass> Channel14 = new List<InterfClass>();
+            public List<InterfClass> Channel15 = new List<InterfClass>();
+            public List<InterfClass> Channel16 = new List<InterfClass>();
 
-            internal void AddHeaderEvent(ulong numEvent,
+            public void AddHeaderEvent(ulong numEvent,
                                     ulong timeStampSec,
                                     ulong timeStampnSec)
             {
@@ -513,7 +551,7 @@ namespace TQDC16_Summary_Rev_1
                 this.timeStampnSec = timeStampnSec;
             }
 
-            internal int MaxLen() //метод возврата максимальной длины
+            public int MaxLen() //метод возврата максимальной длины
             {
                 int result = 0;
                 for (int i=0;i<16;i++)
@@ -523,14 +561,14 @@ namespace TQDC16_Summary_Rev_1
                 return result;
             }
 
-            internal void WriteStringHeaderEvent (StreamWriter writer, ulong starttimestamp)
+            public void WriteStringHeaderEvent (StreamWriter writer, ulong starttimestamp)
             {
                 ulong timestamp = ((ulong)timeStampSec * 1000000000) + (ulong)timeStampnSec;
                 timestamp -= starttimestamp;
                 writer.Write(string.Format("{0};{1}", numEvent, timestamp));
             }
 
-            internal BufferData(ulong numEvent = 0, ulong timeStampSec = 0, ulong timeStampnSec = 0, int position = -1)
+            public BufferData(ulong numEvent = 0, ulong timeStampSec = 0, ulong timeStampnSec = 0, int position = -1)
             {
                 this.numEvent = numEvent;
                 this.timeStampSec = timeStampSec;
@@ -556,7 +594,7 @@ namespace TQDC16_Summary_Rev_1
             }
 
 
-            internal List<InterfClass> this[int index]
+            public List<InterfClass> this[int index]
             {
                 get
                 {
@@ -598,7 +636,9 @@ namespace TQDC16_Summary_Rev_1
 
             //IEnumerable
             public void Reset()
-            { position = -1; }
+            {
+                position = -1;
+            }
 
             //IEnumerable
             object IEnumerator.Current

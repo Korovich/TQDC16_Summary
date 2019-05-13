@@ -28,6 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea3 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend3 = new System.Windows.Forms.DataVisualization.Charting.Legend();
             this.ConfiguireWindow = new System.Windows.Forms.TabControl();
             this.ConReadFile = new System.Windows.Forms.TabPage();
             this.NumEvText = new System.Windows.Forms.TextBox();
@@ -78,6 +80,7 @@
             this.CChannel9 = new System.Windows.Forms.CheckBox();
             this.CChannel10 = new System.Windows.Forms.CheckBox();
             this.ConConfigFile = new System.Windows.Forms.TabPage();
+            this.Inl_config = new System.Windows.Forms.CheckBox();
             this.ReadConfigFile = new System.Windows.Forms.Button();
             this.OpenPanel = new System.Windows.Forms.Panel();
             this.OpenFileBtn = new System.Windows.Forms.Button();
@@ -86,7 +89,24 @@
             this.StartWrite = new System.Windows.Forms.Button();
             this.Progress = new System.Windows.Forms.ProgressBar();
             this.BackGrWorkProgressBar = new System.ComponentModel.BackgroundWorker();
-            this.Inl_config = new System.Windows.Forms.CheckBox();
+            this.ChartSample = new System.Windows.Forms.DataVisualization.Charting.Chart();
+            this.PanelRadioButtonChart = new System.Windows.Forms.Panel();
+            this.radioButton1 = new System.Windows.Forms.RadioButton();
+            this.radioButton2 = new System.Windows.Forms.RadioButton();
+            this.radioButton4 = new System.Windows.Forms.RadioButton();
+            this.radioButton3 = new System.Windows.Forms.RadioButton();
+            this.radioButton8 = new System.Windows.Forms.RadioButton();
+            this.radioButton7 = new System.Windows.Forms.RadioButton();
+            this.radioButton6 = new System.Windows.Forms.RadioButton();
+            this.radioButton5 = new System.Windows.Forms.RadioButton();
+            this.radioButton12 = new System.Windows.Forms.RadioButton();
+            this.radioButton11 = new System.Windows.Forms.RadioButton();
+            this.radioButton10 = new System.Windows.Forms.RadioButton();
+            this.radioButton9 = new System.Windows.Forms.RadioButton();
+            this.radioButton16 = new System.Windows.Forms.RadioButton();
+            this.radioButton15 = new System.Windows.Forms.RadioButton();
+            this.radioButton14 = new System.Windows.Forms.RadioButton();
+            this.radioButton13 = new System.Windows.Forms.RadioButton();
             this.ConfiguireWindow.SuspendLayout();
             this.ConReadFile.SuspendLayout();
             this.ConSaveFile.SuspendLayout();
@@ -97,6 +117,8 @@
             this.ConConfigFile.SuspendLayout();
             this.OpenPanel.SuspendLayout();
             this.MainPanel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.ChartSample)).BeginInit();
+            this.PanelRadioButtonChart.SuspendLayout();
             this.SuspendLayout();
             // 
             // ConfiguireWindow
@@ -715,6 +737,17 @@
             this.ConConfigFile.TabIndex = 2;
             this.ConConfigFile.Text = "Файл настроек";
             // 
+            // Inl_config
+            // 
+            this.Inl_config.AutoSize = true;
+            this.Inl_config.Location = new System.Drawing.Point(3, 57);
+            this.Inl_config.Name = "Inl_config";
+            this.Inl_config.Size = new System.Drawing.Size(183, 17);
+            this.Inl_config.TabIndex = 5;
+            this.Inl_config.Text = "Использование Inl калибровки";
+            this.Inl_config.UseVisualStyleBackColor = true;
+            this.Inl_config.CheckedChanged += new System.EventHandler(this.Inl_config_CheckedChanged);
+            // 
             // ReadConfigFile
             // 
             this.ReadConfigFile.Location = new System.Drawing.Point(3, 3);
@@ -731,7 +764,7 @@
             this.OpenPanel.Location = new System.Drawing.Point(13, 373);
             this.OpenPanel.Margin = new System.Windows.Forms.Padding(2);
             this.OpenPanel.Name = "OpenPanel";
-            this.OpenPanel.Size = new System.Drawing.Size(260, 55);
+            this.OpenPanel.Size = new System.Drawing.Size(276, 55);
             this.OpenPanel.TabIndex = 2;
             // 
             // OpenFileBtn
@@ -796,22 +829,210 @@
             this.BackGrWorkProgressBar.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.BackGrWorkProgressBar_ProgressChanged);
             this.BackGrWorkProgressBar.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.BackGrWorkProgressBar_RunWorkerCompleted);
             // 
-            // Inl_config
+            // ChartSample
             // 
-            this.Inl_config.AutoSize = true;
-            this.Inl_config.Location = new System.Drawing.Point(3, 57);
-            this.Inl_config.Name = "Inl_config";
-            this.Inl_config.Size = new System.Drawing.Size(183, 17);
-            this.Inl_config.TabIndex = 5;
-            this.Inl_config.Text = "Использование Inl калибровки";
-            this.Inl_config.UseVisualStyleBackColor = true;
-            this.Inl_config.CheckedChanged += new System.EventHandler(this.CheckBox1_CheckedChanged);
+            chartArea3.Name = "ChartArea1";
+            this.ChartSample.ChartAreas.Add(chartArea3);
+            legend3.Enabled = false;
+            legend3.Name = "Legend1";
+            this.ChartSample.Legends.Add(legend3);
+            this.ChartSample.Location = new System.Drawing.Point(295, 32);
+            this.ChartSample.Name = "ChartSample";
+            this.ChartSample.Size = new System.Drawing.Size(559, 315);
+            this.ChartSample.TabIndex = 5;
+            this.ChartSample.Text = "График амплитуд";
+            // 
+            // PanelRadioButtonChart
+            // 
+            this.PanelRadioButtonChart.Controls.Add(this.radioButton16);
+            this.PanelRadioButtonChart.Controls.Add(this.radioButton15);
+            this.PanelRadioButtonChart.Controls.Add(this.radioButton14);
+            this.PanelRadioButtonChart.Controls.Add(this.radioButton13);
+            this.PanelRadioButtonChart.Controls.Add(this.radioButton12);
+            this.PanelRadioButtonChart.Controls.Add(this.radioButton11);
+            this.PanelRadioButtonChart.Controls.Add(this.radioButton10);
+            this.PanelRadioButtonChart.Controls.Add(this.radioButton9);
+            this.PanelRadioButtonChart.Controls.Add(this.radioButton8);
+            this.PanelRadioButtonChart.Controls.Add(this.radioButton7);
+            this.PanelRadioButtonChart.Controls.Add(this.radioButton6);
+            this.PanelRadioButtonChart.Controls.Add(this.radioButton5);
+            this.PanelRadioButtonChart.Controls.Add(this.radioButton4);
+            this.PanelRadioButtonChart.Controls.Add(this.radioButton3);
+            this.PanelRadioButtonChart.Controls.Add(this.radioButton2);
+            this.PanelRadioButtonChart.Controls.Add(this.radioButton1);
+            this.PanelRadioButtonChart.Location = new System.Drawing.Point(860, 23);
+            this.PanelRadioButtonChart.Name = "PanelRadioButtonChart";
+            this.PanelRadioButtonChart.Size = new System.Drawing.Size(21, 324);
+            this.PanelRadioButtonChart.TabIndex = 6;
+            // 
+            // radioButton1
+            // 
+            this.radioButton1.AutoSize = true;
+            this.radioButton1.Checked = true;
+            this.radioButton1.Location = new System.Drawing.Point(4, 4);
+            this.radioButton1.Name = "radioButton1";
+            this.radioButton1.Size = new System.Drawing.Size(14, 13);
+            this.radioButton1.TabIndex = 0;
+            this.radioButton1.TabStop = true;
+            this.radioButton1.UseVisualStyleBackColor = true;
+            // 
+            // radioButton2
+            // 
+            this.radioButton2.AutoSize = true;
+            this.radioButton2.Location = new System.Drawing.Point(4, 24);
+            this.radioButton2.Name = "radioButton2";
+            this.radioButton2.Size = new System.Drawing.Size(14, 13);
+            this.radioButton2.TabIndex = 1;
+            this.radioButton2.TabStop = true;
+            this.radioButton2.UseVisualStyleBackColor = true;
+            // 
+            // radioButton4
+            // 
+            this.radioButton4.AutoSize = true;
+            this.radioButton4.Location = new System.Drawing.Point(4, 64);
+            this.radioButton4.Name = "radioButton4";
+            this.radioButton4.Size = new System.Drawing.Size(14, 13);
+            this.radioButton4.TabIndex = 3;
+            this.radioButton4.TabStop = true;
+            this.radioButton4.UseVisualStyleBackColor = true;
+            // 
+            // radioButton3
+            // 
+            this.radioButton3.AutoSize = true;
+            this.radioButton3.Location = new System.Drawing.Point(4, 44);
+            this.radioButton3.Name = "radioButton3";
+            this.radioButton3.Size = new System.Drawing.Size(14, 13);
+            this.radioButton3.TabIndex = 2;
+            this.radioButton3.TabStop = true;
+            this.radioButton3.UseVisualStyleBackColor = true;
+            // 
+            // radioButton8
+            // 
+            this.radioButton8.AutoSize = true;
+            this.radioButton8.Location = new System.Drawing.Point(4, 144);
+            this.radioButton8.Name = "radioButton8";
+            this.radioButton8.Size = new System.Drawing.Size(14, 13);
+            this.radioButton8.TabIndex = 7;
+            this.radioButton8.TabStop = true;
+            this.radioButton8.UseVisualStyleBackColor = true;
+            // 
+            // radioButton7
+            // 
+            this.radioButton7.AutoSize = true;
+            this.radioButton7.Location = new System.Drawing.Point(4, 124);
+            this.radioButton7.Name = "radioButton7";
+            this.radioButton7.Size = new System.Drawing.Size(14, 13);
+            this.radioButton7.TabIndex = 6;
+            this.radioButton7.TabStop = true;
+            this.radioButton7.UseVisualStyleBackColor = true;
+            // 
+            // radioButton6
+            // 
+            this.radioButton6.AutoSize = true;
+            this.radioButton6.Location = new System.Drawing.Point(4, 104);
+            this.radioButton6.Name = "radioButton6";
+            this.radioButton6.Size = new System.Drawing.Size(14, 13);
+            this.radioButton6.TabIndex = 5;
+            this.radioButton6.TabStop = true;
+            this.radioButton6.UseVisualStyleBackColor = true;
+            // 
+            // radioButton5
+            // 
+            this.radioButton5.AutoSize = true;
+            this.radioButton5.Location = new System.Drawing.Point(4, 84);
+            this.radioButton5.Name = "radioButton5";
+            this.radioButton5.Size = new System.Drawing.Size(14, 13);
+            this.radioButton5.TabIndex = 4;
+            this.radioButton5.TabStop = true;
+            this.radioButton5.UseVisualStyleBackColor = true;
+            // 
+            // radioButton12
+            // 
+            this.radioButton12.AutoSize = true;
+            this.radioButton12.Location = new System.Drawing.Point(4, 224);
+            this.radioButton12.Name = "radioButton12";
+            this.radioButton12.Size = new System.Drawing.Size(14, 13);
+            this.radioButton12.TabIndex = 11;
+            this.radioButton12.TabStop = true;
+            this.radioButton12.UseVisualStyleBackColor = true;
+            // 
+            // radioButton11
+            // 
+            this.radioButton11.AutoSize = true;
+            this.radioButton11.Location = new System.Drawing.Point(4, 204);
+            this.radioButton11.Name = "radioButton11";
+            this.radioButton11.Size = new System.Drawing.Size(14, 13);
+            this.radioButton11.TabIndex = 10;
+            this.radioButton11.TabStop = true;
+            this.radioButton11.UseVisualStyleBackColor = true;
+            // 
+            // radioButton10
+            // 
+            this.radioButton10.AutoSize = true;
+            this.radioButton10.Location = new System.Drawing.Point(4, 184);
+            this.radioButton10.Name = "radioButton10";
+            this.radioButton10.Size = new System.Drawing.Size(14, 13);
+            this.radioButton10.TabIndex = 9;
+            this.radioButton10.TabStop = true;
+            this.radioButton10.UseVisualStyleBackColor = true;
+            // 
+            // radioButton9
+            // 
+            this.radioButton9.AutoSize = true;
+            this.radioButton9.Location = new System.Drawing.Point(4, 164);
+            this.radioButton9.Name = "radioButton9";
+            this.radioButton9.Size = new System.Drawing.Size(14, 13);
+            this.radioButton9.TabIndex = 8;
+            this.radioButton9.TabStop = true;
+            this.radioButton9.UseVisualStyleBackColor = true;
+            // 
+            // radioButton16
+            // 
+            this.radioButton16.AutoSize = true;
+            this.radioButton16.Location = new System.Drawing.Point(4, 304);
+            this.radioButton16.Name = "radioButton16";
+            this.radioButton16.Size = new System.Drawing.Size(14, 13);
+            this.radioButton16.TabIndex = 15;
+            this.radioButton16.TabStop = true;
+            this.radioButton16.UseVisualStyleBackColor = true;
+            // 
+            // radioButton15
+            // 
+            this.radioButton15.AutoSize = true;
+            this.radioButton15.Location = new System.Drawing.Point(4, 284);
+            this.radioButton15.Name = "radioButton15";
+            this.radioButton15.Size = new System.Drawing.Size(14, 13);
+            this.radioButton15.TabIndex = 14;
+            this.radioButton15.TabStop = true;
+            this.radioButton15.UseVisualStyleBackColor = true;
+            // 
+            // radioButton14
+            // 
+            this.radioButton14.AutoSize = true;
+            this.radioButton14.Location = new System.Drawing.Point(4, 264);
+            this.radioButton14.Name = "radioButton14";
+            this.radioButton14.Size = new System.Drawing.Size(14, 13);
+            this.radioButton14.TabIndex = 13;
+            this.radioButton14.TabStop = true;
+            this.radioButton14.UseVisualStyleBackColor = true;
+            // 
+            // radioButton13
+            // 
+            this.radioButton13.AutoSize = true;
+            this.radioButton13.Location = new System.Drawing.Point(4, 244);
+            this.radioButton13.Name = "radioButton13";
+            this.radioButton13.Size = new System.Drawing.Size(14, 13);
+            this.radioButton13.TabIndex = 12;
+            this.radioButton13.TabStop = true;
+            this.radioButton13.UseVisualStyleBackColor = true;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(892, 438);
+            this.Controls.Add(this.PanelRadioButtonChart);
+            this.Controls.Add(this.ChartSample);
             this.Controls.Add(this.Progress);
             this.Controls.Add(this.MainPanel);
             this.Controls.Add(this.OpenPanel);
@@ -833,6 +1054,9 @@
             this.ConConfigFile.PerformLayout();
             this.OpenPanel.ResumeLayout(false);
             this.MainPanel.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.ChartSample)).EndInit();
+            this.PanelRadioButtonChart.ResumeLayout(false);
+            this.PanelRadioButtonChart.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -897,6 +1121,24 @@
         private System.Windows.Forms.TabPage ConConfigFile;
         private System.Windows.Forms.Button ReadConfigFile;
         private System.Windows.Forms.CheckBox Inl_config;
+        private System.Windows.Forms.DataVisualization.Charting.Chart ChartSample;
+        private System.Windows.Forms.Panel PanelRadioButtonChart;
+        private System.Windows.Forms.RadioButton radioButton16;
+        private System.Windows.Forms.RadioButton radioButton15;
+        private System.Windows.Forms.RadioButton radioButton14;
+        private System.Windows.Forms.RadioButton radioButton13;
+        private System.Windows.Forms.RadioButton radioButton12;
+        private System.Windows.Forms.RadioButton radioButton11;
+        private System.Windows.Forms.RadioButton radioButton10;
+        private System.Windows.Forms.RadioButton radioButton9;
+        private System.Windows.Forms.RadioButton radioButton8;
+        private System.Windows.Forms.RadioButton radioButton7;
+        private System.Windows.Forms.RadioButton radioButton6;
+        private System.Windows.Forms.RadioButton radioButton5;
+        private System.Windows.Forms.RadioButton radioButton4;
+        private System.Windows.Forms.RadioButton radioButton3;
+        private System.Windows.Forms.RadioButton radioButton2;
+        private System.Windows.Forms.RadioButton radioButton1;
     }
 }
 

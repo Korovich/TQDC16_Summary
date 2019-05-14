@@ -8,8 +8,7 @@ using System.Text;
 using System.IO;
 using System.Windows.Forms;
 using System.Media;
-
-
+using System.Threading;
 
 namespace TQDC16_Summary_Rev_1
 {
@@ -166,11 +165,15 @@ namespace TQDC16_Summary_Rev_1
         {
             Calculation.BlockData<Calculation.Adc_Interface> adcdata;
             Progress.Value = (e.ProgressPercentage);
-            ClearChartSample();
-            if (e.UserState is Calculation.BlockData<Calculation.Adc_Interface>)
+            if (e.UserState is Calculation.BlockData<Calculation.Adc_Interface> && e.UserState != null)
             {
-                adcdata = (Calculation.BlockData<Calculation.Adc_Interface>)e.UserState;
-                UpdateChartSample(adcdata);
+                Thread myThread = new Thread(() =>
+                {
+                    adcdata = (Calculation.BlockData<Calculation.Adc_Interface>)e.UserState;
+                    ClearChartSample();
+                    UpdateChartSample(adcdata);
+                });
+                myThread.Start(); // запускаем поток
             }
         }
 
@@ -192,8 +195,6 @@ namespace TQDC16_Summary_Rev_1
                             isAnalysis = true;
                             NumEvText.Text = AnalysisFile.NumEv.ToString();
                             NumUsCh.Text = AnalysisFile.NumCh.ToString();
-
-
                             ConReadFile.BackColor = System.Drawing.Color.White;
                             ConSaveFile.BackColor = System.Drawing.Color.White;
                             ConfiguireWindow.Enabled = true;
@@ -622,6 +623,8 @@ namespace TQDC16_Summary_Rev_1
                     foreach (Calculation.Adc_Interface adc_Interface in item)
                     {
                         int x = 0;
+                        ChartSample.Series.Add(string.Format("Chanell {0}-{1}", 1, x));
+                        ChartSample.Series.Last().ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
                         foreach (int sample in adc_Interface.bufsamples)
                         {
                             ChartSample.Series[0].Points.AddXY(12.5 * x, sample);
@@ -649,16 +652,23 @@ namespace TQDC16_Summary_Rev_1
 
         public int ReturnChartChooseChannel()
         {
-            int index = 1;
-            foreach(RadioButton item in PanelRadioButtonChart.Container.Components)
-            {
-                if (item.Checked)
-                {
-                    return index;
-                }
-                index++;
-            }
-             return -1;
+            if (radioButton1.Checked) return 1;
+            if (radioButton2.Checked) return 2;
+            if (radioButton3.Checked) return 3;
+            if (radioButton4.Checked) return 4;
+            if (radioButton5.Checked) return 5;
+            if (radioButton6.Checked) return 6;
+            if (radioButton7.Checked) return 7;
+            if (radioButton8.Checked) return 8;
+            if (radioButton9.Checked) return 9;
+            if (radioButton10.Checked) return 10;
+            if (radioButton11.Checked) return 11;
+            if (radioButton12.Checked) return 12;
+            if (radioButton13.Checked) return 13;
+            if (radioButton14.Checked) return 14;
+            if (radioButton15.Checked) return 15;
+            if (radioButton16.Checked) return 16;
+            return -1;
         }
     }
 }

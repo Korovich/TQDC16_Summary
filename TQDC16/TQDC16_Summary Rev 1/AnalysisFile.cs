@@ -82,7 +82,6 @@ namespace TQDC16_Summary_Rev_1
             }
             analysisresult = new BackGroundWorkerResult(ANALYS,100,OK);
             e.Result = analysisresult; //Возращение переменной для различия процесса
-
             FS.Close();
         }
         public static void AnChannelText(BackgroundWorker ProgressBar, DoWorkEventArgs e)

@@ -7,6 +7,9 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static TQDC16_Summary_Rev_1.Form1;
+using static TQDC16_Summary_Rev_1.Calculation;
+using System.Collections;
 
 namespace TQDC16_Summary_Rev_1
 {
@@ -45,6 +48,463 @@ namespace TQDC16_Summary_Rev_1
         {
             writer.Close();
         }
-        
+
+        internal static void AddHeaderCalc(bool[] EnableChannel) //метод записи header файла
+        {
+            string result; //переменная хранения строки
+            int n = 0;
+            string[] Header = new string[5] { "TimeStampADC", "Tdc", "Max", "Min", "Integral" };
+            //string[] Comment = new string[5] {"Метка времени ADC", "Время от тригера до Hit", "Максимальное значение АЦП", "Минимальное значение АЦП", "Интеграл от блока АЦП" };
+            if (EnableChannel.Length != 16) //Проверка на количество каналов
+            {
+                throw new InvalidOperationException();
+            }
+            result = "Event;TimeStamp;";
+            for (int i = 0; i < 16; i++)
+            {
+                if (EnableChannel[i])
+                {
+                    for (int j = 0; j < Header.Length; j++)
+                    {
+                        result += Header[j] + string.Format("{0}", i + 1) + ";"; // добавления в переменную записываемой строки
+                    }                                                          // Header данных
+                    n++;
+                }
+            }
+            result = result.Remove(result.Length - 1);  //удаление последнего символа
+            writer.WriteLine(result);       //переход на новую строку
+            result = "№;Сек:нСек;";
+            for (int i = 0; i < n; i++)
+            {
+                result += "нСек;пСек;В;В;В;";  //Запись unit
+            }
+            result = result.Remove(result.Length - 1);
+            writer.WriteLine(result);
+        }
+
+        //Добавление записи в блок данных вычислений
+        internal static void AddRecordCalc(BufferData<CalcInterf> buferfiledata, BlockData<Tdc_Interface> buffertdc, BlockData<Adc_Interface> bufferadc)
+        {
+            for (int ch = 0; ch < 16; ch++)
+            {
+                if (!IsNeedChannel(ch + 1,CChannel)) continue;
+                if (bufferadc[ch].Count() == buffertdc[ch].Count()) //если количество хитов tdc adc одинаковое
+                {
+                    for (int i = 0; i < bufferadc[ch].Count(); i++)
+                    {
+                        CalculationMMI(buferfiledata, bufferadc[ch][i].bufsamples, buffertdc[ch][i].data, bufferadc[ch][i].timestamp, ch);
+                    }
+                }
+
+                if (bufferadc[ch].Count() > buffertdc[ch].Count()) //если количество хитов tdc<adc
+                {
+                    for (int i = 0; i < buffertdc[ch].Count(); i++)
+                    {
+                        CalculationMMI(buferfiledata, bufferadc[ch][i].bufsamples, buffertdc[ch][i].data, bufferadc[ch][i].timestamp, ch);
+                    }
+                }
+
+                if (bufferadc[ch].Count() < buffertdc[ch].Count())//если количество хитов tdc>adc
+                {
+                    for (int i = 0; i < bufferadc[ch].Count(); i++)
+                    {
+                        CalculationMMI(buferfiledata, bufferadc[ch][i].bufsamples, buffertdc[ch][i].data, bufferadc[ch][i].timestamp, ch);
+                    }
+                }
+            }
+        }
+
+        internal static void WriteFileCalc(BufferData<CalcInterf> buferfiledata, StreamWriter writer, ulong starttimestamp) //Метод записи данных в файл
+        {
+            int max = buferfiledata.MaxLen();
+            if (max == 0)
+            {
+                buferfiledata.WriteStringHeaderEvent(writer, starttimestamp);
+                foreach (List<CalcInterf> Item in buferfiledata)
+                {
+                    if (IsNeedChannel(buferfiledata.position + 1,CChannel))
+                    {
+                        writer.Write(";;;;");
+                    }
+                }
+                writer.WriteLine();
+                return;
+            }
+            for (int i = 0; i < max; i++)
+            {
+                buferfiledata.WriteStringHeaderEvent(writer, starttimestamp);
+                foreach (List<CalcInterf> Item in buferfiledata)
+                {
+                    if (IsNeedChannel(buferfiledata.position + 1,CChannel))
+                    {
+                        writer.Write(";");
+                        if (i < Item.Count)
+                        {
+                            writer.Write(Item[i].ToString());
+                        }
+                        else writer.Write(";;;;");
+                    }
+                }
+                writer.WriteLine();
+                buferfiledata.Reset();
+            }
+        }
+
+        internal static void WriteFileDec(BlockData<Tdc_Interface> buffertdc, BlockData<Adc_Interface> bufferadc, StreamWriter writer, string date, uint numEvent) //Метод записи данных в файл
+        {
+            writer.WriteLine(string.Format("{0};{1};;;",numEvent,date));
+            for (int i = 0; i < 16; i++)
+            {
+                if (!IsNeedChannel(i + 1,DChannel)) continue;
+                foreach (Tdc_Interface item in buffertdc[i])
+                {
+                    writer.WriteLine(string.Format(";;{0};{1};{2}", i + 1, "TDC", item.data));
+                }
+            }
+            for (int i = 0; i < 16; i++)
+            {
+                if (!IsNeedChannel(i + 1,DChannel)) continue;
+                foreach (Adc_Interface item in bufferadc[i])
+                {
+                    writer.WriteLine(string.Format(";;{0};{1}{2}", i, "ADC", item.ToString()));
+                }
+            }
+        }
+
+        // переменные для блока данных tdc
+        internal static uint LEADING_FRONT = 1;     //Define переднего фронта
+        internal static uint TRAILING_FRONT = 2;    //Define заднего фронта
+        internal static uint UNKNOWN_FRONT = 2;     //Define заднего фронта
+
+        public class CalcInterf //класс хранения данных для записи
+        {
+            internal ulong timestamp;
+            internal ulong tdc;
+            internal int max;
+            internal int min;
+            internal double integral;
+
+            internal CalcInterf(ulong timestamp = 0, ulong tdc = 0, int max = 0, int min = 0, double integral = 0) //конструктор
+            {
+                this.timestamp = timestamp;
+                this.tdc = tdc;
+                this.max = max;
+                this.min = min;
+                this.integral = integral;
+            }
+
+            public override string ToString()// Метод в строку
+            {
+                return string.Format("{0};{1};{2};{3};{4}", this.timestamp, this.tdc, this.max, this.min, this.integral);
+            }
+        }
+
+        /*
+        public class DecInterf //класс хранения данных для записи
+        {
+            internal int numEvent;
+            internal ulong timestamp;
+            internal List<int> channel;
+            internal List<ulong> dataType;
+            internal List<ulong> data;
+
+
+            internal DecInterf(int numEvent, ulong timestamp, List<int> channel, List<ulong> dataType, List<ulong> data) //конструктор
+            {
+                this.numEvent = numEvent;
+                this.timestamp = timestamp;
+                this.channel = channel;
+                this.dataType = dataType;
+                this.data = data;
+            }
+
+            public string EventHeaderToString ()
+            {
+                return string.Format("{0};{1};;;",numEvent,timestamp);
+            }
+            public string DataToString()
+            {
+                string result = "";
+                for (int i=0;i<data.Count; i++)
+                {
+                    result += ";;" + channel[i].ToString() + ";" + dataType[i].ToString() + ";" + data[i].ToString() + '\n';
+                }
+                return result;
+            }
+        }
+        */
+
+        internal class Adc_Interface //Класс для хранений одной ячейки ADC
+        {
+            internal List<int> bufsamples;
+            internal ulong timestamp;
+            internal Adc_Interface(List<int> samples, ulong timestamp)
+            {
+                this.bufsamples = samples;
+                this.timestamp = timestamp;
+            }
+
+            public override string ToString()
+            {
+                string result = "";
+                foreach(int item in bufsamples)
+                {
+                    result += ";" + item.ToString();
+                }
+                return result;
+            }
+        }
+
+        internal class Tdc_Interface //Класс для хранений одной ячейки TDC
+        {
+            internal uint front;
+            internal uint data;
+            internal Tdc_Interface(uint front, uint data)
+            {
+                this.front = front;
+                this.data = data;
+            }
+        }
+
+        internal class BlockData<T> : IEnumerator // Класс для хранения блока ADC или TDC
+        {
+            private readonly List<T>[] buffer;
+            public int position;
+
+            object IEnumerator.Current => Current;
+
+            internal BlockData()
+            {
+                buffer = new List<T>[16];
+
+                for (uint i = 0; i < 16; i++)
+                {
+
+                    buffer[i] = new List<T>();
+                }
+                position = -1;
+            }
+
+            internal void Newrecord(int channel, T item)
+            {
+
+                buffer[channel].Add(item);
+            }
+
+            internal T LastValue(int channel)
+            {
+                return buffer[channel].Last();
+            }
+
+            public IEnumerator GetEnumerator()
+            {
+                return (IEnumerator)this;
+            }
+
+            public bool MoveNext()
+            {
+                position++;
+                return (position < 16);
+            }
+
+            public void Reset()
+            {
+                position = -1;
+            }
+
+            public List<T> Current
+            {
+                get
+                {
+                    try
+                    {
+                        return this[position];
+                    }
+                    catch (IndexOutOfRangeException)
+                    {
+                        throw new InvalidOperationException();
+                    }
+                }
+            }
+
+            internal List<T> this[int channel]
+            {
+                get
+                {
+                    return buffer[channel];
+                }
+                set
+                {
+                    buffer[channel] = value;
+                }
+            }
+
+        }
+
+        public class BufferData<T> : IEnumerator
+        {
+            public ulong numEvent;
+            public ulong timeStampSec;
+            public ulong timeStampnSec;
+            public int position;
+
+            public List<T> Channel1 = new List<T>();
+            public List<T> Channel2 = new List<T>();
+            public List<T> Channel3 = new List<T>();
+            public List<T> Channel4 = new List<T>();
+            public List<T> Channel5 = new List<T>();
+            public List<T> Channel6 = new List<T>();
+            public List<T> Channel7 = new List<T>();
+            public List<T> Channel8 = new List<T>();
+            public List<T> Channel9 = new List<T>();
+            public List<T> Channel10 = new List<T>();
+            public List<T> Channel11 = new List<T>();
+            public List<T> Channel12 = new List<T>();
+            public List<T> Channel13 = new List<T>();
+            public List<T> Channel14 = new List<T>();
+            public List<T> Channel15 = new List<T>();
+            public List<T> Channel16 = new List<T>();
+
+            public void AddHeaderEvent(ulong numEvent,
+                                    ulong timeStampSec,
+                                    ulong timeStampnSec)
+            {
+                this.numEvent = numEvent;
+                this.timeStampSec = timeStampSec;
+                this.timeStampnSec = timeStampnSec;
+            }
+
+            public int MaxLen() //метод возврата максимальной длины
+            {
+                int result = 0;
+                for (int i = 0; i < 16; i++)
+                {
+                    result = this[i].Count > result ? this[i].Count : result;
+                }
+                return result;
+            }
+
+            public void WriteStringHeaderEvent(StreamWriter writer, ulong starttimestamp)
+            {
+                ulong timestamp = ((ulong)timeStampSec * 1000000000) + (ulong)timeStampnSec;
+                timestamp -= starttimestamp;
+                writer.Write(string.Format("{0};{1}", numEvent, timestamp));
+            }
+
+            public BufferData(ulong numEvent = 0, ulong timeStampSec = 0, ulong timeStampnSec = 0, int position = -1)
+            {
+                this.numEvent = numEvent;
+                this.timeStampSec = timeStampSec;
+                this.timeStampnSec = timeStampnSec;
+                this.position = position;
+
+                Channel1 = new List<T>();
+                Channel2 = new List<T>();
+                Channel3 = new List<T>();
+                Channel4 = new List<T>();
+                Channel5 = new List<T>();
+                Channel6 = new List<T>();
+                Channel7 = new List<T>();
+                Channel8 = new List<T>();
+                Channel9 = new List<T>();
+                Channel10 = new List<T>();
+                Channel11 = new List<T>();
+                Channel12 = new List<T>();
+                Channel13 = new List<T>();
+                Channel14 = new List<T>();
+                Channel15 = new List<T>();
+                Channel16 = new List<T>();
+            }
+
+
+            public List<T> this[int index]
+            {
+                get
+                {
+                    switch (index)
+                    {
+                        case 0: return Channel1;
+                        case 1: return Channel2;
+                        case 2: return Channel3;
+                        case 3: return Channel4;
+                        case 4: return Channel5;
+                        case 5: return Channel6;
+                        case 6: return Channel7;
+                        case 7: return Channel8;
+                        case 8: return Channel9;
+                        case 9: return Channel10;
+                        case 10: return Channel11;
+                        case 11: return Channel12;
+                        case 12: return Channel13;
+                        case 13: return Channel14;
+                        case 14: return Channel15;
+                        case 15: return Channel16;
+                        default: throw new InvalidOperationException();
+                    }
+                }
+            }
+
+            public IEnumerator GetEnumerator()
+            {
+                return (IEnumerator)this;
+            }
+
+
+            //IEnumerator
+            public bool MoveNext()
+            {
+                position++;
+                return (position < 16);
+            }
+
+            //IEnumerable
+            public void Reset()
+            {
+                position = -1;
+            }
+
+            //IEnumerable
+            object IEnumerator.Current
+            {
+                get
+                {
+                    return Current;
+                }
+            }
+
+            public List<T> Current
+            {
+                get
+                {
+                    try
+                    {
+                        switch (position)
+                        {
+                            case 0: return Channel1;
+                            case 1: return Channel2;
+                            case 2: return Channel3;
+                            case 3: return Channel4;
+                            case 4: return Channel5;
+                            case 5: return Channel6;
+                            case 6: return Channel7;
+                            case 7: return Channel8;
+                            case 8: return Channel9;
+                            case 9: return Channel10;
+                            case 10: return Channel11;
+                            case 11: return Channel12;
+                            case 12: return Channel13;
+                            case 13: return Channel14;
+                            case 14: return Channel15;
+                            case 15: return Channel16;
+                            default: throw new InvalidOperationException();
+                        }
+                    }
+                    catch (IndexOutOfRangeException)
+                    {
+                        throw new InvalidOperationException();
+                    }
+                }
+            }
+        }
     }
 }

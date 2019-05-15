@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Windows.Forms;
@@ -8,7 +9,7 @@ using static TQDC16_Summary_Rev_1.TQDC2File;
 
 namespace TQDC16_Summary_Rev_1
 {
-    class Decoder
+    class Decoder:Form1
     {
         public static void StartDecodingBinary(BackgroundWorker ProgressBar, DoWorkEventArgs e) //функция декодирования (1 - экземпляр класса BGW, в котором была запущена функция
         {                                                                                 // 2 - аргумент для хранения результата BGW
@@ -21,7 +22,7 @@ namespace TQDC16_Summary_Rev_1
             int MSLeng;          // Длина блока MStream
             int DataPLLeng;      // Длина блока DataPayload
             uint NumEv;         // Номер Event
-            string Date;        // Дата
+            string date;        // Дата
             long pos = 0;            // Позиция в блоке файла
             long pospl;          // Позиция в блоке DataPayload
             var FS = new FileStream(String.Format("{0}", ReadFilePath), FileMode.Open); // Экземпляр потока чтения
@@ -34,10 +35,11 @@ namespace TQDC16_Summary_Rev_1
                     EvLeng = Byte2Int(ReadBytes(pos + 4, 4, FS));  //Чтение длины Event
                     NumEv = Byte2uInt(ReadBytes(pos + 8, 4, FS));  // Номер Event
                     MSLeng = Byte2Int(ReadBytes(pos + 21, 3, FS)) >> 2; // Чтение длины блока MStream
-                    Date = UnixTimeStampToDateTime(Byte2uInt(ReadBytes(pos + 24, 4, FS))).ToString(); // Чтение даты и времени глобального Event  и конвертация из unix в стандратный вид
-                    Date += ":" + (Byte2uInt(ReadBytes(pos + 28, 4, FS)) >> 2).ToString(); // добавление к дате времени в нс
-                    writer.WriteLine(string.Format("{0};{1};;",NumEv,Date));
+                    date = UnixTimeStampToDateTime(Byte2uInt(ReadBytes(pos + 24, 4, FS))).ToString(); // Чтение даты и времени глобального Event  и конвертация из unix в стандратный вид
+                    date += ":" + (Byte2uInt(ReadBytes(pos + 28, 4, FS)) >> 2).ToString(); // добавление к дате времени в нс
                     pospl = pos + 32; // присваивание поцизии в блоке MSPayload начального значения
+                    BlockData<Adc_Interface> adcbuffer = new BlockData<Adc_Interface>(); // экземпляр данных adc в блоке event
+                    BlockData<Tdc_Interface> tdcbuffer = new BlockData<Tdc_Interface>(); // экземпляр данных tdc в блоке event
                     while (pospl != pos + EvLeng + 12) // Цикл на чтение Data Block ( пока позиция в блоке Data block не в конце блока Data block) 
                     {
                         DataPLLeng = Byte2Int(ReadBytes(pospl + 2, 2, FS)); //Чтение длины DataPayload
@@ -52,7 +54,7 @@ namespace TQDC16_Summary_Rev_1
                                         {
                                             case 2: //TDC event header
                                                 {
-                                                    uint TimeStamp = ((Byte2uInt(ReadBytes(pospl + 2, 2, FS)) << 4) >> 4) * 25; // Чтение временной метки TDC
+                                                    //uint TimeStamp = ((Byte2uInt(ReadBytes(pospl + 2, 2, FS)) << 4) >> 4) * 25; // Чтение временной метки TDC
                                                     pospl += 4; //переход на новую строку
                                                     break;
                                                 }
@@ -63,27 +65,27 @@ namespace TQDC16_Summary_Rev_1
                                                 }
                                             case 4: //TDC data, leading edge
                                                 {
-                                                    uint ch = (((Byte2uInt(ReadBytes(pospl, 4, FS))) << 7) >> 28) + 1; // Считываемый канал данных
-                                                    if (!IsNeedChannel(ch)) //проверка на нужду записанного канала
+                                                    int ch = (((Byte2Int(ReadBytes(pospl, 4, FS))) << 7) >> 28) + 1; // Считываемый канал данных
+                                                    if (!IsNeedChannel(ch,DChannel)) //проверка на нужду записанного канала
                                                     {
                                                         pospl += 4;
                                                         break;
                                                     }
                                                     uint value = (((Byte2uInt(ReadBytes(pospl, 4, FS))) << 11) >> 11) * 25; // Значение TDC с канала #ch
-                                                    writer.WriteLine(string.Format(";;{0};TDC;{1}", ch,value));
+                                                    tdcbuffer.Newrecord(ch - 1, new Tdc_Interface(LEADING_FRONT, value));
                                                     pospl += 4;//переход на новую строку
                                                     break;
                                                 }
                                             case 5: //TDC data, trailing edge
                                                 {
-                                                    uint ch = (((Byte2uInt(ReadBytes(pospl, 4, FS))) << 7) >> 28) + 1;// Считываемый канал данных
-                                                    if (!IsNeedChannel(ch)) //проверка на нужду записанного канала
+                                                    int ch = (((Byte2Int(ReadBytes(pospl, 4, FS))) << 7) >> 28) + 1;// Считываемый канал данных
+                                                    if (!IsNeedChannel(ch,DChannel)) //проверка на нужду записанного канала
                                                     {
                                                         pospl += 4;
                                                         break;
                                                     }
                                                     uint value = (((Byte2uInt(ReadBytes(pospl, 4, FS))) << 11) >> 11) * 25;// Значение TDC с канала #ch
-                                                    writer.WriteLine(string.Format("{0};TDC;{1}", ch, value));
+                                                    tdcbuffer.Newrecord(ch - 1, new Tdc_Interface(TRAILING_FRONT, value));
                                                     pospl += 4;//переход на новую строку
                                                     break;
                                                 }
@@ -98,8 +100,8 @@ namespace TQDC16_Summary_Rev_1
                                 }
                             case 1: //ADC
                                 {
-                                    uint ch = (((Byte2uInt(ReadBytes(pospl, 1, FS))) << 28) >> 28) + 1; // Считываемый канал данных
-                                    if (!IsNeedChannel(ch))
+                                    int ch = (((Byte2Int(ReadBytes(pospl, 1, FS))) << 28) >> 28) + 1; // Считываемый канал данных
+                                    if (!IsNeedChannel(ch,DChannel))
                                     {
                                         pospl = pospl + DataPLLeng + 4;
                                         break;
@@ -110,36 +112,35 @@ namespace TQDC16_Summary_Rev_1
                                     if (pospl == apospl + DataPLLeng) { pospl += 4; break; } // Проверка на отсуствие данных в Data Block
                                     while (pospl != apospl + DataPLLeng + 4) // Цикл на чтение данных ADC (пока позиция в блоке Data Block не в конце блока ADC)
                                     {
-                                        string Databuf = ""; // Буфер для данных ADC
-                                        uint DataLen = Byte2uInt(ReadBytes(pospl, 2, FS)); //Длина в блоке ADC в байтах
+                                        List<int> databuf = new List<int>(); // Буфер для данных ADC
+                                        uint dataLen = Byte2uInt(ReadBytes(pospl, 2, FS)); //Длина в блоке ADC в байтах
                                         bool odd = false; // переменная четности количества данных ( в строках 32 байта)
-                                        if (DataLen % 4 !=0) // проверка на нечетность 
+                                        if (dataLen % 4 !=0) // проверка на нечетность 
                                         {
                                             odd = true;
                                         }
-                                        uint Timestamp = Byte2uInt(ReadBytes(pospl + 2, 2, FS))*8; // Чтение временной метки ADC
-                                        writer.Write(string.Format(";{0};{1};ADC;",Timestamp,ch));
+                                        uint timestamp = Byte2uInt(ReadBytes(pospl + 2, 2, FS))*8; // Чтение временной метки ADC
                                         pospl += 4; //переход на новую строку
-                                        for (uint i = 0; i < ((DataLen / 4) * 4 == DataLen ? (DataLen / 4) : (DataLen / 4) + 1); i++) //цикл на чтение Sample ADC
+                                        for (uint i = 0; i < ((dataLen / 4) * 4 == dataLen ? (dataLen / 4) : (dataLen / 4) + 1); i++) //цикл на чтение Sample ADC
                                         {
-                                            Databuf += Byte2Sample(ReadBytes(pospl + 2, 2, FS)).ToString() + ";"; // Запись первого Sample в строку
-                                            if (odd & i == (DataLen / 4)) // если данные нечетные и последняя строка данных, то последнее 16 битный sample не читается
+                                            databuf.Add(TQDC2Configs.ChGain[ch] ? (Byte2Sample(ReadBytes(pospl + 2, 2, FS)) - (int)TQDC2Configs.X4[ch]) : (Byte2Sample(ReadBytes(pospl + 2, 2, FS)) - (int)TQDC2Configs.X1[ch])); // Запись первого Sample в лист
+                                            if (odd & i == (dataLen / 4)) // если данные нечетные и последняя строка данных, то последнее 16 битный sample не читается
                                             {
 
                                             }
                                             else
-                                            Databuf += Byte2Sample(ReadBytes(pospl, 2, FS)).ToString();  // Запись второго Sample в строку
-                                            Databuf += i != (DataLen / 4) - 1 ? ";" : ""; // запись разделителя в строку ( при последнем слове разделитель не добавляется)
+                                                databuf.Add(TQDC2Configs.ChGain[ch] ? (Byte2Sample(ReadBytes(pospl, 2, FS)) - (int)TQDC2Configs.X4[ch]) : (Byte2Sample(ReadBytes(pospl + 2, 2, FS)) - (int)TQDC2Configs.X1[ch])); // Запись второго Sample в лист
                                             pospl += 4;//переход на новую строку
                                         }
-                                        writer.WriteLine(Databuf);
+                                        adcbuffer.Newrecord(ch - 1, new Adc_Interface(databuf, timestamp));// Чтение временной метки ADC в нС
                                     }
                                     break;
                                 }
                         }
                     }
+                    WriteFileDec(tdcbuffer,adcbuffer, writer,date,NumEv); //запись в файл
                     pos = pos + EvLeng + 12;  // Запись новой позиции в файле
-                    ProgressBar.ReportProgress((int)NumEv); // Возращение прогресса в BackgroundWorker ProgressBar ( повышение строки прогресса в окне)
+                    ProgressBar.ReportProgress((int)NumEv,adcbuffer); // Возращение прогресса в BackgroundWorker ProgressBar ( повышение строки прогресса в окне)
                 }
                 
             }
@@ -232,11 +233,6 @@ namespace TQDC16_Summary_Rev_1
             e.Result = 1; //Возращение переменной для различия процесса
             CloseCsv(); // закрытие потока записи
             fs.Close(); // закрытие потока чтения
-        }
-
-        static bool IsNeedChannel(uint i)
-        {
-            return Form1.DChannel[i-1];
         }
     }
 }

@@ -9,6 +9,7 @@ using System.IO;
 using System.Windows.Forms;
 using System.Media;
 using System.Threading;
+using static TQDC16_Summary_Rev_1.CSV_Output; 
 
 namespace TQDC16_Summary_Rev_1
 {
@@ -22,6 +23,10 @@ namespace TQDC16_Summary_Rev_1
             CChannel = new bool[16];
             isAnalysis = false;
             inl_config = false;
+            ChartSample.Series.Add("Null");
+            ChartSample.Series[0].Points.AddXY(0, 0);
+            //ChartSample.ChartAreas[0].AxisX.Maximum = 5;
+            //ChartSample.ChartAreas[0].AxisY.Maximum = 1;
         }
         public static bool[] DChannel;
         public static bool[] CChannel;
@@ -29,6 +34,11 @@ namespace TQDC16_Summary_Rev_1
         readonly Color CheckBoxChColor = SystemColors.ButtonShadow;
         TQDC2File.OpenResult result;
         public static bool inl_config;
+        private int MinY = 0;
+        private int MaxY = 0;
+        private int MinX = 0;
+        private int MaxX = 0;
+
         
         private void label1_Click(object sender, EventArgs e)
         {
@@ -83,11 +93,27 @@ namespace TQDC16_Summary_Rev_1
             if (BackGrWorkProgressBar.IsBusy != true)
             {
                 BackGrWorkProgressBar.RunWorkerAsync(new BackGroundWorkerTask(3, result.Format));
+                ChangedStateRadioButtonChannel(CChannel);
                 OpenFileBtn.Enabled = false;
                 StartDecoder.Enabled = false;
                 StartWrite.Enabled = false;
                 Progress.Maximum = AnalysisFile.NumEv;
             }
+            //ChartSample.ChartAreas[0].AxisX.MaximumAutoSize = 1;
+        }
+
+        private void StartDecoder_Click(object sender, EventArgs e)
+        {
+            if (BackGrWorkProgressBar.IsBusy != true)
+            {
+                ChangedStateRadioButtonChannel(DChannel);
+                BackGrWorkProgressBar.RunWorkerAsync(new BackGroundWorkerTask(1, result.Format));
+                OpenFileBtn.Enabled = false;
+                StartDecoder.Enabled = false;
+                StartWrite.Enabled = false;
+                Progress.Maximum = AnalysisFile.NumEv;
+            }
+            //ChartSample.ChartAreas[0].AxisX.MaximumAutoSize = 1;
         }
 
         private void BackGrWorkProgressBar_DoWork(object sender, DoWorkEventArgs e)
@@ -163,17 +189,13 @@ namespace TQDC16_Summary_Rev_1
 
         private void BackGrWorkProgressBar_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            Calculation.BlockData<Calculation.Adc_Interface> adcdata;
+            BlockData<Adc_Interface> adcdata;
             Progress.Value = (e.ProgressPercentage);
-            if (e.UserState is Calculation.BlockData<Calculation.Adc_Interface> && e.UserState != null)
+            if (e.UserState is BlockData<Adc_Interface> && e.UserState != null)
             {
-                Thread myThread = new Thread(() =>
-                {
-                    adcdata = (Calculation.BlockData<Calculation.Adc_Interface>)e.UserState;
-                    ClearChartSample();
-                    UpdateChartSample(adcdata);
-                });
-                myThread.Start(); // запускаем поток
+                adcdata = (BlockData<Adc_Interface>)e.UserState;
+                UpdateChartSample(adcdata);
+                //UpdateChartSample(adcdata);
             }
         }
 
@@ -370,6 +392,9 @@ namespace TQDC16_Summary_Rev_1
                         }
                     case CALCULATION:
                         {
+                            ChartSample.Series.Clear();
+                            ChartSample.Series.Add("Null");
+                            ChartSample.Series[0].Points.AddXY(1, 0);
                             break;
                         }
                 }
@@ -379,18 +404,6 @@ namespace TQDC16_Summary_Rev_1
             OpenFileBtn.Enabled = true;
             StartDecoder.Enabled = true;
             StartWrite.Enabled = true;
-        }
-
-        private void StartDecoder_Click(object sender, EventArgs e)
-        {
-            if (BackGrWorkProgressBar.IsBusy != true)
-            {
-                BackGrWorkProgressBar.RunWorkerAsync(new BackGroundWorkerTask(1, result.Format));
-                OpenFileBtn.Enabled = false;
-                StartDecoder.Enabled = false;
-                StartWrite.Enabled = false;
-                Progress.Maximum = AnalysisFile.NumEv;
-            }
         }
 
         private void label5_Click(object sender, EventArgs e)
@@ -613,31 +626,105 @@ namespace TQDC16_Summary_Rev_1
 
         }
 
-        void UpdateChartSample(Calculation.BlockData<Calculation.Adc_Interface> blockdata)
+        void UpdateChartSample(BlockData<Adc_Interface> blockdata)
         {
             int index = 1;
-            foreach (List<Calculation.Adc_Interface> item in blockdata)
+            foreach (List<Adc_Interface> item in blockdata)
             {
                 if (ReturnChartChooseChannel() == index)
                 {
-                    foreach (Calculation.Adc_Interface adc_Interface in item)
+                    ChartSample.Series.Clear();
+                    int y = 0;
+                    ChartSample.Series.Add(string.Format("Chanell {0}-{1}", 1, y));
+                    ChartSample.Series.Last().ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.FastLine;
+                    ResizedChartSample();
+                    if (item.Count() == 0)
+                    {
+                        ChartSample.Series[0].Points.AddXY(1, 1);
+                        continue;
+                    }
+                    foreach (Adc_Interface adc_Interface in item)
                     {
                         int x = 0;
-                        ChartSample.Series.Add(string.Format("Chanell {0}-{1}", 1, x));
-                        ChartSample.Series.Last().ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
                         foreach (int sample in adc_Interface.bufsamples)
                         {
                             ChartSample.Series[0].Points.AddXY(12.5 * x, sample);
+                            if (sample < MinY)
+                            {
+                                MinY = (int)(sample * 1.2);
+                                ResizedChartSample();
+                            }
+                            if (sample > MaxY)
+                            {
+                                MaxY = (int)(sample * 1.2);
+                                ResizedChartSample();
+                            }
+                            x++;
                         }
+                        y++;
                     }
                 }
-                //ChartSample.Series[index];
                 index++;
             }
         }
-        void ClearChartSample()
+
+        void ResizedChartSample()
         {
-            ChartSample.Series.Clear();
+            //ChartSample.ChartAreas[0].AxisX.Maximum = MaxX;
+            //ChartSample.ChartAreas[0].AxisX.Minimum = MinX;
+            ChartSample.ChartAreas[0].AxisY.Maximum = MaxY;
+            ChartSample.ChartAreas[0].AxisY.Minimum = MinY;
+        }
+
+        void ChangedStateRadioButtonChannel (bool[] channel)
+        {
+            bool findFirst = false;
+            if (channel.Count() != 16) throw new InvalidOperationException();
+            for (int i = 0; i < 16; i++) 
+            {
+                switch (i)
+                {
+                    case 0: { radioButtonChannel1.Enabled = channel[i]; break; }
+                    case 1: { radioButtonChannel2.Enabled = channel[i]; break; }
+                    case 2: { radioButtonChannel3.Enabled = channel[i]; break; }
+                    case 3: { radioButtonChannel4.Enabled = channel[i]; break; }
+                    case 4: { radioButtonChannel5.Enabled = channel[i]; break; }
+                    case 5: { radioButtonChannel6.Enabled = channel[i]; break; }
+                    case 6: { radioButtonChannel7.Enabled = channel[i]; break; }
+                    case 7: { radioButtonChannel8.Enabled = channel[i]; break; }
+                    case 8: { radioButtonChannel9.Enabled = channel[i]; break; }
+                    case 9: { radioButtonChannel10.Enabled = channel[i]; break; }
+                    case 10: { radioButtonChannel11.Enabled = channel[i]; break; }
+                    case 11: { radioButtonChannel12.Enabled = channel[i]; break; }
+                    case 12: { radioButtonChannel13.Enabled = channel[i]; break; }
+                    case 13: { radioButtonChannel14.Enabled = channel[i]; break; }
+                    case 14: { radioButtonChannel15.Enabled = channel[i]; break; }
+                    case 15: { radioButtonChannel16.Enabled = channel[i]; break; }
+                }
+                if (!findFirst && channel[i])
+                {
+                    findFirst = true;
+                    switch (i)
+                    {
+                        case 0: { radioButtonChannel1.Checked = true; break; }
+                        case 1: { radioButtonChannel2.Checked = true; break; }
+                        case 2: { radioButtonChannel3.Checked = true; break; }
+                        case 3: { radioButtonChannel4.Checked = true; break; }
+                        case 4: { radioButtonChannel5.Checked = true; break; }
+                        case 5: { radioButtonChannel6.Checked = true; break; }
+                        case 6: { radioButtonChannel7.Checked = true; break; }
+                        case 7: { radioButtonChannel8.Checked = true; break; }
+                        case 8: { radioButtonChannel9.Checked = true; break; }
+                        case 9: { radioButtonChannel10.Checked = true; break; }
+                        case 10: { radioButtonChannel11.Checked = true; break; }
+                        case 11: { radioButtonChannel12.Checked = true; break; }
+                        case 12: { radioButtonChannel13.Checked = true; break; }
+                        case 13: { radioButtonChannel14.Checked = true; break; }
+                        case 14: { radioButtonChannel15.Checked = true; break; }
+                        case 15: { radioButtonChannel16.Checked = true; break; }
+                    }
+                }
+            }
         }
 
         private void ReadConfigFile_Click(object sender, EventArgs e)
@@ -652,23 +739,108 @@ namespace TQDC16_Summary_Rev_1
 
         public int ReturnChartChooseChannel()
         {
-            if (radioButton1.Checked) return 1;
-            if (radioButton2.Checked) return 2;
-            if (radioButton3.Checked) return 3;
-            if (radioButton4.Checked) return 4;
-            if (radioButton5.Checked) return 5;
-            if (radioButton6.Checked) return 6;
-            if (radioButton7.Checked) return 7;
-            if (radioButton8.Checked) return 8;
-            if (radioButton9.Checked) return 9;
-            if (radioButton10.Checked) return 10;
-            if (radioButton11.Checked) return 11;
-            if (radioButton12.Checked) return 12;
-            if (radioButton13.Checked) return 13;
-            if (radioButton14.Checked) return 14;
-            if (radioButton15.Checked) return 15;
-            if (radioButton16.Checked) return 16;
+            if (radioButtonChannel1.Checked) return 1;
+            if (radioButtonChannel2.Checked) return 2;
+            if (radioButtonChannel3.Checked) return 3;
+            if (radioButtonChannel4.Checked) return 4;
+            if (radioButtonChannel5.Checked) return 5;
+            if (radioButtonChannel6.Checked) return 6;
+            if (radioButtonChannel7.Checked) return 7;
+            if (radioButtonChannel8.Checked) return 8;
+            if (radioButtonChannel9.Checked) return 9;
+            if (radioButtonChannel10.Checked) return 10;
+            if (radioButtonChannel11.Checked) return 11;
+            if (radioButtonChannel12.Checked) return 12;
+            if (radioButtonChannel13.Checked) return 13;
+            if (radioButtonChannel14.Checked) return 14;
+            if (radioButtonChannel15.Checked) return 15;
+            if (radioButtonChannel16.Checked) return 16;
             return -1;
+        }
+
+        internal static bool IsNeedChannel(int i,bool[] channel) //метод проверки в надобности канала
+        {
+            return channel[i - 1];
+        }
+
+        private void RadioButtonChannel1_CheckedChanged(object sender, EventArgs e)
+        {
+            labelChannel.Text = "Channel 1";
+        }
+
+        private void RadioButtonChannel2_CheckedChanged(object sender, EventArgs e)
+        {
+            labelChannel.Text = "Channel 2";
+        }
+
+        private void RadioButtonChannel3_CheckedChanged(object sender, EventArgs e)
+        {
+            labelChannel.Text = "Channel 3";
+        }
+
+        private void RadioButtonChannel4_CheckedChanged(object sender, EventArgs e)
+        {
+            labelChannel.Text = "Channel 4";
+        }
+
+        private void RadioButtonChannel5_CheckedChanged(object sender, EventArgs e)
+        {
+            labelChannel.Text = "Channel 5";
+        }
+
+        private void RadioButtonChannel6_CheckedChanged(object sender, EventArgs e)
+        {
+            labelChannel.Text = "Channel 6";
+        }
+
+        private void RadioButtonChannel7_CheckedChanged(object sender, EventArgs e)
+        {
+            labelChannel.Text = "Channel 7";
+        }
+
+        private void RadioButtonChannel8_CheckedChanged(object sender, EventArgs e)
+        {
+            labelChannel.Text = "Channel 8";
+        }
+
+        private void RadioButtonChannel9_CheckedChanged(object sender, EventArgs e)
+        {
+            labelChannel.Text = "Channel 9";
+        }
+
+        private void RadioButtonChannel10_CheckedChanged(object sender, EventArgs e)
+        {
+            labelChannel.Text = "Channel 10";
+        }
+
+        private void RadioButtonChannel11_CheckedChanged(object sender, EventArgs e)
+        {
+            labelChannel.Text = "Channel 11";
+        }
+
+        private void RadioButtonChannel12_CheckedChanged(object sender, EventArgs e)
+        {
+            labelChannel.Text = "Channel 12";
+        }
+
+        private void RadioButtonChannel13_CheckedChanged(object sender, EventArgs e)
+        {
+            labelChannel.Text = "Channel 13";
+        }
+
+        private void RadioButtonChannel14_CheckedChanged(object sender, EventArgs e)
+        {
+            labelChannel.Text = "Channel 14";
+        }
+
+        private void RadioButtonChannel15_CheckedChanged(object sender, EventArgs e)
+        {
+            labelChannel.Text = "Channel 15";
+        }
+
+        private void RadioButtonChannel16_CheckedChanged(object sender, EventArgs e)
+        {
+            labelChannel.Text = "Channel 16";
         }
     }
 }

@@ -151,6 +151,8 @@ namespace TQDC16_Summary_Rev_1
                     prog += EvLeng + 12;    //Повышение позиции для Progress Bar
                     pos = pos + EvLeng + 12;    // Запись новой позиции в файле
                     ProgressBar.ReportProgress((int)NumEv,adcbuffer);   // Возращение прогресса в BackgroundWorker ProgressBar ( повышение строки прогресса в окне)
+                    if (ProgressBar.CancellationPending == true) 
+                        return;
                 }
             }
             calculationresult = new BackGroundWorkerResult(CALCULATION,100,OK);
@@ -253,7 +255,9 @@ namespace TQDC16_Summary_Rev_1
                     }
                     AddRecordCalc(buferfiledata, tdcbuffer, adcbuffer); // запись данных event в блок вычисленных данных
                     WriteFileCalc(buferfiledata, writer, StartTimeStampnSec); //запись в файл
-                    ProgressBar.ReportProgress((int)NumEv);   // Возращение прогресса в BackgroundWorker ProgressBar (повышение строки прогресса в окне)
+                    ProgressBar.ReportProgress((int)NumEv, adcbuffer);   // Возращение прогресса в BackgroundWorker ProgressBar (повышение строки прогресса в окне)
+                    if (ProgressBar.CancellationPending == true)
+                        return;
                 }
             }
             calculationresult = new BackGroundWorkerResult(CALCULATION, 100, OK);
@@ -274,7 +278,7 @@ namespace TQDC16_Summary_Rev_1
 
 
         //Метод вычисления статистики из данных(мин макс интеграл)
-        internal static void CalculationMMI(BufferData<CalcInterf> buferfiledata , List<int> data, ulong tdc, ulong timestamp, int channel)
+        internal static void CalculationMMI(BufferData<CalcInterf> buferfiledata , List<int> data, ulong tdc, int channel)
         {
             int[] result = new int[2] { data[0], data[0] }; //max min 
             double integral;
@@ -284,7 +288,7 @@ namespace TQDC16_Summary_Rev_1
                 if (data[i] < result[1]) { result[1] = data[i]; }//min
             }
             integral = CalculationIntegral(data);//integral                                                                                           
-            buferfiledata[channel].Add(new CalcInterf { timestamp = timestamp, tdc = tdc, max = result[0], min = result[1], integral = integral });
+            buferfiledata[channel].Add(new CalcInterf { tdc = tdc, max = result[0], min = result[1], integral = integral });
         }
     }
 }

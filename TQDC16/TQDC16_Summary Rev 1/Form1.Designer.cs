@@ -86,12 +86,13 @@
             this.OpenPanel = new System.Windows.Forms.Panel();
             this.OpenFileBtn = new System.Windows.Forms.Button();
             this.MainPanel = new System.Windows.Forms.Panel();
-            this.checkBox1checkBoxAxisXAutoSize = new System.Windows.Forms.CheckBox();
-            this.checkBoxAxisYAutoSize = new System.Windows.Forms.CheckBox();
-            this.labelAxisX = new System.Windows.Forms.Label();
-            this.labelAxisY = new System.Windows.Forms.Label();
             this.StartDecoder = new System.Windows.Forms.Button();
             this.StartWrite = new System.Windows.Forms.Button();
+            this.StepChart = new System.Windows.Forms.NumericUpDown();
+            this.CheckBoxAxisXAutoSize = new System.Windows.Forms.CheckBox();
+            this.CheckBoxAxisYAutoSize = new System.Windows.Forms.CheckBox();
+            this.labelAxisX = new System.Windows.Forms.Label();
+            this.labelAxisY = new System.Windows.Forms.Label();
             this.Progress = new System.Windows.Forms.ProgressBar();
             this.BackGrWorkProgressBar = new System.ComponentModel.BackgroundWorker();
             this.ChartSample = new System.Windows.Forms.DataVisualization.Charting.Chart();
@@ -113,6 +114,11 @@
             this.radioButtonChannel2 = new System.Windows.Forms.RadioButton();
             this.radioButtonChannel1 = new System.Windows.Forms.RadioButton();
             this.labelChannel = new System.Windows.Forms.Label();
+            this.PanelConfigChart = new System.Windows.Forms.Panel();
+            this.NumerMaximumX = new System.Windows.Forms.NumericUpDown();
+            this.NumerMinimumX = new System.Windows.Forms.NumericUpDown();
+            this.NumerMaximumY = new System.Windows.Forms.NumericUpDown();
+            this.NumerMinimumY = new System.Windows.Forms.NumericUpDown();
             this.ConfiguireWindow.SuspendLayout();
             this.ConReadFile.SuspendLayout();
             this.ConSaveFile.SuspendLayout();
@@ -123,8 +129,14 @@
             this.ConConfigFile.SuspendLayout();
             this.OpenPanel.SuspendLayout();
             this.MainPanel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.StepChart)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ChartSample)).BeginInit();
             this.PanelRadioButtonChart.SuspendLayout();
+            this.PanelConfigChart.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.NumerMaximumX)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.NumerMinimumX)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.NumerMaximumY)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.NumerMinimumY)).BeginInit();
             this.SuspendLayout();
             // 
             // ConfiguireWindow
@@ -256,7 +268,7 @@
             this.panel2.Location = new System.Drawing.Point(0, 0);
             this.panel2.Margin = new System.Windows.Forms.Padding(2);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(275, 324);
+            this.panel2.Size = new System.Drawing.Size(275, 337);
             this.panel2.TabIndex = 6;
             // 
             // tabControl1
@@ -267,7 +279,7 @@
             this.tabControl1.Margin = new System.Windows.Forms.Padding(2);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(277, 327);
+            this.tabControl1.Size = new System.Drawing.Size(277, 337);
             this.tabControl1.TabIndex = 6;
             // 
             // ConDecoder
@@ -292,7 +304,7 @@
             this.ConDecoder.Margin = new System.Windows.Forms.Padding(2);
             this.ConDecoder.Name = "ConDecoder";
             this.ConDecoder.Padding = new System.Windows.Forms.Padding(2);
-            this.ConDecoder.Size = new System.Drawing.Size(269, 301);
+            this.ConDecoder.Size = new System.Drawing.Size(269, 311);
             this.ConDecoder.TabIndex = 0;
             this.ConDecoder.Text = "Декодер";
             // 
@@ -513,7 +525,7 @@
             this.ConCalc.Margin = new System.Windows.Forms.Padding(2);
             this.ConCalc.Name = "ConCalc";
             this.ConCalc.Padding = new System.Windows.Forms.Padding(2);
-            this.ConCalc.Size = new System.Drawing.Size(269, 301);
+            this.ConCalc.Size = new System.Drawing.Size(269, 311);
             this.ConCalc.TabIndex = 1;
             this.ConCalc.Text = "Вычисление";
             this.ConCalc.UseVisualStyleBackColor = true;
@@ -786,65 +798,17 @@
             // 
             // MainPanel
             // 
-            this.MainPanel.Controls.Add(this.checkBox1checkBoxAxisXAutoSize);
-            this.MainPanel.Controls.Add(this.checkBoxAxisYAutoSize);
-            this.MainPanel.Controls.Add(this.labelAxisX);
-            this.MainPanel.Controls.Add(this.labelAxisY);
             this.MainPanel.Controls.Add(this.StartDecoder);
             this.MainPanel.Controls.Add(this.StartWrite);
-            this.MainPanel.Location = new System.Drawing.Point(295, 373);
+            this.MainPanel.Location = new System.Drawing.Point(609, 373);
             this.MainPanel.Margin = new System.Windows.Forms.Padding(2);
             this.MainPanel.Name = "MainPanel";
-            this.MainPanel.Size = new System.Drawing.Size(588, 54);
+            this.MainPanel.Size = new System.Drawing.Size(274, 54);
             this.MainPanel.TabIndex = 3;
-            // 
-            // checkBox1checkBoxAxisXAutoSize
-            // 
-            this.checkBox1checkBoxAxisXAutoSize.AutoSize = true;
-            this.checkBox1checkBoxAxisXAutoSize.Checked = true;
-            this.checkBox1checkBoxAxisXAutoSize.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox1checkBoxAxisXAutoSize.Location = new System.Drawing.Point(54, 32);
-            this.checkBox1checkBoxAxisXAutoSize.Name = "checkBox1checkBoxAxisXAutoSize";
-            this.checkBox1checkBoxAxisXAutoSize.Size = new System.Drawing.Size(68, 17);
-            this.checkBox1checkBoxAxisXAutoSize.TabIndex = 10;
-            this.checkBox1checkBoxAxisXAutoSize.Text = "AutoSize";
-            this.checkBox1checkBoxAxisXAutoSize.UseVisualStyleBackColor = true;
-            // 
-            // checkBoxAxisYAutoSize
-            // 
-            this.checkBoxAxisYAutoSize.AutoSize = true;
-            this.checkBoxAxisYAutoSize.Checked = true;
-            this.checkBoxAxisYAutoSize.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxAxisYAutoSize.Location = new System.Drawing.Point(54, 9);
-            this.checkBoxAxisYAutoSize.Name = "checkBoxAxisYAutoSize";
-            this.checkBoxAxisYAutoSize.Size = new System.Drawing.Size(68, 17);
-            this.checkBoxAxisYAutoSize.TabIndex = 9;
-            this.checkBoxAxisYAutoSize.Text = "AutoSize";
-            this.checkBoxAxisYAutoSize.UseVisualStyleBackColor = true;
-            // 
-            // labelAxisX
-            // 
-            this.labelAxisX.AutoSize = true;
-            this.labelAxisX.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.labelAxisX.Location = new System.Drawing.Point(3, 31);
-            this.labelAxisX.Name = "labelAxisX";
-            this.labelAxisX.Size = new System.Drawing.Size(43, 16);
-            this.labelAxisX.TabIndex = 8;
-            this.labelAxisX.Text = "Ось X";
-            // 
-            // labelAxisY
-            // 
-            this.labelAxisY.AutoSize = true;
-            this.labelAxisY.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.labelAxisY.Location = new System.Drawing.Point(3, 9);
-            this.labelAxisY.Name = "labelAxisY";
-            this.labelAxisY.Size = new System.Drawing.Size(44, 16);
-            this.labelAxisY.TabIndex = 7;
-            this.labelAxisY.Text = "Ось Y";
             // 
             // StartDecoder
             // 
-            this.StartDecoder.Location = new System.Drawing.Point(390, 9);
+            this.StartDecoder.Location = new System.Drawing.Point(70, 9);
             this.StartDecoder.Margin = new System.Windows.Forms.Padding(2);
             this.StartDecoder.Name = "StartDecoder";
             this.StartDecoder.Size = new System.Drawing.Size(96, 38);
@@ -855,7 +819,7 @@
             // 
             // StartWrite
             // 
-            this.StartWrite.Location = new System.Drawing.Point(490, 9);
+            this.StartWrite.Location = new System.Drawing.Point(170, 9);
             this.StartWrite.Margin = new System.Windows.Forms.Padding(2);
             this.StartWrite.Name = "StartWrite";
             this.StartWrite.Size = new System.Drawing.Size(96, 38);
@@ -863,6 +827,59 @@
             this.StartWrite.Text = "Декодировать с расчетом";
             this.StartWrite.UseVisualStyleBackColor = true;
             this.StartWrite.Click += new System.EventHandler(this.StartWrite_Click);
+            // 
+            // StepChart
+            // 
+            this.StepChart.Location = new System.Drawing.Point(241, 19);
+            this.StepChart.Name = "StepChart";
+            this.StepChart.Size = new System.Drawing.Size(45, 20);
+            this.StepChart.TabIndex = 11;
+            // 
+            // CheckBoxAxisXAutoSize
+            // 
+            this.CheckBoxAxisXAutoSize.AutoSize = true;
+            this.CheckBoxAxisXAutoSize.Checked = true;
+            this.CheckBoxAxisXAutoSize.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.CheckBoxAxisXAutoSize.Location = new System.Drawing.Point(49, 31);
+            this.CheckBoxAxisXAutoSize.Name = "CheckBoxAxisXAutoSize";
+            this.CheckBoxAxisXAutoSize.Size = new System.Drawing.Size(68, 17);
+            this.CheckBoxAxisXAutoSize.TabIndex = 10;
+            this.CheckBoxAxisXAutoSize.Text = "AutoSize";
+            this.CheckBoxAxisXAutoSize.UseVisualStyleBackColor = true;
+            this.CheckBoxAxisXAutoSize.CheckedChanged += new System.EventHandler(this.CheckBoxAxisXAutoSize_CheckedChanged);
+            // 
+            // CheckBoxAxisYAutoSize
+            // 
+            this.CheckBoxAxisYAutoSize.AutoSize = true;
+            this.CheckBoxAxisYAutoSize.Checked = true;
+            this.CheckBoxAxisYAutoSize.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.CheckBoxAxisYAutoSize.Location = new System.Drawing.Point(49, 9);
+            this.CheckBoxAxisYAutoSize.Name = "CheckBoxAxisYAutoSize";
+            this.CheckBoxAxisYAutoSize.Size = new System.Drawing.Size(68, 17);
+            this.CheckBoxAxisYAutoSize.TabIndex = 9;
+            this.CheckBoxAxisYAutoSize.Text = "AutoSize";
+            this.CheckBoxAxisYAutoSize.UseVisualStyleBackColor = true;
+            this.CheckBoxAxisYAutoSize.CheckedChanged += new System.EventHandler(this.CheckBoxAxisYAutoSize_CheckedChanged);
+            // 
+            // labelAxisX
+            // 
+            this.labelAxisX.AutoSize = true;
+            this.labelAxisX.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.labelAxisX.Location = new System.Drawing.Point(3, 30);
+            this.labelAxisX.Name = "labelAxisX";
+            this.labelAxisX.Size = new System.Drawing.Size(40, 15);
+            this.labelAxisX.TabIndex = 8;
+            this.labelAxisX.Text = "Ось X";
+            // 
+            // labelAxisY
+            // 
+            this.labelAxisY.AutoSize = true;
+            this.labelAxisY.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.labelAxisY.Location = new System.Drawing.Point(3, 8);
+            this.labelAxisY.Name = "labelAxisY";
+            this.labelAxisY.Size = new System.Drawing.Size(39, 15);
+            this.labelAxisY.TabIndex = 7;
+            this.labelAxisY.Text = "Ось Y";
             // 
             // Progress
             // 
@@ -932,6 +949,7 @@
             this.PanelRadioButtonChart.Controls.Add(this.radioButtonChannel3);
             this.PanelRadioButtonChart.Controls.Add(this.radioButtonChannel2);
             this.PanelRadioButtonChart.Controls.Add(this.radioButtonChannel1);
+            this.PanelRadioButtonChart.Enabled = false;
             this.PanelRadioButtonChart.Location = new System.Drawing.Point(860, 23);
             this.PanelRadioButtonChart.Name = "PanelRadioButtonChart";
             this.PanelRadioButtonChart.Size = new System.Drawing.Size(21, 324);
@@ -1123,11 +1141,105 @@
             this.labelChannel.TabIndex = 7;
             this.labelChannel.Text = "Channel №";
             // 
+            // PanelConfigChart
+            // 
+            this.PanelConfigChart.Controls.Add(this.NumerMaximumX);
+            this.PanelConfigChart.Controls.Add(this.NumerMinimumX);
+            this.PanelConfigChart.Controls.Add(this.StepChart);
+            this.PanelConfigChart.Controls.Add(this.NumerMaximumY);
+            this.PanelConfigChart.Controls.Add(this.NumerMinimumY);
+            this.PanelConfigChart.Controls.Add(this.labelAxisX);
+            this.PanelConfigChart.Controls.Add(this.labelAxisY);
+            this.PanelConfigChart.Controls.Add(this.CheckBoxAxisYAutoSize);
+            this.PanelConfigChart.Controls.Add(this.CheckBoxAxisXAutoSize);
+            this.PanelConfigChart.Enabled = false;
+            this.PanelConfigChart.Location = new System.Drawing.Point(295, 374);
+            this.PanelConfigChart.Name = "PanelConfigChart";
+            this.PanelConfigChart.Size = new System.Drawing.Size(309, 54);
+            this.PanelConfigChart.TabIndex = 12;
+            // 
+            // NumerMaximumX
+            // 
+            this.NumerMaximumX.Enabled = false;
+            this.NumerMaximumX.Location = new System.Drawing.Point(178, 30);
+            this.NumerMaximumX.Maximum = new decimal(new int[] {
+            32768,
+            0,
+            0,
+            0});
+            this.NumerMaximumX.Minimum = new decimal(new int[] {
+            32768,
+            0,
+            0,
+            -2147483648});
+            this.NumerMaximumX.Name = "NumerMaximumX";
+            this.NumerMaximumX.Size = new System.Drawing.Size(46, 20);
+            this.NumerMaximumX.TabIndex = 16;
+            this.NumerMaximumX.ValueChanged += new System.EventHandler(this.NumerMaximumX_ValueChanged);
+            // 
+            // NumerMinimumX
+            // 
+            this.NumerMinimumX.Enabled = false;
+            this.NumerMinimumX.Location = new System.Drawing.Point(116, 30);
+            this.NumerMinimumX.Maximum = new decimal(new int[] {
+            32768,
+            0,
+            0,
+            0});
+            this.NumerMinimumX.Minimum = new decimal(new int[] {
+            32768,
+            0,
+            0,
+            -2147483648});
+            this.NumerMinimumX.Name = "NumerMinimumX";
+            this.NumerMinimumX.Size = new System.Drawing.Size(46, 20);
+            this.NumerMinimumX.TabIndex = 15;
+            this.NumerMinimumX.ValueChanged += new System.EventHandler(this.NumerMinimumX_ValueChanged);
+            // 
+            // NumerMaximumY
+            // 
+            this.NumerMaximumY.Enabled = false;
+            this.NumerMaximumY.Location = new System.Drawing.Point(178, 8);
+            this.NumerMaximumY.Maximum = new decimal(new int[] {
+            32768,
+            0,
+            0,
+            0});
+            this.NumerMaximumY.Minimum = new decimal(new int[] {
+            32768,
+            0,
+            0,
+            -2147483648});
+            this.NumerMaximumY.Name = "NumerMaximumY";
+            this.NumerMaximumY.Size = new System.Drawing.Size(46, 20);
+            this.NumerMaximumY.TabIndex = 14;
+            this.NumerMaximumY.ValueChanged += new System.EventHandler(this.NumerMaximumY_ValueChanged);
+            // 
+            // NumerMinimumY
+            // 
+            this.NumerMinimumY.Enabled = false;
+            this.NumerMinimumY.Location = new System.Drawing.Point(116, 8);
+            this.NumerMinimumY.Maximum = new decimal(new int[] {
+            32768,
+            0,
+            0,
+            0});
+            this.NumerMinimumY.Minimum = new decimal(new int[] {
+            32768,
+            0,
+            0,
+            -2147483648});
+            this.NumerMinimumY.Name = "NumerMinimumY";
+            this.NumerMinimumY.Size = new System.Drawing.Size(46, 20);
+            this.NumerMinimumY.TabIndex = 13;
+            this.NumerMinimumY.ValueChanged += new System.EventHandler(this.NumerMinimumY_ValueChanged);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(892, 438);
+            this.Controls.Add(this.PanelConfigChart);
             this.Controls.Add(this.labelChannel);
             this.Controls.Add(this.PanelRadioButtonChart);
             this.Controls.Add(this.ChartSample);
@@ -1152,10 +1264,16 @@
             this.ConConfigFile.PerformLayout();
             this.OpenPanel.ResumeLayout(false);
             this.MainPanel.ResumeLayout(false);
-            this.MainPanel.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.StepChart)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ChartSample)).EndInit();
             this.PanelRadioButtonChart.ResumeLayout(false);
             this.PanelRadioButtonChart.PerformLayout();
+            this.PanelConfigChart.ResumeLayout(false);
+            this.PanelConfigChart.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.NumerMaximumX)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.NumerMinimumX)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.NumerMaximumY)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.NumerMinimumY)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1239,11 +1357,17 @@
         private System.Windows.Forms.RadioButton radioButtonChannel3;
         private System.Windows.Forms.RadioButton radioButtonChannel2;
         private System.Windows.Forms.RadioButton radioButtonChannel1;
-        private System.Windows.Forms.CheckBox checkBox1checkBoxAxisXAutoSize;
-        private System.Windows.Forms.CheckBox checkBoxAxisYAutoSize;
+        private System.Windows.Forms.CheckBox CheckBoxAxisXAutoSize;
+        private System.Windows.Forms.CheckBox CheckBoxAxisYAutoSize;
         private System.Windows.Forms.Label labelAxisX;
         private System.Windows.Forms.Label labelAxisY;
         private System.Windows.Forms.Label labelChannel;
+        private System.Windows.Forms.NumericUpDown StepChart;
+        private System.Windows.Forms.Panel PanelConfigChart;
+        private System.Windows.Forms.NumericUpDown NumerMaximumX;
+        private System.Windows.Forms.NumericUpDown NumerMinimumX;
+        private System.Windows.Forms.NumericUpDown NumerMaximumY;
+        private System.Windows.Forms.NumericUpDown NumerMinimumY;
     }
 }
 

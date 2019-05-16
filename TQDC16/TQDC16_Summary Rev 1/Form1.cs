@@ -25,8 +25,8 @@ namespace TQDC16_Summary_Rev_1
             inl_config = false;
             ChartSample.Series.Add("Null");
             ChartSample.Series[0].Points.AddXY(0, 0);
-            //ChartSample.ChartAreas[0].AxisX.Maximum = 5;
-            //ChartSample.ChartAreas[0].AxisY.Maximum = 1;
+            ChartSample.ChartAreas[0].AxisY.Maximum = 32768;
+            ChartSample.ChartAreas[0].AxisY.Minimum = -32768;
         }
         public static bool[] DChannel;
         public static bool[] CChannel;
@@ -35,11 +35,12 @@ namespace TQDC16_Summary_Rev_1
         TQDC2File.OpenResult result;
         public static bool inl_config;
         private int MinY = 0;
-        private int MaxY = 0;
-        private int MinX = 0;
-        private int MaxX = 0;
+        private int MaxY = 1;
+        private int stepchart = 0;
+        private int stepchartdivmax = 100;
+        private int stepchartdivmin = 800;
+        private bool iscanclose = false;
 
-        
         private void label1_Click(object sender, EventArgs e)
         {
 
@@ -70,14 +71,6 @@ namespace TQDC16_Summary_Rev_1
           
         }
 
-        private void StartAnalys_Click(object sender, EventArgs e)
-        {
-            if (BackGrWorkProgressBar.IsBusy != true)
-            {
-                BackGrWorkProgressBar.RunWorkerAsync(new BackGroundWorkerTask(2, result.Format));
-            }
-        }
-
         private void label3_Click(object sender, EventArgs e)
         {
 
@@ -88,11 +81,33 @@ namespace TQDC16_Summary_Rev_1
 
         }
 
+        private void OpenFileBtn_Click(object sender, EventArgs e)
+        {
+            result = TQDC2File.Open_File();
+            if (result.Selected)
+            {
+                if (BackGrWorkProgressBar.IsBusy != true)
+                {
+                    OpenFileBtn.Enabled = false;
+                    StartDecoder.Enabled = false;
+                    StartWrite.Enabled = false;
+                    BackGrWorkProgressBar.RunWorkerAsync(new BackGroundWorkerTask(ANALYS, result.Format));
+                }
+                IDText.Text = result.ID;
+                SerialText.Text = result.Serial;
+            }
+
+        }
+
         private void StartWrite_Click(object sender, EventArgs e)
         {
             if (BackGrWorkProgressBar.IsBusy != true)
             {
-                BackGrWorkProgressBar.RunWorkerAsync(new BackGroundWorkerTask(3, result.Format));
+                PanelRadioButtonChart.Enabled = true;
+                PanelConfigChart.Enabled = true;
+                StepChart.Maximum = AnalysisFile.NumEv/stepchartdivmax;
+                StepChart.Minimum = AnalysisFile.NumEv/stepchartdivmin;
+                BackGrWorkProgressBar.RunWorkerAsync(new BackGroundWorkerTask(CALCULATION, result.Format));
                 ChangedStateRadioButtonChannel(CChannel);
                 OpenFileBtn.Enabled = false;
                 StartDecoder.Enabled = false;
@@ -107,7 +122,7 @@ namespace TQDC16_Summary_Rev_1
             if (BackGrWorkProgressBar.IsBusy != true)
             {
                 ChangedStateRadioButtonChannel(DChannel);
-                BackGrWorkProgressBar.RunWorkerAsync(new BackGroundWorkerTask(1, result.Format));
+                BackGrWorkProgressBar.RunWorkerAsync(new BackGroundWorkerTask(DECODER, result.Format));
                 OpenFileBtn.Enabled = false;
                 StartDecoder.Enabled = false;
                 StartWrite.Enabled = false;
@@ -118,6 +133,7 @@ namespace TQDC16_Summary_Rev_1
 
         private void BackGrWorkProgressBar_DoWork(object sender, DoWorkEventArgs e)
         {
+            BackGrWorkProgressBar.WorkerSupportsCancellation = true;
             BackGroundWorkerTask Task;
             if (e.Argument is BackGroundWorkerTask)
             {
@@ -127,7 +143,7 @@ namespace TQDC16_Summary_Rev_1
             else { throw new InvalidOperationException(); }
             switch (Task.Type)
             {
-                case 1:
+                case DECODER:
                     {
                         switch (Task.Format)
                         {
@@ -145,7 +161,7 @@ namespace TQDC16_Summary_Rev_1
                         
                         break;
                     }
-                case 2:
+                case ANALYS:
                     {
                         switch (Task.Format)
                         {
@@ -162,7 +178,7 @@ namespace TQDC16_Summary_Rev_1
                         }
                         break;
                     }
-                case 3:
+                case CALCULATION:
                     {
                         switch (Task.Format)
                         {
@@ -185,17 +201,23 @@ namespace TQDC16_Summary_Rev_1
                         break;
                     }
             }
+            if (BackGrWorkProgressBar.CancellationPending) iscanclose = true;
         }
 
         private void BackGrWorkProgressBar_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
+            if (BackGrWorkProgressBar.CancellationPending) return;
             BlockData<Adc_Interface> adcdata;
             Progress.Value = (e.ProgressPercentage);
             if (e.UserState is BlockData<Adc_Interface> && e.UserState != null)
             {
                 adcdata = (BlockData<Adc_Interface>)e.UserState;
-                UpdateChartSample(adcdata);
-                //UpdateChartSample(adcdata);
+                if (stepchart == StepChart.Value)
+                {
+                    UpdateChartSample(adcdata);
+                    stepchart = 0;
+                }
+                else stepchart++;
             }
         }
 
@@ -392,12 +414,25 @@ namespace TQDC16_Summary_Rev_1
                         }
                     case CALCULATION:
                         {
-                            ChartSample.Series.Clear();
-                            ChartSample.Series.Add("Null");
-                            ChartSample.Series[0].Points.AddXY(1, 0);
                             break;
                         }
                 }
+                ChartSample.Series.Clear();
+                ChartSample.Series.Add("Null");
+                ChartSample.Series[0].Points.AddXY(0, 0);
+                ChartSample.ChartAreas[0].AxisY.Maximum = 32768;
+                ChartSample.ChartAreas[0].AxisY.Minimum = -32768;
+                PanelRadioButtonChart.Enabled = false;
+                PanelConfigChart.Enabled = false;
+                NumerMaximumX.Value = 0;
+                NumerMinimumX.Value = 0;
+                NumerMaximumY.Value = 0;
+                NumerMinimumY.Value = 0;
+                CheckBoxAxisXAutoSize.Checked = true;
+                CheckBoxAxisYAutoSize.Checked = true;
+                labelChannel.Text = "Channel №";
+                StepChart.Minimum = 0;
+                StepChart.Value = 0;
             }
             Progress.Value = 0;
             SystemSounds.Exclamation.Play();
@@ -572,23 +607,6 @@ namespace TQDC16_Summary_Rev_1
             CChannel[15] = CChannel16.Checked;
         }
 
-        private void OpenFileBtn_Click(object sender, EventArgs e)
-        {
-            result = TQDC2File.Open_File();
-            if (result.Selected)
-            {
-                if (BackGrWorkProgressBar.IsBusy != true)
-                {
-                    OpenFileBtn.Enabled = false;
-                    StartDecoder.Enabled = false;
-                    StartWrite.Enabled = false;
-                    BackGrWorkProgressBar.RunWorkerAsync(new BackGroundWorkerTask(2,result.Format));
-                }
-                IDText.Text = result.ID;
-                SerialText.Text = result.Serial;
-            }
-
-        }
         public class BackGroundWorkerTask
         {
             public int Type {  get; set; }
@@ -628,6 +646,7 @@ namespace TQDC16_Summary_Rev_1
 
         void UpdateChartSample(BlockData<Adc_Interface> blockdata)
         {
+
             int index = 1;
             foreach (List<Adc_Interface> item in blockdata)
             {
@@ -661,6 +680,16 @@ namespace TQDC16_Summary_Rev_1
                             }
                             x++;
                         }
+                        if (CheckBoxAxisXAutoSize.Checked)
+                        {
+                            NumerMaximumX.Value = (int)ChartSample.ChartAreas[0].AxisX.Maximum;
+                            NumerMinimumX.Value = (int)ChartSample.ChartAreas[0].AxisX.Minimum;
+                        }
+                        if (CheckBoxAxisYAutoSize.Checked)
+                        {
+                            NumerMaximumY.Value = (int)ChartSample.ChartAreas[0].AxisY.Maximum;
+                            NumerMinimumY.Value = (int)ChartSample.ChartAreas[0].AxisY.Minimum;
+                        }
                         y++;
                     }
                 }
@@ -670,6 +699,7 @@ namespace TQDC16_Summary_Rev_1
 
         void ResizedChartSample()
         {
+            if (!CheckBoxAxisYAutoSize.Checked) return;
             //ChartSample.ChartAreas[0].AxisX.Maximum = MaxX;
             //ChartSample.ChartAreas[0].AxisX.Minimum = MinX;
             ChartSample.ChartAreas[0].AxisY.Maximum = MaxY;
@@ -841,6 +871,75 @@ namespace TQDC16_Summary_Rev_1
         private void RadioButtonChannel16_CheckedChanged(object sender, EventArgs e)
         {
             labelChannel.Text = "Channel 16";
+        }
+
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            if (BackGrWorkProgressBar.IsBusy)
+            {
+                BackGrWorkProgressBar.CancelAsync();
+                while (!iscanclose)
+                {
+
+                }
+            }
+        }
+
+        private void CheckBoxAxisYAutoSize_CheckedChanged(object sender, EventArgs e)
+        {
+            NumerMaximumY.Enabled = !CheckBoxAxisYAutoSize.Checked;
+            NumerMinimumY.Enabled = !CheckBoxAxisYAutoSize.Checked;
+            if (CheckBoxAxisYAutoSize.Checked)
+            {
+                ChartSample.ChartAreas[0].AxisY.Maximum = double.NaN;
+                ChartSample.ChartAreas[0].AxisY.Minimum = double.NaN;
+                ChartSample.ChartAreas[0].RecalculateAxesScale();
+            }
+        }
+        
+        private void CheckBoxAxisXAutoSize_CheckedChanged(object sender, EventArgs e)
+        {
+            NumerMaximumX.Enabled = !CheckBoxAxisXAutoSize.Checked;
+            NumerMinimumX.Enabled = !CheckBoxAxisXAutoSize.Checked;
+            if (CheckBoxAxisXAutoSize.Checked)
+            {
+                ChartSample.ChartAreas[0].AxisX.Maximum = double.NaN;
+                ChartSample.ChartAreas[0].AxisX.Minimum = double.NaN;
+                ChartSample.ChartAreas[0].RecalculateAxesScale();
+            }
+
+        }
+
+        private void NumerMinimumY_ValueChanged(object sender, EventArgs e)
+        {
+            if (!CheckBoxAxisYAutoSize.Checked)
+            {
+                ChartSample.ChartAreas[0].AxisY.Minimum = (double)NumerMinimumY.Value;
+            }
+        }
+
+        private void NumerMinimumX_ValueChanged(object sender, EventArgs e)
+        {
+            if (!CheckBoxAxisXAutoSize.Checked)
+            {
+                ChartSample.ChartAreas[0].AxisX.Minimum = (double)NumerMinimumX.Value;
+            }
+        }
+
+        private void NumerMaximumY_ValueChanged(object sender, EventArgs e)
+        {
+            if (!CheckBoxAxisYAutoSize.Checked)
+            {
+                ChartSample.ChartAreas[0].AxisY.Maximum = (double)NumerMaximumY.Value;
+            }
+        }
+
+        private void NumerMaximumX_ValueChanged(object sender, EventArgs e)
+        {
+            if (!CheckBoxAxisXAutoSize.Checked)
+            {
+                ChartSample.ChartAreas[0].AxisX.Maximum = (double)NumerMaximumX.Value;
+            }
         }
     }
 }

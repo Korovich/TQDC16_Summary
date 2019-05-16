@@ -73,11 +73,6 @@ namespace TQDC16_Summary_Rev_1
                 pos = pos + EvLeng + 12;
                 prog = ((FS.Position * 10000) / FS.Length);
                 ProgressBar.ReportProgress((int)prog);
-                /* if (pos > prog_st * prog)
-                 {
-                     prog ++;
-                     ProgressBar.ReportProgress(1);
-                 }*/
                 NumEv++;
             }
             analysisresult = new BackGroundWorkerResult(ANALYS,100,OK);
@@ -89,8 +84,6 @@ namespace TQDC16_Summary_Rev_1
             var fs = new FileStream(string.Format("{0}", ReadFilePath), FileMode.Open); // Экземпляр потока чтения
             var fsr = new StreamReader(fs);
             BackGroundWorkerResult analysisresult;
-            long prog_st = fs.Length / 999;
-            long prog = 0;
             while (!fsr.EndOfStream)
             {
                 string readerLine = fsr.ReadLine();
@@ -128,11 +121,8 @@ namespace TQDC16_Summary_Rev_1
                             break;
                         }
                 }
-                if (fs.Position - prog > prog_st)
-                {
-                    prog = fs.Position;
-                    ProgressBar.ReportProgress(1);
-                }
+                NumEv++;
+                ProgressBar.ReportProgress((int)((fs.Position * 10000) / fs.Length));
             }
             analysisresult = new BackGroundWorkerResult(ANALYS, 100, OK);
             e.Result = analysisresult; //Возращение переменной для различия процесса

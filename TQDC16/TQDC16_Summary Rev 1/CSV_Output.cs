@@ -92,7 +92,7 @@ namespace TQDC16_Summary_Rev_1
                 {
                     for (int i = 0; i < bufferadc[ch].Count(); i++)
                     {
-                        CalculationMMI(buferfiledata, bufferadc[ch][i].bufsamples, buffertdc[ch][i].data, bufferadc[ch][i].timestamp, ch);
+                        CalculationMMI(buferfiledata, bufferadc[ch][i].bufsamples, buffertdc[ch][i].data, ch);
                     }
                 }
 
@@ -100,7 +100,7 @@ namespace TQDC16_Summary_Rev_1
                 {
                     for (int i = 0; i < buffertdc[ch].Count(); i++)
                     {
-                        CalculationMMI(buferfiledata, bufferadc[ch][i].bufsamples, buffertdc[ch][i].data, bufferadc[ch][i].timestamp, ch);
+                        CalculationMMI(buferfiledata, bufferadc[ch][i].bufsamples, buffertdc[ch][i].data, ch);
                     }
                 }
 
@@ -108,7 +108,7 @@ namespace TQDC16_Summary_Rev_1
                 {
                     for (int i = 0; i < bufferadc[ch].Count(); i++)
                     {
-                        CalculationMMI(buferfiledata, bufferadc[ch][i].bufsamples, buffertdc[ch][i].data, bufferadc[ch][i].timestamp, ch);
+                        CalculationMMI(buferfiledata, bufferadc[ch][i].bufsamples, buffertdc[ch][i].data, ch);
                     }
                 }
             }
@@ -178,15 +178,13 @@ namespace TQDC16_Summary_Rev_1
 
         public class CalcInterf //класс хранения данных для записи
         {
-            internal ulong timestamp;
             internal ulong tdc;
             internal int max;
             internal int min;
             internal double integral;
 
-            internal CalcInterf(ulong timestamp = 0, ulong tdc = 0, int max = 0, int min = 0, double integral = 0) //конструктор
+            internal CalcInterf( ulong tdc = 0, int max = 0, int min = 0, double integral = 0) //конструктор
             {
-                this.timestamp = timestamp;
                 this.tdc = tdc;
                 this.max = max;
                 this.min = min;
@@ -195,44 +193,9 @@ namespace TQDC16_Summary_Rev_1
 
             public override string ToString()// Метод в строку
             {
-                return string.Format("{0};{1};{2};{3};{4}", this.timestamp, this.tdc, this.max, this.min, this.integral);
+                return string.Format("{0};{1};{2};{3}", this.tdc, this.max, this.min, this.integral);
             }
         }
-
-        /*
-        public class DecInterf //класс хранения данных для записи
-        {
-            internal int numEvent;
-            internal ulong timestamp;
-            internal List<int> channel;
-            internal List<ulong> dataType;
-            internal List<ulong> data;
-
-
-            internal DecInterf(int numEvent, ulong timestamp, List<int> channel, List<ulong> dataType, List<ulong> data) //конструктор
-            {
-                this.numEvent = numEvent;
-                this.timestamp = timestamp;
-                this.channel = channel;
-                this.dataType = dataType;
-                this.data = data;
-            }
-
-            public string EventHeaderToString ()
-            {
-                return string.Format("{0};{1};;;",numEvent,timestamp);
-            }
-            public string DataToString()
-            {
-                string result = "";
-                for (int i=0;i<data.Count; i++)
-                {
-                    result += ";;" + channel[i].ToString() + ";" + dataType[i].ToString() + ";" + data[i].ToString() + '\n';
-                }
-                return result;
-            }
-        }
-        */
 
         internal class Adc_Interface //Класс для хранений одной ячейки ADC
         {

@@ -53,7 +53,7 @@ namespace TQDC16_Summary_Rev_1
         {
             string result; //переменная хранения строки
             int n = 0;
-            string[] Header = new string[5] { "TimeStampADC", "Tdc", "Max", "Min", "Integral" };
+            string[] Header = new string[4] { "Tdc", "Max", "Min", "Integral" };
             //string[] Comment = new string[5] {"Метка времени ADC", "Время от тригера до Hit", "Максимальное значение АЦП", "Минимальное значение АЦП", "Интеграл от блока АЦП" };
             if (EnableChannel.Length != 16) //Проверка на количество каналов
             {
@@ -124,7 +124,7 @@ namespace TQDC16_Summary_Rev_1
                 {
                     if (IsNeedChannel(buferfiledata.position + 1,CChannel))
                     {
-                        writer.Write(";;;;");
+                        writer.Write(";;;");
                     }
                 }
                 writer.WriteLine();

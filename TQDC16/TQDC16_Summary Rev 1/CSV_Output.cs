@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using static TQDC16_Summary_Rev_1.Form1;
+using static TQDC16_Summary_Rev_1.TQDC16_Summary;
 using static TQDC16_Summary_Rev_1.Calculation;
 using System.Collections;
 
@@ -76,7 +76,7 @@ namespace TQDC16_Summary_Rev_1
             result = "№;Сек:нСек;";
             for (int i = 0; i < n; i++)
             {
-                result += "нСек;пСек;В;В;В;";  //Запись unit
+                result += "пСек;В;В;В;";  //Запись unit
             }
             result = result.Remove(result.Length - 1);
             writer.WriteLine(result);
@@ -142,7 +142,7 @@ namespace TQDC16_Summary_Rev_1
                         {
                             writer.Write(Item[i].ToString());
                         }
-                        else writer.Write(";;;;");
+                        else writer.Write(";;;");
                     }
                 }
                 writer.WriteLine();

@@ -14,9 +14,9 @@ using static TQDC16_Summary_Rev_1.CSV_Output;
 namespace TQDC16_Summary_Rev_1
 {
 
-    public partial class Form1 : Form
+    public partial class TQDC16_Summary : Form
     {
-        public Form1()
+        public TQDC16_Summary()
         {
             InitializeComponent();
             DChannel = new bool[16];
@@ -28,6 +28,15 @@ namespace TQDC16_Summary_Rev_1
             ChartSample.ChartAreas[0].AxisY.Maximum = 32768;
             ChartSample.ChartAreas[0].AxisY.Minimum = -32768;
         }
+
+        public const int OK = 0x01;
+        public const int CANCEL = 0x02;
+        public const int ERROR = 0x03;
+        public const int ANALYS = 0x04;
+        public const int DECODER = 0x05;
+        public const int CALCULATION = 0x06;
+        public const int GRAPHIC = 0x10;
+
         public static bool[] DChannel;
         public static bool[] CChannel;
         public static bool isAnalysis;
@@ -40,6 +49,9 @@ namespace TQDC16_Summary_Rev_1
         private int stepchartdivmax = 100;
         private int stepchartdivmin = 800;
         private bool iscanclose = false;
+        private int modeBGW = 0;
+
+        public static bool StandartBaseline { get; private set; } = true;
 
         private void label1_Click(object sender, EventArgs e)
         {
@@ -86,12 +98,15 @@ namespace TQDC16_Summary_Rev_1
             result = TQDC2File.Open_File();
             if (result.Selected)
             {
+                Progress.Maximum = 10000;
                 if (BackGrWorkProgressBar.IsBusy != true)
                 {
                     OpenFileBtn.Enabled = false;
                     StartDecoder.Enabled = false;
                     StartWrite.Enabled = false;
+                    modeBGW = ANALYS;
                     BackGrWorkProgressBar.RunWorkerAsync(new BackGroundWorkerTask(ANALYS, result.Format));
+                    StopButton.Enabled = true;
                 }
                 IDText.Text = result.ID;
                 SerialText.Text = result.Serial;
@@ -109,26 +124,32 @@ namespace TQDC16_Summary_Rev_1
                 StepChart.Minimum = AnalysisFile.NumEv/stepchartdivmin;
                 BackGrWorkProgressBar.RunWorkerAsync(new BackGroundWorkerTask(CALCULATION, result.Format));
                 ChangedStateRadioButtonChannel(CChannel);
+                modeBGW = CALCULATION;
                 OpenFileBtn.Enabled = false;
                 StartDecoder.Enabled = false;
                 StartWrite.Enabled = false;
                 Progress.Maximum = AnalysisFile.NumEv;
+                StopButton.Enabled = true;
             }
-            //ChartSample.ChartAreas[0].AxisX.MaximumAutoSize = 1;
         }
 
         private void StartDecoder_Click(object sender, EventArgs e)
         {
             if (BackGrWorkProgressBar.IsBusy != true)
             {
+                PanelRadioButtonChart.Enabled = true;
+                PanelConfigChart.Enabled = true;
+                StepChart.Maximum = AnalysisFile.NumEv / stepchartdivmax;
+                StepChart.Minimum = AnalysisFile.NumEv / stepchartdivmin;
                 ChangedStateRadioButtonChannel(DChannel);
+                modeBGW = DECODER;
                 BackGrWorkProgressBar.RunWorkerAsync(new BackGroundWorkerTask(DECODER, result.Format));
                 OpenFileBtn.Enabled = false;
                 StartDecoder.Enabled = false;
                 StartWrite.Enabled = false;
                 Progress.Maximum = AnalysisFile.NumEv;
+                StopButton.Enabled = true;
             }
-            //ChartSample.ChartAreas[0].AxisX.MaximumAutoSize = 1;
         }
 
         private void BackGrWorkProgressBar_DoWork(object sender, DoWorkEventArgs e)
@@ -184,12 +205,12 @@ namespace TQDC16_Summary_Rev_1
                         {
                             case "txt":
                                 {
-                                    Calculation.StartCalcText(BackGrWorkProgressBar, AnalysisFile.Channel, e);
+                                    Calculation.StartCalcText(BackGrWorkProgressBar, CChannel, e);
                                     break;
                                 }
                             case "dat":
                                 {
-                                    Calculation.StartCalcBinary(BackGrWorkProgressBar, AnalysisFile.Channel, e);
+                                    Calculation.StartCalcBinary(BackGrWorkProgressBar, CChannel, e);
                                     break;
                                 }
                         }
@@ -433,6 +454,7 @@ namespace TQDC16_Summary_Rev_1
                 labelChannel.Text = "Channel №";
                 StepChart.Minimum = 0;
                 StepChart.Value = 0;
+                StopButton.Enabled = false;
             }
             Progress.Value = 0;
             SystemSounds.Exclamation.Play();
@@ -618,15 +640,6 @@ namespace TQDC16_Summary_Rev_1
                 Format = format;
             }
         }
-
-        public const int OK = 0x01;
-        public const int CANCEL = 0x02;
-        public const int ERROR = 0x03;
-        public const int ANALYS = 0x04;
-        public const int DECODER = 0x05;
-        public const int CALCULATION = 0x06;
-        public const int GRAPHIC = 0x10;
-
 
         public class BackGroundWorkerResult
         {
@@ -940,6 +953,33 @@ namespace TQDC16_Summary_Rev_1
             {
                 ChartSample.ChartAreas[0].AxisX.Maximum = (double)NumerMaximumX.Value;
             }
+        }
+
+        private void Progress_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void StopButton_Click(object sender, EventArgs e)
+        {
+            if (BackGrWorkProgressBar.IsBusy)
+            {
+                if ( modeBGW == ANALYS)
+                {
+                    IDText.Text = "";
+                    SerialText.Text = "";
+                }
+                BackGrWorkProgressBar.CancelAsync();
+            }
+        }
+
+        private void CheckBoxStandartConfBaseLine_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkBoxStandartConfBaseLine.Checked)
+            {
+                StandartBaseline = true;
+            }
+            else StandartBaseline = false;
         }
     }
 }

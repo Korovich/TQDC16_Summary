@@ -1,6 +1,6 @@
 ﻿namespace TQDC16_Summary_Rev_1
 {
-    partial class Form1
+    partial class TQDC16_Summary
     {
         /// <summary>
         /// Обязательная переменная конструктора.
@@ -31,6 +31,7 @@
             System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
             System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
             System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TQDC16_Summary));
             this.ConfiguireWindow = new System.Windows.Forms.TabControl();
             this.ConReadFile = new System.Windows.Forms.TabPage();
             this.NumEvText = new System.Windows.Forms.TextBox();
@@ -119,6 +120,8 @@
             this.NumerMinimumX = new System.Windows.Forms.NumericUpDown();
             this.NumerMaximumY = new System.Windows.Forms.NumericUpDown();
             this.NumerMinimumY = new System.Windows.Forms.NumericUpDown();
+            this.StopButton = new System.Windows.Forms.Button();
+            this.checkBoxStandartConfBaseLine = new System.Windows.Forms.CheckBox();
             this.ConfiguireWindow.SuspendLayout();
             this.ConReadFile.SuspendLayout();
             this.ConSaveFile.SuspendLayout();
@@ -747,6 +750,7 @@
             // ConConfigFile
             // 
             this.ConConfigFile.BackColor = System.Drawing.SystemColors.Control;
+            this.ConConfigFile.Controls.Add(this.checkBoxStandartConfBaseLine);
             this.ConConfigFile.Controls.Add(this.Inl_config);
             this.ConConfigFile.Controls.Add(this.ReadConfigFile);
             this.ConConfigFile.Location = new System.Drawing.Point(4, 22);
@@ -758,7 +762,7 @@
             // Inl_config
             // 
             this.Inl_config.AutoSize = true;
-            this.Inl_config.Location = new System.Drawing.Point(3, 57);
+            this.Inl_config.Location = new System.Drawing.Point(3, 71);
             this.Inl_config.Name = "Inl_config";
             this.Inl_config.Size = new System.Drawing.Size(183, 17);
             this.Inl_config.TabIndex = 5;
@@ -798,6 +802,7 @@
             // 
             // MainPanel
             // 
+            this.MainPanel.Controls.Add(this.StopButton);
             this.MainPanel.Controls.Add(this.StartDecoder);
             this.MainPanel.Controls.Add(this.StartWrite);
             this.MainPanel.Location = new System.Drawing.Point(609, 373);
@@ -891,6 +896,7 @@
             this.Progress.Size = new System.Drawing.Size(588, 16);
             this.Progress.Step = 1;
             this.Progress.TabIndex = 4;
+            this.Progress.Click += new System.EventHandler(this.Progress_Click);
             // 
             // BackGrWorkProgressBar
             // 
@@ -1163,12 +1169,12 @@
             this.NumerMaximumX.Enabled = false;
             this.NumerMaximumX.Location = new System.Drawing.Point(178, 30);
             this.NumerMaximumX.Maximum = new decimal(new int[] {
-            32768,
+            40000,
             0,
             0,
             0});
             this.NumerMaximumX.Minimum = new decimal(new int[] {
-            32768,
+            40000,
             0,
             0,
             -2147483648});
@@ -1182,12 +1188,12 @@
             this.NumerMinimumX.Enabled = false;
             this.NumerMinimumX.Location = new System.Drawing.Point(116, 30);
             this.NumerMinimumX.Maximum = new decimal(new int[] {
-            32768,
+            40000,
             0,
             0,
             0});
             this.NumerMinimumX.Minimum = new decimal(new int[] {
-            32768,
+            40000,
             0,
             0,
             -2147483648});
@@ -1201,12 +1207,12 @@
             this.NumerMaximumY.Enabled = false;
             this.NumerMaximumY.Location = new System.Drawing.Point(178, 8);
             this.NumerMaximumY.Maximum = new decimal(new int[] {
-            32768,
+            40000,
             0,
             0,
             0});
             this.NumerMaximumY.Minimum = new decimal(new int[] {
-            32768,
+            40000,
             0,
             0,
             -2147483648});
@@ -1220,12 +1226,12 @@
             this.NumerMinimumY.Enabled = false;
             this.NumerMinimumY.Location = new System.Drawing.Point(116, 8);
             this.NumerMinimumY.Maximum = new decimal(new int[] {
-            32768,
+            40000,
             0,
             0,
             0});
             this.NumerMinimumY.Minimum = new decimal(new int[] {
-            32768,
+            40000,
             0,
             0,
             -2147483648});
@@ -1234,7 +1240,32 @@
             this.NumerMinimumY.TabIndex = 13;
             this.NumerMinimumY.ValueChanged += new System.EventHandler(this.NumerMinimumY_ValueChanged);
             // 
-            // Form1
+            // StopButton
+            // 
+            this.StopButton.Enabled = false;
+            this.StopButton.Location = new System.Drawing.Point(2, 8);
+            this.StopButton.Margin = new System.Windows.Forms.Padding(2);
+            this.StopButton.Name = "StopButton";
+            this.StopButton.Size = new System.Drawing.Size(64, 38);
+            this.StopButton.TabIndex = 7;
+            this.StopButton.Text = "СТОП";
+            this.StopButton.UseVisualStyleBackColor = true;
+            this.StopButton.Click += new System.EventHandler(this.StopButton_Click);
+            // 
+            // checkBoxStandartConfBaseLine
+            // 
+            this.checkBoxStandartConfBaseLine.AutoSize = true;
+            this.checkBoxStandartConfBaseLine.Checked = true;
+            this.checkBoxStandartConfBaseLine.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBoxStandartConfBaseLine.Location = new System.Drawing.Point(3, 35);
+            this.checkBoxStandartConfBaseLine.Name = "checkBoxStandartConfBaseLine";
+            this.checkBoxStandartConfBaseLine.Size = new System.Drawing.Size(173, 30);
+            this.checkBoxStandartConfBaseLine.TabIndex = 6;
+            this.checkBoxStandartConfBaseLine.Text = "Использование cтандартной\r\nконфигурации baseline";
+            this.checkBoxStandartConfBaseLine.UseVisualStyleBackColor = true;
+            this.checkBoxStandartConfBaseLine.CheckedChanged += new System.EventHandler(this.CheckBoxStandartConfBaseLine_CheckedChanged);
+            // 
+            // TQDC16_Summary
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -1248,8 +1279,11 @@
             this.Controls.Add(this.OpenPanel);
             this.Controls.Add(this.ConfiguireWindow);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.Name = "Form1";
-            this.Text = "Form1";
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
+            this.Name = "TQDC16_Summary";
+            this.Text = "TQDC16_Summary";
             this.ConfiguireWindow.ResumeLayout(false);
             this.ConReadFile.ResumeLayout(false);
             this.ConReadFile.PerformLayout();
@@ -1368,6 +1402,8 @@
         private System.Windows.Forms.NumericUpDown NumerMinimumX;
         private System.Windows.Forms.NumericUpDown NumerMaximumY;
         private System.Windows.Forms.NumericUpDown NumerMinimumY;
+        private System.Windows.Forms.Button StopButton;
+        private System.Windows.Forms.CheckBox checkBoxStandartConfBaseLine;
     }
 }
 

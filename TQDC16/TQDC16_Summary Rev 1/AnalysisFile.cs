@@ -11,7 +11,7 @@ using static TQDC16_Summary_Rev_1.TQDC2File;
 
 namespace TQDC16_Summary_Rev_1
 {
-    public class AnalysisFile:Form1
+    public class AnalysisFile:TQDC16_Summary
     {
 
         public static bool[] Channel = new bool[16] ;
@@ -24,28 +24,28 @@ namespace TQDC16_Summary_Rev_1
             long pos = 0;
             long pospl;
             long prog;
-            var FS = new FileStream(String.Format("{0}", TQDC2File.ReadFilePath), FileMode.Open);
+            var fs = new FileStream(String.Format("{0}", TQDC2File.ReadFilePath), FileMode.Open);
             BackGroundWorkerResult analysisresult;
             //long prog_st = 0; 
-            while (pos < FS.Length)
+            while (pos < fs.Length)
             {
-                EvLeng = Byte2Int(ReadBytes(pos + 4, 4, FS));
-                NumEv = Byte2Int(ReadBytes(pos + 8, 4, FS));
+                EvLeng = Byte2Int(ReadBytes(pos + 4, 4, fs));
+                NumEv = Byte2Int(ReadBytes(pos + 8, 4, fs));
                 pospl = pos+32;
                 while (pospl != pos+ EvLeng + 12)
                 {
-                    PLLeng = Byte2Int(ReadBytes(pospl + 2, 2, FS));
-                    switch ((Byte2Int(ReadBytes(pospl, 1, FS)))>>4)
+                    PLLeng = Byte2Int(ReadBytes(pospl + 2, 2, fs));
+                    switch ((Byte2Int(ReadBytes(pospl, 1, fs)))>>4)
                     {
                         case 0:
                             {
                                 pospl += 4;
                                 for (int i = 0; i < PLLeng / 4; i++)
                                 {
-                                    if ((Byte2Int(ReadBytes(pospl , 1, FS)) >> 4 == 4) |
-                                        (Byte2Int(ReadBytes(pospl , 1, FS)) >> 4 == 5))
+                                    if ((Byte2Int(ReadBytes(pospl , 1, fs)) >> 4 == 4) |
+                                        (Byte2Int(ReadBytes(pospl , 1, fs)) >> 4 == 5))
                                     {
-                                        uint ch = (Byte2uInt(ReadBytes(pospl, 4, FS)) << 7) >> 28;
+                                        uint ch = (Byte2uInt(ReadBytes(pospl, 4, fs)) << 7) >> 28;
                                         if (Channel[ch] == false)
                                         {
                                             Channel[ch] = true;
@@ -58,26 +58,31 @@ namespace TQDC16_Summary_Rev_1
                             }
                         case 1:
                             {
-                                uint ch = ((Byte2uInt(ReadBytes(pospl , 1, FS))) << 28) >> 28;
+                                uint ch = ((Byte2uInt(ReadBytes(pospl , 1, fs))) << 28) >> 28;
                                 if (Channel[ch] == false)
                                 {
                                     Channel[ch] = true;
                                     NumCh++;
                                 }
-                                pospl += Byte2Int(ReadBytes(pospl + 2, 2, FS)) + 4;
+                                pospl += Byte2Int(ReadBytes(pospl + 2, 2, fs)) + 4;
                                 break;
                             }
                     }
                 }
                 //prog += EvLeng + 12;
                 pos = pos + EvLeng + 12;
-                prog = ((FS.Position * 10000) / FS.Length);
+                prog = ((fs.Position * 10000) / fs.Length);
                 ProgressBar.ReportProgress((int)prog);
                 NumEv++;
+                if (ProgressBar.CancellationPending == true)
+                {
+                    fs.Close();
+                    return;
+                }
             }
             analysisresult = new BackGroundWorkerResult(ANALYS,100,OK);
             e.Result = analysisresult; //Возращение переменной для различия процесса
-            FS.Close();
+            fs.Close();
         }
         public static void AnChannelText(BackgroundWorker ProgressBar, DoWorkEventArgs e)
         {
@@ -123,6 +128,12 @@ namespace TQDC16_Summary_Rev_1
                 }
                 NumEv++;
                 ProgressBar.ReportProgress((int)((fs.Position * 10000) / fs.Length));
+                if (ProgressBar.CancellationPending == true)
+                {
+                    fsr.Close();
+                    fs.Close();
+                    return;
+                }
             }
             analysisresult = new BackGroundWorkerResult(ANALYS, 100, OK);
             e.Result = analysisresult; //Возращение переменной для различия процесса

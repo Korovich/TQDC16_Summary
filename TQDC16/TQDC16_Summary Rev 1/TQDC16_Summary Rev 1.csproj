@@ -7,8 +7,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{BAA943D9-BEB8-4509-B603-559601EAE699}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>TQDC16_Summary_Rev_1</RootNamespace>
-    <AssemblyName>TQDC16_Summary Rev 1</AssemblyName>
+    <RootNamespace>TQDC16_Summary</RootNamespace>
+    <AssemblyName>TQDC16_Summary</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -52,6 +52,9 @@
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Icon.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Costura, Version=3.3.3.0, Culture=neutral, PublicKeyToken=9919ef960d84173d, processorArchitecture=MSIL">
       <HintPath>..\packages\Costura.Fody.3.3.3\lib\net40\Costura.dll</HintPath>
@@ -75,15 +78,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AnalysisFile.cs" />
+    <Compile Include="AnalysisFile.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Calculation.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="CSV_Output.cs" />
     <Compile Include="Converters.cs" />
-    <Compile Include="Decoder.cs" />
+    <Compile Include="Decoder.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="GlobalSuppressions.cs" />
-    <Compile Include="TQDC2Configs.cs" />
+    <Compile Include="TQDC2Configs.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="TQDC2File.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
@@ -131,7 +140,9 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="Icon.ico" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Fody.4.0.2\build\Fody.targets" Condition="Exists('..\packages\Fody.4.0.2\build\Fody.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

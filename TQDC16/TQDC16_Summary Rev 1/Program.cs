@@ -15,7 +15,7 @@ namespace TQDC16_Summary_Rev_1
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1());
+            Application.Run(new TQDC16_Summary());
         }
     }
 }

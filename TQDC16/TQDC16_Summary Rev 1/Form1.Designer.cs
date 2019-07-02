@@ -82,11 +82,13 @@
             this.CChannel9 = new System.Windows.Forms.CheckBox();
             this.CChannel10 = new System.Windows.Forms.CheckBox();
             this.ConConfigFile = new System.Windows.Forms.TabPage();
+            this.checkBoxStandartConfBaseLine = new System.Windows.Forms.CheckBox();
             this.Inl_config = new System.Windows.Forms.CheckBox();
             this.ReadConfigFile = new System.Windows.Forms.Button();
             this.OpenPanel = new System.Windows.Forms.Panel();
             this.OpenFileBtn = new System.Windows.Forms.Button();
             this.MainPanel = new System.Windows.Forms.Panel();
+            this.StopButton = new System.Windows.Forms.Button();
             this.StartDecoder = new System.Windows.Forms.Button();
             this.StartWrite = new System.Windows.Forms.Button();
             this.StepChart = new System.Windows.Forms.NumericUpDown();
@@ -120,8 +122,6 @@
             this.NumerMinimumX = new System.Windows.Forms.NumericUpDown();
             this.NumerMaximumY = new System.Windows.Forms.NumericUpDown();
             this.NumerMinimumY = new System.Windows.Forms.NumericUpDown();
-            this.StopButton = new System.Windows.Forms.Button();
-            this.checkBoxStandartConfBaseLine = new System.Windows.Forms.CheckBox();
             this.ConfiguireWindow.SuspendLayout();
             this.ConReadFile.SuspendLayout();
             this.ConSaveFile.SuspendLayout();
@@ -759,6 +759,19 @@
             this.ConConfigFile.TabIndex = 2;
             this.ConConfigFile.Text = "Файл настроек";
             // 
+            // checkBoxStandartConfBaseLine
+            // 
+            this.checkBoxStandartConfBaseLine.AutoSize = true;
+            this.checkBoxStandartConfBaseLine.Checked = true;
+            this.checkBoxStandartConfBaseLine.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBoxStandartConfBaseLine.Location = new System.Drawing.Point(3, 35);
+            this.checkBoxStandartConfBaseLine.Name = "checkBoxStandartConfBaseLine";
+            this.checkBoxStandartConfBaseLine.Size = new System.Drawing.Size(173, 30);
+            this.checkBoxStandartConfBaseLine.TabIndex = 6;
+            this.checkBoxStandartConfBaseLine.Text = "Использование cтандартной\r\nконфигурации baseline";
+            this.checkBoxStandartConfBaseLine.UseVisualStyleBackColor = true;
+            this.checkBoxStandartConfBaseLine.CheckedChanged += new System.EventHandler(this.CheckBoxStandartConfBaseLine_CheckedChanged);
+            // 
             // Inl_config
             // 
             this.Inl_config.AutoSize = true;
@@ -811,6 +824,18 @@
             this.MainPanel.Size = new System.Drawing.Size(274, 54);
             this.MainPanel.TabIndex = 3;
             // 
+            // StopButton
+            // 
+            this.StopButton.Enabled = false;
+            this.StopButton.Location = new System.Drawing.Point(2, 8);
+            this.StopButton.Margin = new System.Windows.Forms.Padding(2);
+            this.StopButton.Name = "StopButton";
+            this.StopButton.Size = new System.Drawing.Size(64, 38);
+            this.StopButton.TabIndex = 7;
+            this.StopButton.Text = "СТОП";
+            this.StopButton.UseVisualStyleBackColor = true;
+            this.StopButton.Click += new System.EventHandler(this.StopButton_Click);
+            // 
             // StartDecoder
             // 
             this.StartDecoder.Location = new System.Drawing.Point(70, 9);
@@ -839,6 +864,7 @@
             this.StepChart.Name = "StepChart";
             this.StepChart.Size = new System.Drawing.Size(45, 20);
             this.StepChart.TabIndex = 11;
+            this.StepChart.ValueChanged += new System.EventHandler(this.StepChart_ValueChanged);
             // 
             // CheckBoxAxisXAutoSize
             // 
@@ -1239,31 +1265,6 @@
             this.NumerMinimumY.Size = new System.Drawing.Size(46, 20);
             this.NumerMinimumY.TabIndex = 13;
             this.NumerMinimumY.ValueChanged += new System.EventHandler(this.NumerMinimumY_ValueChanged);
-            // 
-            // StopButton
-            // 
-            this.StopButton.Enabled = false;
-            this.StopButton.Location = new System.Drawing.Point(2, 8);
-            this.StopButton.Margin = new System.Windows.Forms.Padding(2);
-            this.StopButton.Name = "StopButton";
-            this.StopButton.Size = new System.Drawing.Size(64, 38);
-            this.StopButton.TabIndex = 7;
-            this.StopButton.Text = "СТОП";
-            this.StopButton.UseVisualStyleBackColor = true;
-            this.StopButton.Click += new System.EventHandler(this.StopButton_Click);
-            // 
-            // checkBoxStandartConfBaseLine
-            // 
-            this.checkBoxStandartConfBaseLine.AutoSize = true;
-            this.checkBoxStandartConfBaseLine.Checked = true;
-            this.checkBoxStandartConfBaseLine.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxStandartConfBaseLine.Location = new System.Drawing.Point(3, 35);
-            this.checkBoxStandartConfBaseLine.Name = "checkBoxStandartConfBaseLine";
-            this.checkBoxStandartConfBaseLine.Size = new System.Drawing.Size(173, 30);
-            this.checkBoxStandartConfBaseLine.TabIndex = 6;
-            this.checkBoxStandartConfBaseLine.Text = "Использование cтандартной\r\nконфигурации baseline";
-            this.checkBoxStandartConfBaseLine.UseVisualStyleBackColor = true;
-            this.checkBoxStandartConfBaseLine.CheckedChanged += new System.EventHandler(this.CheckBoxStandartConfBaseLine_CheckedChanged);
             // 
             // TQDC16_Summary
             // 

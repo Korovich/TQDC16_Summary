@@ -27,13 +27,14 @@ namespace TQDC16_Summary_Rev_1
             int EvLeng;             // Длина глобального Event в байтах
             int MSLeng;             // Длина блока MStream
             int DataPLLeng;         // Длина блока DataPayload
-            ulong NumEv;            // Номер Event
+            int NumEv = 0;            // Номер Event
             long pos = 0;           // Позиция в блоке файла
             long pospl;             // Позиция в блоке DataPayload
             long prog = 0;          // Позиция для Progress Bar
             ulong TimeStampnSec;    // Время тригера сек
             ulong TimeStampSec;     // Время тригера нсек
             ulong StartTimeStampnSec;    // Время тригера сек
+            int NumCircleNumEvent = 0; // Количество кругов Event
             var fs = new FileStream(string.Format("{0}", ReadFilePath), FileMode.Open); // Экземпляр потока чтения
             using (writer) // поток для записи
             {
@@ -43,7 +44,11 @@ namespace TQDC16_Summary_Rev_1
                 {
                     BufferData<CalcInterf> buferfiledata = new BufferData<CalcInterf>();  // Экземпляр для хранения данных вычислений
                     EvLeng = Byte2Int(ReadBytes(pos + 4, 4, fs));  // Чтение длины Event
-                    NumEv = (ulong)Byte2Int(ReadBytes(pos + 8, 4, fs));  // Номер Event
+                    if (NumEv == 16777215 + 16777215 * NumCircleNumEvent)
+                    {
+                        NumCircleNumEvent++;
+                    }
+                    NumEv = Byte2Int(ReadBytes(pos + 8, 4, fs)) + 16777215 * NumCircleNumEvent;  // Номер Event
 
                     MSLeng = Byte2Int(ReadBytes(pos + 21, 3, fs)) >> 2; // Чтение длины блока MStream
 
@@ -178,9 +183,10 @@ namespace TQDC16_Summary_Rev_1
             string readerLine = "";
             BackGroundWorkerResult calculationresult;
             ulong TimeStampnSec;    // Время тригера сек
-            uint NumEv = 0;    // Время тригера сек
+            int NumEv = 0;    // Время тригера сек
             ulong TimeStampSec;     // Время ригера нсек
             ulong StartTimeStampnSec;    // Время тригера сек
+            int NumCircleNumEvent = 0; // Количество кругов Event
             //long prog_st = (fs.Length / 10000) - 1;  // шаг для Progress Bar 
             using (writer)
             {
@@ -201,8 +207,12 @@ namespace TQDC16_Summary_Rev_1
                     BlockData<Tdc_Interface> tdcbuffer = new BlockData<Tdc_Interface>(); // экземпляр данных tdc в блоке event
                     if (readerLine.Substring(0, 3) == "Ev:")
                     {
-                        readerLine = readerLine.Substring(4);      
-                        NumEv = uint.Parse(readerLine.Substring(0, readerLine.IndexOf(" ")));
+                        readerLine = readerLine.Substring(4);
+                        if (NumEv == 16777215 + 16777215 * NumCircleNumEvent)
+                        {
+                            NumCircleNumEvent++;
+                        }
+                        NumEv = int.Parse(readerLine.Substring(0, readerLine.IndexOf(" "))) + 16777215 * NumCircleNumEvent;
                         readerLine = readerLine.Substring(readerLine.IndexOf(' ') + 1);
                         TimeStampSec = uint.Parse(readerLine.Substring(readerLine.IndexOf(" ") + 1, readerLine.IndexOf('.') - 2 - readerLine.IndexOf(" ") + 1)); // Чтение даты и времени глобального Event  и конвертация из unix в стандратный вид
                         readerLine = readerLine.Substring(readerLine.IndexOf('.') + 1);

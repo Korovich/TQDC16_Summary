@@ -98,13 +98,13 @@ namespace TQDC16_Summary_Rev_1
             result = TQDC2File.Open_File();
             if (result.Selected)
             {
-                Progress.Maximum = 10000;
                 if (BackGrWorkProgressBar.IsBusy != true)
                 {
                     OpenFileBtn.Enabled = false;
                     StartDecoder.Enabled = false;
                     StartWrite.Enabled = false;
                     modeBGW = ANALYS;
+                    Progress.Maximum = 10000;
                     BackGrWorkProgressBar.RunWorkerAsync(new BackGroundWorkerTask(ANALYS, result.Format));
                     StopButton.Enabled = true;
                 }
@@ -980,6 +980,11 @@ namespace TQDC16_Summary_Rev_1
                 StandartBaseline = true;
             }
             else StandartBaseline = false;
+        }
+
+        private void StepChart_ValueChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

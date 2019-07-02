@@ -150,7 +150,7 @@ namespace TQDC16_Summary_Rev_1
             }
         }
 
-        internal static void WriteFileDec(BlockData<Tdc_Interface> buffertdc, BlockData<Adc_Interface> bufferadc, StreamWriter writer, string date, uint numEvent) //Метод записи данных в файл
+        internal static void WriteFileDec(BlockData<Tdc_Interface> buffertdc, BlockData<Adc_Interface> bufferadc, StreamWriter writer, string date, int numEvent) //Метод записи данных в файл
         {
             writer.WriteLine(string.Format("{0};{1};;;",numEvent,date));
             for (int i = 0; i < 16; i++)
@@ -306,7 +306,7 @@ namespace TQDC16_Summary_Rev_1
 
         public class BufferData<T> : IEnumerator
         {
-            public ulong numEvent;
+            public int numEvent;
             public ulong timeStampSec;
             public ulong timeStampnSec;
             public int position;
@@ -328,7 +328,7 @@ namespace TQDC16_Summary_Rev_1
             public List<T> Channel15 = new List<T>();
             public List<T> Channel16 = new List<T>();
 
-            public void AddHeaderEvent(ulong numEvent,
+            public void AddHeaderEvent(int numEvent,
                                     ulong timeStampSec,
                                     ulong timeStampnSec)
             {
@@ -354,7 +354,7 @@ namespace TQDC16_Summary_Rev_1
                 writer.Write(string.Format("{0};{1}", numEvent, timestamp));
             }
 
-            public BufferData(ulong numEvent = 0, ulong timeStampSec = 0, ulong timeStampnSec = 0, int position = -1)
+            public BufferData(int numEvent = 0, ulong timeStampSec = 0, ulong timeStampnSec = 0, int position = -1)
             {
                 this.numEvent = numEvent;
                 this.timeStampSec = timeStampSec;

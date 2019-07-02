@@ -24,13 +24,18 @@ namespace TQDC16_Summary_Rev_1
             long pos = 0;
             long pospl;
             long prog;
+            int NumCircleNumEvent = 0; // Количество кругов Event
             var fs = new FileStream(String.Format("{0}", TQDC2File.ReadFilePath), FileMode.Open);
             BackGroundWorkerResult analysisresult;
             //long prog_st = 0; 
             while (pos < fs.Length)
             {
                 EvLeng = Byte2Int(ReadBytes(pos + 4, 4, fs));
-                NumEv = Byte2Int(ReadBytes(pos + 8, 4, fs));
+                if (NumEv == 16777215 + 16777215 * NumCircleNumEvent)
+                {
+                    NumCircleNumEvent++;
+                }
+                NumEv = Byte2Int(ReadBytes(pos + 8, 4, fs)) + 16777215 * NumCircleNumEvent;
                 pospl = pos+32;
                 while (pospl != pos+ EvLeng + 12)
                 {
@@ -73,7 +78,6 @@ namespace TQDC16_Summary_Rev_1
                 pos = pos + EvLeng + 12;
                 prog = ((fs.Position * 10000) / fs.Length);
                 ProgressBar.ReportProgress((int)prog);
-                NumEv++;
                 if (ProgressBar.CancellationPending == true)
                 {
                     fs.Close();
@@ -86,6 +90,7 @@ namespace TQDC16_Summary_Rev_1
         }
         public static void AnChannelText(BackgroundWorker ProgressBar, DoWorkEventArgs e)
         {
+            int NumCircleNumEvent = 0; // Количество кругов Event
             var fs = new FileStream(string.Format("{0}", ReadFilePath), FileMode.Open); // Экземпляр потока чтения
             var fsr = new StreamReader(fs);
             BackGroundWorkerResult analysisresult;
@@ -98,7 +103,11 @@ namespace TQDC16_Summary_Rev_1
                         {
                             readerLine = readerLine.Substring(readerLine.IndexOf(" "));
                             readerLine = readerLine.Remove(0,1);
-                            NumEv = int.Parse(readerLine.Substring(0, readerLine.IndexOf(" ")));
+                            if (NumEv == 16777215 + 16777215 * NumCircleNumEvent)
+                            {
+                                NumCircleNumEvent++;
+                            }
+                            NumEv = int.Parse(readerLine.Substring(0, readerLine.IndexOf(" "))) + 16777215 * NumCircleNumEvent;
                             break;
                         }
                     case "Tdc":
@@ -126,7 +135,6 @@ namespace TQDC16_Summary_Rev_1
                             break;
                         }
                 }
-                NumEv++;
                 ProgressBar.ReportProgress((int)((fs.Position * 10000) / fs.Length));
                 if (ProgressBar.CancellationPending == true)
                 {

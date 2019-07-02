@@ -21,10 +21,11 @@ namespace TQDC16_Summary_Rev_1
             int EvLeng;          // Длина глобального Event в байтах
             int MSLeng;          // Длина блока MStream
             int DataPLLeng;      // Длина блока DataPayload
-            uint NumEv;         // Номер Event
+            int NumEv = 0;         // Номер Event
             string date;        // Дата
             long pos = 0;            // Позиция в блоке файла
             long pospl;          // Позиция в блоке DataPayload
+            int NumCircleNumEvent = 0; // Количество кругов Event
             var fs = new FileStream(String.Format("{0}", ReadFilePath), FileMode.Open); // Экземпляр потока чтения
             using (writer) // поток для записи
             {
@@ -33,7 +34,11 @@ namespace TQDC16_Summary_Rev_1
                 while (pos < fs.Length) // Главный цикл (пока позиция в блоке Event меньше длины файла в байтах)
                 {
                     EvLeng = Byte2Int(ReadBytes(pos + 4, 4, fs));  //Чтение длины Event
-                    NumEv = Byte2uInt(ReadBytes(pos + 8, 4, fs));  // Номер Event
+                    if (NumEv == 16777215 + 16777215 * NumCircleNumEvent)
+                    {
+                        NumCircleNumEvent++;
+                    }
+                    NumEv = Byte2Int(ReadBytes(pos + 8, 4, fs)) + 16777215 * NumCircleNumEvent;  // Номер Event
                     MSLeng = Byte2Int(ReadBytes(pos + 21, 3, fs)) >> 2; // Чтение длины блока MStream
                     date = UnixTimeStampToDateTime(Byte2uInt(ReadBytes(pos + 24, 4, fs))).ToString(); // Чтение даты и времени глобального Event  и конвертация из unix в стандратный вид
                     date += ":" + (Byte2uInt(ReadBytes(pos + 28, 4, fs)) >> 2).ToString(); // добавление к дате времени в нс
@@ -166,7 +171,8 @@ namespace TQDC16_Summary_Rev_1
             InitCsv();
             //ulong NumEv;         // Номер Event
             string date = "";        // Дата
-            uint NumEv = 0;           // Позициця для Progress Bar
+            int NumEv = 0;           // Позициця для Progress Bar
+            int NumCircleNumEvent = 0; // Количество кругов Event
             var fs = new FileStream(String.Format("{0}", ReadFilePath), FileMode.Open); // Экземпляр потока чтения
             var fsr = new StreamReader(fs);
             string readerLine = "";
@@ -182,7 +188,11 @@ namespace TQDC16_Summary_Rev_1
                     if (readerLine.Substring(0, 3) == "Ev:")
                     {
                         readerLine = readerLine.Substring(4);
-                        NumEv = uint.Parse( readerLine.Substring(0, readerLine.IndexOf(" ")));
+                        if (NumEv == 16777215 + 16777215 * NumCircleNumEvent)
+                        {
+                            NumCircleNumEvent++;
+                        }
+                        NumEv = int.Parse( readerLine.Substring(0, readerLine.IndexOf(" "))) + 16777215 * NumCircleNumEvent;
                         readerLine = readerLine.Substring(readerLine.IndexOf(' ')+1);
                         date = UnixTimeStampToDateTime(uint.Parse(readerLine.Substring(readerLine.IndexOf(" ")+1, readerLine.IndexOf('.')-2 - readerLine.IndexOf(" ") + 1))).ToString(); // Чтение даты и времени глобального Event  и конвертация из unix в стандратный вид
                         readerLine = readerLine.Substring(readerLine.IndexOf('.')+1);

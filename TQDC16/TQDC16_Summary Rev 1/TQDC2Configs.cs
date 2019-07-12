@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -7,13 +8,15 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static TQDC16_Summary_Rev_1.TQDC2File;
+using static TQDC16_Summary_Rev_1.Converters;
 
 namespace TQDC16_Summary_Rev_1
 {
     class TQDC2Configs : TQDC16_Summary
     {
-        private static double[] x1 = new double[16];
-        private static double[] x4 = new double[16];
+        private static double[] readX1 = new double[16];
+        private static double[] readX4 = new double[16];
 
         public static void ReadConfigFile()
         {
@@ -103,17 +106,73 @@ namespace TQDC16_Summary_Rev_1
         public static bool ZsEn { get; internal set; }
         public static double[] X1
         {
-            get { if (StandartBaseline) return standartX1; else return x1; }
-            internal set => x1 = value;
+            get
+            {
+                switch (ModeBaseline)
+                {
+                    case 0:
+                        {
+                            return emptyX1;
+                        }
+                    case 1:
+                        {
+                            return standartX1;
+                        }
+                    case 2:
+                        {
+                            return readX1;
+                        }
+                    case 3:
+                        {
+                            return manualBaseline;
+                        }
+                    default:
+                        {
+                            return emptyX1;
+                        }
+                }
+            }
+            internal set => readX1 = value;
         }
         public static double[] X4
         {
-            get { if (StandartBaseline) return standartX4; else return x4; }
-            internal set => x4 = value;
+            get
+            {
+                switch (ModeBaseline)
+                {
+                    case 0:
+                        {
+                            return emptyX4;
+                        }
+                    case 1:
+                        {
+                            return standartX4;
+                        }
+                    case 2:
+                        {
+                            return readX4;
+                        }
+                    case 3:
+                        {
+                            return manualX4;
+                        }
+                    default:
+                        {
+                            return emptyX4;
+                        }
+                }
+            }
+            internal set => readX4 = value;
         }
         public static double[] standartX1 { get; } = new double[16] { 408.13, 149.3772, 39.974, -28.0744, 155.7468, 409.7912, 142.0412, 245.006, -175.3676, -395.1496, -75.744, 17.8424, -97.846, 340.492, 51.8672, 609.6736 };
         public static double[] standartX4 { get; } = new double[16] { 754.8004, 502.4356, 493.606, 5.6232, 242.822, 776.148, 602.9316, 464.2664, 26.2376, -444.6988, -75.744, 17.8424, -97.846, 340.492, 51.8672, 609.6736 };
         public static bool[] standartChGain { get; } = new bool[16] { false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false };
+
+        public static double[] emptyX1 { get; } = new double[16] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+        public static double[] emptyX4 { get; } = new double[16] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+
+        public static double[] manualX1 { get; set; } = new double[16] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+        public static double[] manualX4 { get; set; } = new double[16] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
         public class Inl
         {
@@ -162,6 +221,246 @@ namespace TQDC16_Summary_Rev_1
 
             readonly string data = "Mon Apr 16 12:15:21 2018";
             readonly double temp = 40.8;
+        }
+
+        public static int[] StartManualConfigBaseline(int[] NeedNumEvent, int Needchannel, string format, double[] mX1)
+        {
+
+            if (format == "txt")
+            {
+                //ulong NumEv;         // Номер Event
+                var fs = new FileStream(String.Format("{0}", ReadFilePath), FileMode.Open); // Экземпляр потока чтения
+                var fsr = new StreamReader(fs);
+                string readerLine = "";
+                ulong TimeStampnSec;    // Время тригера сек
+                int NumEv = 0;    // Время тригера сек
+                ulong TimeStampSec;     // Время ригера нсек
+                ulong StartTimeStampnSec;    // Время тригера сек
+                int NumCircleNumEvent = 0; // Количество кругов Event
+                readerLine = fsr.ReadLine();
+                readerLine = readerLine.Substring(4);
+                readerLine = readerLine.Substring(readerLine.IndexOf(' ') + 1);
+                StartTimeStampnSec = ulong.Parse(readerLine.Substring(readerLine.IndexOf(" ") + 1, readerLine.IndexOf('.') - 2 - readerLine.IndexOf(" ") + 1)) * 1000000000;    // Запись время триггера нсек*/
+                readerLine = readerLine.Substring(readerLine.IndexOf('.') + 1);
+                StartTimeStampnSec += ulong.Parse(readerLine.ToString());
+                fs.Position = 0;
+                fsr.DiscardBufferedData();
+                readerLine = fsr.ReadLine();
+                while (!fsr.EndOfStream)
+                {
+                    if (readerLine.Substring(0, 3) == "Ev:")
+                    {
+                        readerLine = readerLine.Substring(4);
+                        if (NumEv == 16777215 + 16777215 * NumCircleNumEvent)
+                        {
+                            NumCircleNumEvent++;
+                        }
+                        NumEv = int.Parse(readerLine.Substring(0, readerLine.IndexOf(" "))) + 16777215 * NumCircleNumEvent;
+                        readerLine = readerLine.Substring(readerLine.IndexOf(' ') + 1);
+                        TimeStampSec = uint.Parse(readerLine.Substring(readerLine.IndexOf(" ") + 1, readerLine.IndexOf('.') - 2 - readerLine.IndexOf(" ") + 1)); // Чтение даты и времени глобального Event  и конвертация из unix в стандратный вид
+                        readerLine = readerLine.Substring(readerLine.IndexOf('.') + 1);
+                        TimeStampnSec = uint.Parse(readerLine.ToString()); // добавление к дате времени в нс
+                        bool isenddata = false;
+                        if (NumEv == NeedNumEvent[Needchannel - 1])
+                        {
+                            while (!isenddata)
+                            {
+                                readerLine = fsr.ReadLine();
+                                if (readerLine is null) break;
+                                switch (readerLine.Substring(0, 3))
+                                {
+                                    case "Tdc":
+                                        {
+                                            break;
+                                        }
+                                    case "Adc":
+                                        {
+                                            readerLine = readerLine.Substring(4);
+                                            int ch = int.Parse(readerLine.Substring(0, readerLine.IndexOf(':')));             //чтение канала данных
+                                            if (ch != Needchannel - 1) break;      //проверка нужды канала
+                                            uint timestamp = uint.Parse(readerLine.Substring(readerLine.IndexOf(": ") + 1, readerLine.IndexOf(';') - (readerLine.IndexOf(": ") + 1))) * 8;
+                                            readerLine = readerLine.Substring(readerLine.IndexOf(';') + 2);
+                                            List<int> databuf = new List<int>();    //Массив для sample adc
+                                            while (true)
+                                            {
+                                                try
+                                                {
+                                                    //databuf.Add(int.Parse(readerLine.Substring(0, readerLine.IndexOf(' '))));
+                                                    databuf.Add(TQDC2Configs.ChGain[ch] ?
+                                                        (int.Parse(readerLine.Substring(0, readerLine.IndexOf(' '))) + (int)TQDC2Configs.X4[ch])
+                                                        : (int.Parse(readerLine.Substring(0, readerLine.IndexOf(' '))) + (int)mX1[ch]));
+                                                    readerLine = readerLine.Substring(readerLine.IndexOf(' ') + 1);
+                                                }
+                                                catch
+                                                {
+                                                    //databuf.Add(int.Parse(readerLine));
+                                                    databuf.Add(TQDC2Configs.ChGain[ch] ?
+                                                        (int.Parse(readerLine) + (int)TQDC2Configs.X4[ch])
+                                                        : (int.Parse(readerLine) + (int)mX1[ch]));
+                                                    break;
+                                                }
+                                            }
+                                            fs.Close();
+                                            return databuf.ToArray();
+                                        }
+                                    case "Ev:":
+                                        {
+                                            isenddata = true;
+                                            break;
+                                        }
+                                }
+                            }
+                            NeedNumEvent[Needchannel - 1]++;
+                        }
+                        else
+                        {
+                            while (!isenddata)
+                            {
+                                readerLine = fsr.ReadLine();
+                                if (readerLine is null) break;
+                                switch (readerLine.Substring(0, 3))
+                                {
+                                    case "Tdc":
+                                        {
+                                            break;
+                                        }
+                                    case "Adc":
+                                        {
+                                            break;
+                                        }
+                                    case "Ev:":
+                                        {
+                                            isenddata = true;
+                                            break;
+                                        }
+                                }
+                            }
+
+                        }
+                    }
+                }
+                fs.Close(); // закрытие потока чтения
+            }
+
+            if (format == "dat")
+            {
+                int EvLeng;             // Длина глобального Event в байтах
+                int MSLeng;             // Длина блока MStream
+                int DataPLLeng;         // Длина блока DataPayload
+                int NumEv = 0;            // Номер Event
+                long pos = 0;           // Позиция в блоке файла
+                long pospl;             // Позиция в блоке DataPayload
+                long prog = 0;          // Позиция для Progress Bar
+                ulong TimeStampnSec;    // Время тригера сек
+                ulong TimeStampSec;     // Время тригера нсек
+                ulong StartTimeStampnSec;    // Время тригера сек
+                int NumCircleNumEvent = 0; // Количество кругов Event
+                var fs = new FileStream(string.Format("{0}", ReadFilePath), FileMode.Open); // Экземпляр потока чтения
+                StartTimeStampnSec = ((ulong)Byte2uInt(ReadBytes(24, 4, fs)) * 1000000000) + (ulong)(Byte2uInt(ReadBytes(28, 4, fs)) >> 2);
+                while (pos < fs.Length) // Главный цикл (пока позиция в блоке Event меньше длины файла в байтах)
+                {
+                    EvLeng = Byte2Int(ReadBytes(pos + 4, 4, fs));  // Чтение длины Event
+                    if (NumEv == 16777215 + 16777215 * NumCircleNumEvent)
+                    {
+                        NumCircleNumEvent++;
+                    }
+                    NumEv = Byte2Int(ReadBytes(pos + 8, 4, fs)) + 16777215 * NumCircleNumEvent;  // Номер Event
+
+                    MSLeng = Byte2Int(ReadBytes(pos + 21, 3, fs)) >> 2; // Чтение длины блока MStream
+
+                    TimeStampSec = Byte2uInt(ReadBytes(pos + 24, 4, fs));    // Запись время триггера сек
+                    TimeStampnSec = Byte2uInt(ReadBytes(pos + 28, 4, fs)) >> 2;    // Запись время триггера нсек
+                    pospl = pos + 32; // присваивание поцизии в блоке MSPayload начального значения
+                    if (NumEv == NeedNumEvent[Needchannel - 1])
+                    {
+                        while (pospl != pos + EvLeng + 12) // Цикл на чтение Data Block ( пока позиция в блоке Data block не в конце блока Data block) 
+                        {
+                            DataPLLeng = Byte2Int(ReadBytes(pospl + 2, 2, fs)); //Чтение длины DataPayload
+                            if ((Byte2Int(ReadBytes(pospl, 1, fs))) >> 4 == 1) // Проверка типа DataPayload ( 0 TDC, 1 ADC)
+                            {
+                                int ch = (int)(((Byte2Int(ReadBytes(pospl, 1, fs))) << 28) >> 28); // Считываемый канал данных
+                                if (ch != Needchannel - 1)       //проверка нужды канала
+                                {
+                                    pospl = pospl + DataPLLeng + 4;
+                                    continue;
+                                }
+
+                                long apospl = pospl; // Запись положения Header ADC
+                                pospl += 4; //переход на новую строку
+                                if (pospl == apospl + DataPLLeng) { pospl += 4; break; } // Проверка на отсуствие данных в Data Block
+                                while (pospl != apospl + DataPLLeng + 4) // Цикл на чтение данных ADC (пока позиция в блоке Data Block не в конце блока ADC)
+                                {
+                                    List<int> buf = new List<int>();    //Массив для sample adc
+                                    uint DataLen = Byte2uInt(ReadBytes(pospl, 2, fs)); //Длина в блоке ADC в байтах
+                                    bool odd = false; // переменная четности количества данных ( в строках 32 байта)
+                                    ulong timestamp = Byte2uInt(ReadBytes(pospl + 2, 2, fs)) * 8; //чтение метки времени
+                                    pospl += 4;
+                                    if (DataLen % 4 != 0) // проверка на нечетность 
+                                    {
+                                        odd = true;
+                                    }
+                                    for (uint i = 0; i < ((DataLen / 4) * 4 == DataLen ? (DataLen / 4) : (DataLen / 4) + 1); i++) //цикл на чтение Sample ADC
+                                    {
+                                        buf.Add(TQDC2Configs.ChGain[ch] ? (Byte2Sample(ReadBytes(pospl + 2, 2, fs)) + (int)TQDC2Configs.X4[ch]) : (Byte2Sample(ReadBytes(pospl + 2, 2, fs)) + (int)mX1[ch])); // Запись первого Sample в лист
+                                        if (odd & i == (DataLen / 4)) // если данные нечетные и последняя строка данных, то последнее 16 битный sample не читается
+                                        {
+
+                                        }
+                                        else buf.Add(TQDC2Configs.ChGain[ch] ? (Byte2Sample(ReadBytes(pospl, 2, fs)) + (int)TQDC2Configs.X4[ch]) : (Byte2Sample(ReadBytes(pospl + 2, 2, fs)) + (int)mX1[ch])); // Запись второго Sample в лист
+                                        pospl += 4;//переход на новую строку
+                                    }
+                                    fs.Close();
+                                    return buf.ToArray();
+                                }
+                            }
+                            else
+                            {
+                                pospl += 4; //переход на новую строку
+                                for (int i = 0; i < DataPLLeng / 4; i++) // Чтение данных с Data Block
+                                {
+                                    switch (Byte2Int(ReadBytes(pospl, 1, fs)) >> 4) // Проверка на тип Header записи TDC
+                                    {
+                                        case 2:
+                                            {
+                                                pospl += 4;
+                                                break;
+                                            }
+                                        case 3:
+                                            {
+                                                pospl += 4;
+                                                break;
+                                            }
+                                        case 4:
+                                            {
+                                                pospl += 4;
+                                                break;
+                                            }
+                                        case 5:
+                                            {
+                                                pospl += 4;
+                                                break;
+                                            }
+                                        case 7:
+                                            {
+                                                pospl += 4;
+                                                break;
+                                            }
+                                    }
+                                }
+                            }
+                        }
+                        NeedNumEvent[Needchannel - 1]++;
+                        prog += EvLeng + 12;    //Повышение позиции для Progress Bar
+                        pos = pos + EvLeng + 12;    // Запись новой позиции в файле
+                    }
+                    else
+                    {
+                        pos += EvLeng + 12;
+                    }
+                }
+                fs.Close();
+            }
+            return Array.Empty<int>();
         }
     }
 

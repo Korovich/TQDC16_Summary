@@ -12,7 +12,6 @@ namespace TQDC16_Summary_Rev_1
     {
         public static string ReadFilePath { get; set; } = "";
         public static string FileName { get; set; } = "";
-        public static bool[] Ch { get; set; } = new bool[16];
         public static long FileLen { get; set; } = 0;
 
         public static OpenResult Open_File()

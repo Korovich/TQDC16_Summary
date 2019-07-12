@@ -10,7 +10,8 @@ using System.Windows.Forms;
 using static TQDC16_Summary_Rev_1.Converters;
 using static TQDC16_Summary_Rev_1.CSV_Output;
 using static TQDC16_Summary_Rev_1.TQDC2File;
-
+using Extreme.Mathematics.Calculus;
+using Extreme.Mathematics;
 
 namespace TQDC16_Summary_Rev_1
 {
@@ -128,7 +129,7 @@ namespace TQDC16_Summary_Rev_1
                                         List<int> buf = new List<int>();    //Массив для sample adc
                                         uint DataLen = Byte2uInt(ReadBytes(pospl, 2, fs)); //Длина в блоке ADC в байтах
                                         bool odd = false; // переменная четности количества данных ( в строках 32 байта)
-                                        ulong timestamp = Byte2uInt(ReadBytes(pospl + 2, 2, fs)) * 8; //чтение метки времени
+                                        uint timestamp = Byte2uInt(ReadBytes(pospl + 2, 2, fs)) * 8; //чтение метки времени
                                         pospl += 4;
                                         if (DataLen % 4 != 0) // проверка на нечетность 
                                         {
@@ -239,19 +240,25 @@ namespace TQDC16_Summary_Rev_1
                                         readerLine = readerLine.Substring(4);
                                         int ch = int.Parse(readerLine.Substring(0, readerLine.IndexOf(':')));             //чтение канала данных
                                         if (!IsNeedChannel(ch + 1,CChannel)) break;      //проверка нужды канала
-                                        ulong timestamp = uint.Parse(readerLine.Substring(readerLine.IndexOf(": ") + 1, readerLine.IndexOf(';') - (readerLine.IndexOf(": ") + 1))) *8;
+                                        uint timestamp = uint.Parse(readerLine.Substring(readerLine.IndexOf(": ") + 1, readerLine.IndexOf(';') - (readerLine.IndexOf(": ") + 1))) *8;
                                         readerLine = readerLine.Substring(readerLine.IndexOf(';') + 2);
                                         List<int> databuf = new List<int>();    //Массив для sample adc
                                         while (true)
                                         {
                                             try
                                             {
-                                                databuf.Add(int.Parse(readerLine.Substring(0, readerLine.IndexOf(' '))));
+                                                //databuf.Add(int.Parse(readerLine.Substring(0, readerLine.IndexOf(' '))));
+                                                databuf.Add(TQDC2Configs.ChGain[ch] ? 
+                                                    (int.Parse(readerLine.Substring(0, readerLine.IndexOf(' '))) + (int)TQDC2Configs.X4[ch]) 
+                                                    : (int.Parse(readerLine.Substring(0, readerLine.IndexOf(' '))) + (int)TQDC2Configs.X1[ch]));
                                                 readerLine = readerLine.Substring(readerLine.IndexOf(' ') + 1);
                                             }
                                             catch
                                             {
-                                                databuf.Add(int.Parse(readerLine));
+                                                //databuf.Add(int.Parse(readerLine));
+                                                databuf.Add(TQDC2Configs.ChGain[ch] ?
+                                                    (int.Parse(readerLine) + (int)TQDC2Configs.X4[ch])
+                                                    : (int.Parse(readerLine) + (int)TQDC2Configs.X1[ch]));
                                                 break;
                                             }
                                         }
@@ -283,31 +290,74 @@ namespace TQDC16_Summary_Rev_1
             fs.Close(); // закрытие потока чтения
         }
 
-        internal static double CalculationIntegral(List<int> samples,int max,int min)   //метод вычисления интеграла из datasamples
+        internal static double CalculationIntegral(List<int> samples,int max,int min,uint timestampadc,ulong tdc)   //метод вычисления интеграла из datasamples
         {
+            /*
+            double result;
+            SimpsonIntegrator simpson = new SimpsonIntegrator();
+            simpson.RelativeTolerance = 1e-5;
+            simpson.ConvergenceCriterion =
+                ConvergenceCriterion.WithinRelativeTolerance;
             double integral = 0;
+            result = simpson.Integrate(samples.ToArray(), 0, 2);*/
             if (Math.Abs(max) > Math.Abs(min))
             {
+                int start = 0;
+                double integral = 0;
+                for (int i=0;i<samples.Count;i++)
+                {
+                    if ((i*12.5) + timestampadc >tdc)
+                    {
+                        start = i - 1;
+                        break;
+                    }
+                }
+                for (int i = start; i < samples.Count() - 1; i++)
+                {
+                    if (i != start && samples[i] < samples[start]) break;
+                    integral += Math.Abs(((double)samples[i] + (double)samples[i + 1]) * 6.25);
+                }
+                return integral;
+                /*
                 for (int i = 0; i < samples.Count() - 1; i++)
                 {
                     integral += Math.Abs((((double)samples[i] + (double)samples[i + 1]) - (2 * min)) * 6.25);
                 }
-                return integral;
+                return integral;*/
             }
             if (Math.Abs(max) < Math.Abs(min))
             {
+                int start = 0;
+                double integral = 0;
+                for (int i = 0; i < samples.Count; i++)
+                {
+                    if ((i * 12.5) + timestampadc > tdc)
+                    {
+                        if (i!=0)
+                        start = i - 1;
+                        break;
+                    }
+                }
+                for (int i = start; i < samples.Count() - 1; i++)
+                {
+                    if (i != start && -samples[i] < -samples[start]) break;
+                    integral += Math.Abs(((double)-samples[i] + (double)-samples[i + 1]) * 6.25);
+                }
+                return integral;
+                /*
                 for (int i = 0; i < samples.Count() - 1; i++)
                 {
                     integral += Math.Abs((((double)samples[i] + (double)samples[i + 1]) - (2 * max)) * 6.25);
                 }
                 return integral;
+                */
             }
-            return 0;
+            return samples[0]*(samples.Count*12.5);
         }
 
 
         //Метод вычисления статистики из данных(мин макс интеграл)
-        internal static void CalculationMMI(BufferData<CalcInterf> buferfiledata , List<int> data, ulong tdc, int channel)
+        internal static void CalculationMMI(BufferData<CalcInterf> buferfiledata , List<int> data, ulong tdc, int channel, uint timestampadc)
         {
             int[] result = new int[2] { data[0], data[0] }; //max min 
             double integral;
@@ -316,7 +366,7 @@ namespace TQDC16_Summary_Rev_1
                 if (data[i] > result[0]) { result[0] = data[i]; }//max
                 if (data[i] < result[1]) { result[1] = data[i]; }//min
             }
-            integral = CalculationIntegral(data,result[0],result[1]);//integral                                                                                           
+            integral = CalculationIntegral(data,result[0],result[1],timestampadc,tdc);//integral                                                                                           
             buferfiledata[channel].Add(new CalcInterf { tdc = tdc, max = result[0], min = result[1], integral = integral });
         }
     }

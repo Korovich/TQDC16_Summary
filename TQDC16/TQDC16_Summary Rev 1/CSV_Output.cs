@@ -87,7 +87,21 @@ namespace TQDC16_Summary_Rev_1
         {
             for (int ch = 0; ch < 16; ch++)
             {
-                if (!IsNeedChannel(ch + 1,CChannel)) continue;
+                if (!IsNeedChannel(ch + 1, CChannel)||bufferadc[ch].Count==0||buffertdc[ch].Count==0) continue;
+                if(bufferadc[ch].Count() > 1)
+                {
+                    List<int> result = new List<int>();
+                    for (int i=0;i<bufferadc[ch].Count;i++)
+                    {
+                        result.InsertRange(result.Count,bufferadc[ch][i].bufsamples);
+                    }
+                    CalculationMMI(buferfiledata, result, buffertdc[ch][0].data, ch, bufferadc[ch][0].timestamp);
+                }
+                else
+                {
+                    CalculationMMI(buferfiledata, bufferadc[ch][0].bufsamples, buffertdc[ch][0].data, ch, bufferadc[ch][0].timestamp);
+                }
+                /*
                 if (bufferadc[ch].Count() == buffertdc[ch].Count()) //если количество хитов tdc adc одинаковое
                 {
                     for (int i = 0; i < bufferadc[ch].Count(); i++)
@@ -111,6 +125,7 @@ namespace TQDC16_Summary_Rev_1
                         CalculationMMI(buferfiledata, bufferadc[ch][i].bufsamples, buffertdc[ch][i].data, ch);
                     }
                 }
+                */
             }
         }
 
@@ -200,8 +215,8 @@ namespace TQDC16_Summary_Rev_1
         internal class Adc_Interface //Класс для хранений одной ячейки ADC
         {
             internal List<int> bufsamples;
-            internal ulong timestamp;
-            internal Adc_Interface(List<int> samples, ulong timestamp)
+            internal uint timestamp;
+            internal Adc_Interface(List<int> samples, uint timestamp)
             {
                 this.bufsamples = samples;
                 this.timestamp = timestamp;

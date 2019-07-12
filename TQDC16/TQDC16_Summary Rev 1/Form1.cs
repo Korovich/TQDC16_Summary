@@ -35,11 +35,13 @@ namespace TQDC16_Summary_Rev_1
         public const int ANALYS = 0x04;
         public const int DECODER = 0x05;
         public const int CALCULATION = 0x06;
+        public const int MANUALCONFIGBASELINE = 0x07;
         public const int GRAPHIC = 0x10;
 
         public static bool[] DChannel;
         public static bool[] CChannel;
         public static bool isAnalysis;
+        public static double[] manualBaseline = new double[16];
         readonly Color CheckBoxChColor = SystemColors.ButtonShadow;
         TQDC2File.OpenResult result;
         public static bool inl_config;
@@ -50,12 +52,16 @@ namespace TQDC16_Summary_Rev_1
         private int stepchartdivmin = 800;
         private bool iscanclose = false;
         private int modeBGW = 0;
+        private int[] manualEventNum = new int[16] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+        //private int manualEventBlockHitNum = 0;
+        private int manualChoosenChannel = 0;
 
-        public static bool StandartBaseline { get; private set; } = true;
+
+        public static int ModeBaseline { get; private set; } = 0; //Переменная режима калибровки BaseLine 0-без калибровки 1-стандартная 2-из файла 3-в ручную
 
         private void label1_Click(object sender, EventArgs e)
         {
-
+           
         }
 
         private void label1_Click_1(object sender, EventArgs e)
@@ -120,8 +126,10 @@ namespace TQDC16_Summary_Rev_1
             {
                 PanelRadioButtonChart.Enabled = true;
                 PanelConfigChart.Enabled = true;
-                StepChart.Maximum = AnalysisFile.NumEv/stepchartdivmax;
-                StepChart.Minimum = AnalysisFile.NumEv/stepchartdivmin;
+                //StepChart.Maximum = AnalysisFile.NumEv/stepchartdivmax;
+                StepChart.Maximum = 1000;
+                //StepChart.Minimum = AnalysisFile.NumEv/stepchartdivmin;
+                StepChart.Minimum = 300;
                 BackGrWorkProgressBar.RunWorkerAsync(new BackGroundWorkerTask(CALCULATION, result.Format));
                 ChangedStateRadioButtonChannel(CChannel);
                 modeBGW = CALCULATION;
@@ -139,8 +147,10 @@ namespace TQDC16_Summary_Rev_1
             {
                 PanelRadioButtonChart.Enabled = true;
                 PanelConfigChart.Enabled = true;
-                StepChart.Maximum = AnalysisFile.NumEv / stepchartdivmax;
-                StepChart.Minimum = AnalysisFile.NumEv / stepchartdivmin;
+                //StepChart.Maximum = AnalysisFile.NumEv / stepchartdivmax;
+                StepChart.Maximum = 1000;
+                //StepChart.Minimum = AnalysisFile.NumEv / stepchartdivmin;
+                StepChart.Minimum = 300;
                 ChangedStateRadioButtonChannel(DChannel);
                 modeBGW = DECODER;
                 BackGrWorkProgressBar.RunWorkerAsync(new BackGroundWorkerTask(DECODER, result.Format));
@@ -216,6 +226,11 @@ namespace TQDC16_Summary_Rev_1
                         }
                         break;
                     }
+                case MANUALCONFIGBASELINE:
+                    {
+
+                        break;
+                    }
                 default:
                     {
                         MessageBox.Show(Task.Type.ToString(), "Ошибка", MessageBoxButtons.RetryCancel);
@@ -240,6 +255,7 @@ namespace TQDC16_Summary_Rev_1
                 }
                 else stepchart++;
             }
+
         }
 
         private void BackGrWorkProgressBar_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -461,6 +477,7 @@ namespace TQDC16_Summary_Rev_1
             OpenFileBtn.Enabled = true;
             StartDecoder.Enabled = true;
             StartWrite.Enabled = true;
+            modeBGW = 0;
         }
 
         private void label5_Click(object sender, EventArgs e)
@@ -710,6 +727,40 @@ namespace TQDC16_Summary_Rev_1
             }
         }
 
+        void UpdateChartSample (int[] sample)
+        {
+            ChartSample.Series.Clear();
+            int y = 0;
+            ChartSample.Series.Add(string.Format("Chanell {0}-{1}", 1, y));
+            ChartSample.Series.Last().ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.FastLine;
+            int x = 0;
+            foreach (int i in sample)
+            {
+                ChartSample.Series[0].Points.AddXY(12.5 * x, i);
+                if (i < MinY)
+                {
+                    MinY = (int)(i * 1.2);
+                    ResizedChartSample();
+                }
+                if (i > MaxY)
+                {
+                    MaxY = (int)(i * 1.2);
+                    ResizedChartSample();
+                }
+                x++;
+            }
+            if (CheckBoxAxisXAutoSize.Checked)
+            {
+                NumerMaximumX.Value = (int)ChartSample.ChartAreas[0].AxisX.Maximum;
+                NumerMinimumX.Value = (int)ChartSample.ChartAreas[0].AxisX.Minimum;
+            }
+            if (CheckBoxAxisYAutoSize.Checked)
+            {
+                NumerMaximumY.Value = (int)ChartSample.ChartAreas[0].AxisY.Maximum;
+                NumerMinimumY.Value = (int)ChartSample.ChartAreas[0].AxisY.Minimum;
+            }
+        }
+
         void ResizedChartSample()
         {
             if (!CheckBoxAxisYAutoSize.Checked) return;
@@ -808,82 +859,226 @@ namespace TQDC16_Summary_Rev_1
 
         private void RadioButtonChannel1_CheckedChanged(object sender, EventArgs e)
         {
-            labelChannel.Text = "Channel 1";
+            if (radioButtonChannel1.Checked)
+            {
+                labelChannel.Text = "Channel 1";
+                if (modeBGW == MANUALCONFIGBASELINE)
+                {
+                    manualChoosenChannel = 1;
+                    numericUpDownManualBaseline.Value = (int)manualBaseline[manualChoosenChannel - 1];
+                    UpdateChartSample(TQDC2Configs.StartManualConfigBaseline(manualEventNum, manualChoosenChannel, result.Format, manualBaseline));
+                }
+            }
         }
 
         private void RadioButtonChannel2_CheckedChanged(object sender, EventArgs e)
         {
-            labelChannel.Text = "Channel 2";
+            if (radioButtonChannel2.Checked)
+            {
+                labelChannel.Text = "Channel 2";
+                if (modeBGW == MANUALCONFIGBASELINE)
+                {
+                    manualChoosenChannel = 2;
+                    numericUpDownManualBaseline.Value = (int)manualBaseline[manualChoosenChannel - 1];
+                    UpdateChartSample(TQDC2Configs.StartManualConfigBaseline(manualEventNum, manualChoosenChannel, result.Format, manualBaseline));
+                }
+            }
         }
 
         private void RadioButtonChannel3_CheckedChanged(object sender, EventArgs e)
         {
-            labelChannel.Text = "Channel 3";
+            if (radioButtonChannel3.Checked)
+            {
+                labelChannel.Text = "Channel 3";
+                if (modeBGW == MANUALCONFIGBASELINE)
+                {
+                    manualChoosenChannel = 3;
+                    numericUpDownManualBaseline.Value = (int)manualBaseline[manualChoosenChannel - 1];
+                    UpdateChartSample(TQDC2Configs.StartManualConfigBaseline(manualEventNum, manualChoosenChannel, result.Format, manualBaseline));
+                }
+            }
         }
 
         private void RadioButtonChannel4_CheckedChanged(object sender, EventArgs e)
         {
-            labelChannel.Text = "Channel 4";
+            if (radioButtonChannel4.Checked)
+            {
+                labelChannel.Text = "Channel 4";
+                if (modeBGW == MANUALCONFIGBASELINE)
+                {
+                    manualChoosenChannel = 4;
+                    numericUpDownManualBaseline.Value = (int)manualBaseline[manualChoosenChannel - 1];
+                    UpdateChartSample(TQDC2Configs.StartManualConfigBaseline(manualEventNum, manualChoosenChannel, result.Format, manualBaseline));
+                }
+            }
         }
 
         private void RadioButtonChannel5_CheckedChanged(object sender, EventArgs e)
         {
-            labelChannel.Text = "Channel 5";
+            if (radioButtonChannel5.Checked)
+            {
+                labelChannel.Text = "Channel 5";
+                if (modeBGW == MANUALCONFIGBASELINE)
+                {
+                    manualChoosenChannel = 5;
+                    numericUpDownManualBaseline.Value = (int)manualBaseline[manualChoosenChannel - 1];
+                    UpdateChartSample(TQDC2Configs.StartManualConfigBaseline(manualEventNum, manualChoosenChannel, result.Format, manualBaseline));
+                }
+            }
         }
 
         private void RadioButtonChannel6_CheckedChanged(object sender, EventArgs e)
         {
-            labelChannel.Text = "Channel 6";
+            if (radioButtonChannel6.Checked)
+            {
+                labelChannel.Text = "Channel 6";
+                if (modeBGW == MANUALCONFIGBASELINE)
+                {
+                    manualChoosenChannel = 6;
+                    numericUpDownManualBaseline.Value = (int)manualBaseline[manualChoosenChannel - 1];
+                    UpdateChartSample(TQDC2Configs.StartManualConfigBaseline(manualEventNum, manualChoosenChannel, result.Format, manualBaseline));
+                }
+            }
         }
 
         private void RadioButtonChannel7_CheckedChanged(object sender, EventArgs e)
         {
-            labelChannel.Text = "Channel 7";
+            if (radioButtonChannel7.Checked)
+            {
+                labelChannel.Text = "Channel 7";
+                if (modeBGW == MANUALCONFIGBASELINE)
+                {
+                    manualChoosenChannel = 7;
+                    numericUpDownManualBaseline.Value = (int)manualBaseline[manualChoosenChannel - 1];
+                    UpdateChartSample(TQDC2Configs.StartManualConfigBaseline(manualEventNum, manualChoosenChannel, result.Format, manualBaseline));
+                }
+            }
         }
 
         private void RadioButtonChannel8_CheckedChanged(object sender, EventArgs e)
         {
-            labelChannel.Text = "Channel 8";
+            if (radioButtonChannel8.Checked)
+            {
+                labelChannel.Text = "Channel 8";
+                if (modeBGW == MANUALCONFIGBASELINE)
+                {
+                    manualChoosenChannel = 8;
+                    numericUpDownManualBaseline.Value = (int)manualBaseline[manualChoosenChannel - 1];
+                    UpdateChartSample(TQDC2Configs.StartManualConfigBaseline(manualEventNum, manualChoosenChannel, result.Format, manualBaseline));
+                }
+            }
         }
 
         private void RadioButtonChannel9_CheckedChanged(object sender, EventArgs e)
         {
-            labelChannel.Text = "Channel 9";
+            if (radioButtonChannel9.Checked)
+            {
+                labelChannel.Text = "Channel 9";
+                if (modeBGW == MANUALCONFIGBASELINE)
+                {
+                    manualChoosenChannel = 9;
+                    numericUpDownManualBaseline.Value = (int)manualBaseline[manualChoosenChannel - 1];
+                    UpdateChartSample(TQDC2Configs.StartManualConfigBaseline(manualEventNum, manualChoosenChannel, result.Format, manualBaseline));
+                }
+            }
         }
 
         private void RadioButtonChannel10_CheckedChanged(object sender, EventArgs e)
         {
-            labelChannel.Text = "Channel 10";
+            if (radioButtonChannel10.Checked)
+            {
+                labelChannel.Text = "Channel 10";
+                if (modeBGW == MANUALCONFIGBASELINE)
+                {
+                    manualChoosenChannel = 10;
+                    numericUpDownManualBaseline.Value = (int)manualBaseline[manualChoosenChannel - 1];
+                    UpdateChartSample(TQDC2Configs.StartManualConfigBaseline(manualEventNum, manualChoosenChannel, result.Format, manualBaseline));
+                }
+            }
         }
 
         private void RadioButtonChannel11_CheckedChanged(object sender, EventArgs e)
         {
-            labelChannel.Text = "Channel 11";
+            if (radioButtonChannel11.Checked)
+            {
+                labelChannel.Text = "Channel 11";
+                if (modeBGW == MANUALCONFIGBASELINE)
+                {
+                    manualChoosenChannel = 11;
+                    numericUpDownManualBaseline.Value = (int)manualBaseline[manualChoosenChannel - 1];
+                    UpdateChartSample(TQDC2Configs.StartManualConfigBaseline(manualEventNum, manualChoosenChannel, result.Format, manualBaseline));
+                }
+            }
         }
 
         private void RadioButtonChannel12_CheckedChanged(object sender, EventArgs e)
         {
-            labelChannel.Text = "Channel 12";
+            if (radioButtonChannel12.Checked)
+            {
+                labelChannel.Text = "Channel 12";
+                if (modeBGW == MANUALCONFIGBASELINE)
+                {
+                    manualChoosenChannel = 12;
+                    numericUpDownManualBaseline.Value = (int)manualBaseline[manualChoosenChannel - 1];
+                    UpdateChartSample(TQDC2Configs.StartManualConfigBaseline(manualEventNum, manualChoosenChannel, result.Format, manualBaseline));
+                }
+            }
         }
 
         private void RadioButtonChannel13_CheckedChanged(object sender, EventArgs e)
         {
-            labelChannel.Text = "Channel 13";
+            if (radioButtonChannel13.Checked)
+            {
+                labelChannel.Text = "Channel 13";
+                if (modeBGW == MANUALCONFIGBASELINE)
+                {
+                    manualChoosenChannel = 13;
+                    numericUpDownManualBaseline.Value = (int)manualBaseline[manualChoosenChannel - 1];
+                    UpdateChartSample(TQDC2Configs.StartManualConfigBaseline(manualEventNum, manualChoosenChannel, result.Format, manualBaseline));
+                }
+            }
         }
 
         private void RadioButtonChannel14_CheckedChanged(object sender, EventArgs e)
         {
-            labelChannel.Text = "Channel 14";
+            if (radioButtonChannel14.Checked)
+            {
+                labelChannel.Text = "Channel 14";
+                if (modeBGW == MANUALCONFIGBASELINE)
+                {
+                    manualChoosenChannel = 14;
+                    numericUpDownManualBaseline.Value = (int)manualBaseline[manualChoosenChannel - 1];
+                    UpdateChartSample(TQDC2Configs.StartManualConfigBaseline(manualEventNum, manualChoosenChannel, result.Format, manualBaseline));
+                }
+            }
         }
 
         private void RadioButtonChannel15_CheckedChanged(object sender, EventArgs e)
         {
-            labelChannel.Text = "Channel 15";
+            if (radioButtonChannel15.Checked)
+            {
+                labelChannel.Text = "Channel 15";
+                if (modeBGW == MANUALCONFIGBASELINE)
+                {
+                    manualChoosenChannel = 15;
+                    numericUpDownManualBaseline.Value = (int)manualBaseline[manualChoosenChannel - 1];
+                    UpdateChartSample(TQDC2Configs.StartManualConfigBaseline(manualEventNum, manualChoosenChannel, result.Format, manualBaseline));
+                }
+            }
         }
 
         private void RadioButtonChannel16_CheckedChanged(object sender, EventArgs e)
         {
-            labelChannel.Text = "Channel 16";
+            if (radioButtonChannel16.Checked)
+            {
+                labelChannel.Text = "Channel 16";
+                if (modeBGW == MANUALCONFIGBASELINE)
+                {
+                    manualChoosenChannel = 16;
+                    numericUpDownManualBaseline.Value = (int)manualBaseline[manualChoosenChannel - 1];
+                    UpdateChartSample(TQDC2Configs.StartManualConfigBaseline(manualEventNum, manualChoosenChannel, result.Format,manualBaseline));
+                }
+            }
         }
 
         protected override void OnFormClosing(FormClosingEventArgs e)
@@ -973,16 +1168,97 @@ namespace TQDC16_Summary_Rev_1
             }
         }
 
-        private void CheckBoxStandartConfBaseLine_CheckedChanged(object sender, EventArgs e)
-        {
-            if (checkBoxStandartConfBaseLine.Checked)
-            {
-                StandartBaseline = true;
-            }
-            else StandartBaseline = false;
-        }
 
         private void StepChart_ValueChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Label5_Click_1(object sender, EventArgs e)
+        {
+
+        }
+
+        private void CheckBox1_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void RadioButtonStandartConfigBaseLine_CheckedChanged(object sender, EventArgs e)
+        {
+            if (radioButtonStandartConfigBaseLine.Checked)
+            {
+                ModeBaseline = 1;
+            }
+        }
+
+        private void RadioButtonReadConfigFileBaseLine_CheckedChanged(object sender, EventArgs e)
+        {
+            if (radioButtonReadConfigFileBaseLine.Checked)
+            {
+                ModeBaseline = 2;
+                ReadConfigFile.Enabled = true;
+            }
+
+            if (!radioButtonReadConfigFileBaseLine.Checked)
+            {
+                ReadConfigFile.Enabled = false;
+            }
+        }
+
+        private void RadioButtonManualConfigBaseLine_CheckedChanged(object sender, EventArgs e)
+        {
+            if (radioButtonManualConfigBaseLine.Checked)
+            {
+                ModeBaseline = 3;
+                panelManualConfig.Enabled = true;
+                //BackGrWorkProgressBar.RunWorkerAsync(new BackGroundWorkerTask(MANUALCONFIGBASELINE, result.Format));
+                PanelRadioButtonChart.Enabled = true;
+                modeBGW = MANUALCONFIGBASELINE;
+                ChangedStateRadioButtonChannel(AnalysisFile.Channel);
+                StepChart.Maximum = AnalysisFile.NumEv / stepchartdivmax;
+                StepChart.Minimum = AnalysisFile.NumEv / stepchartdivmin;
+                PanelConfigChart.Enabled = true;
+                //UpdateChartSample(TQDC2Configs.StartManualConfigBaseline(manualEventNum,manualChoosenChannel,result.Format));
+            }
+            if (!radioButtonManualConfigBaseLine.Checked)
+            {
+                panelManualConfig.Enabled = false;
+                PanelConfigChart.Enabled = false;
+                modeBGW = 0;
+            }
+        }
+
+        private void EditBaseline ()
+        {
+
+        }
+
+        private void NumericUpDown1_ValueChanged(object sender, EventArgs e)
+        {
+            manualBaseline[manualChoosenChannel - 1] = (int)numericUpDownManualBaseline.Value;
+            UpdateChartSample(TQDC2Configs.StartManualConfigBaseline(manualEventNum, manualChoosenChannel, result.Format, manualBaseline));
+        }
+
+        private void buttonManualConfigNext_Click(object sender, EventArgs e)
+        {
+            if (manualEventNum[manualChoosenChannel - 1] == AnalysisFile.NumEv)
+                manualEventNum[manualChoosenChannel - 1] = 0;
+            else
+                manualEventNum[manualChoosenChannel - 1]++;
+            UpdateChartSample(TQDC2Configs.StartManualConfigBaseline(manualEventNum, manualChoosenChannel, result.Format, manualBaseline));
+        }
+
+        private void buttonManualConfigPrev_Click(object sender, EventArgs e)
+        {
+            if (manualEventNum[manualChoosenChannel - 1] == 0)
+                manualEventNum[manualChoosenChannel - 1] = AnalysisFile.NumEv;
+            else
+                manualEventNum[manualChoosenChannel - 1]--;
+            UpdateChartSample(TQDC2Configs.StartManualConfigBaseline(manualEventNum, manualChoosenChannel, result.Format, manualBaseline));
+        }
+
+        private void PanelConfigChart_Paint(object sender, PaintEventArgs e)
         {
 
         }

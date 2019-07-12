@@ -82,9 +82,18 @@
             this.CChannel9 = new System.Windows.Forms.CheckBox();
             this.CChannel10 = new System.Windows.Forms.CheckBox();
             this.ConConfigFile = new System.Windows.Forms.TabPage();
-            this.checkBoxStandartConfBaseLine = new System.Windows.Forms.CheckBox();
-            this.Inl_config = new System.Windows.Forms.CheckBox();
+            this.panelManualConfig = new System.Windows.Forms.Panel();
+            this.buttonManualConfigPrev = new System.Windows.Forms.Button();
+            this.buttonManualConfigNext = new System.Windows.Forms.Button();
+            this.label5 = new System.Windows.Forms.Label();
+            this.numericUpDownManualBaseline = new System.Windows.Forms.NumericUpDown();
+            this.radioButtonEmptyBaseline = new System.Windows.Forms.RadioButton();
+            this.label6 = new System.Windows.Forms.Label();
+            this.radioButtonManualConfigBaseLine = new System.Windows.Forms.RadioButton();
+            this.radioButtonReadConfigFileBaseLine = new System.Windows.Forms.RadioButton();
+            this.radioButtonStandartConfigBaseLine = new System.Windows.Forms.RadioButton();
             this.ReadConfigFile = new System.Windows.Forms.Button();
+            this.Inl_config = new System.Windows.Forms.CheckBox();
             this.OpenPanel = new System.Windows.Forms.Panel();
             this.OpenFileBtn = new System.Windows.Forms.Button();
             this.MainPanel = new System.Windows.Forms.Panel();
@@ -130,6 +139,8 @@
             this.ConDecoder.SuspendLayout();
             this.ConCalc.SuspendLayout();
             this.ConConfigFile.SuspendLayout();
+            this.panelManualConfig.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownManualBaseline)).BeginInit();
             this.OpenPanel.SuspendLayout();
             this.MainPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.StepChart)).BeginInit();
@@ -750,48 +761,157 @@
             // ConConfigFile
             // 
             this.ConConfigFile.BackColor = System.Drawing.SystemColors.Control;
-            this.ConConfigFile.Controls.Add(this.checkBoxStandartConfBaseLine);
-            this.ConConfigFile.Controls.Add(this.Inl_config);
+            this.ConConfigFile.Controls.Add(this.panelManualConfig);
+            this.ConConfigFile.Controls.Add(this.radioButtonEmptyBaseline);
+            this.ConConfigFile.Controls.Add(this.label6);
+            this.ConConfigFile.Controls.Add(this.radioButtonManualConfigBaseLine);
+            this.ConConfigFile.Controls.Add(this.radioButtonReadConfigFileBaseLine);
+            this.ConConfigFile.Controls.Add(this.radioButtonStandartConfigBaseLine);
             this.ConConfigFile.Controls.Add(this.ReadConfigFile);
+            this.ConConfigFile.Controls.Add(this.Inl_config);
             this.ConConfigFile.Location = new System.Drawing.Point(4, 22);
             this.ConConfigFile.Name = "ConConfigFile";
             this.ConConfigFile.Size = new System.Drawing.Size(275, 336);
             this.ConConfigFile.TabIndex = 2;
             this.ConConfigFile.Text = "Файл настроек";
             // 
-            // checkBoxStandartConfBaseLine
+            // panelManualConfig
             // 
-            this.checkBoxStandartConfBaseLine.AutoSize = true;
-            this.checkBoxStandartConfBaseLine.Checked = true;
-            this.checkBoxStandartConfBaseLine.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxStandartConfBaseLine.Location = new System.Drawing.Point(3, 35);
-            this.checkBoxStandartConfBaseLine.Name = "checkBoxStandartConfBaseLine";
-            this.checkBoxStandartConfBaseLine.Size = new System.Drawing.Size(173, 30);
-            this.checkBoxStandartConfBaseLine.TabIndex = 6;
-            this.checkBoxStandartConfBaseLine.Text = "Использование cтандартной\r\nконфигурации baseline";
-            this.checkBoxStandartConfBaseLine.UseVisualStyleBackColor = true;
-            this.checkBoxStandartConfBaseLine.CheckedChanged += new System.EventHandler(this.CheckBoxStandartConfBaseLine_CheckedChanged);
+            this.panelManualConfig.Controls.Add(this.buttonManualConfigPrev);
+            this.panelManualConfig.Controls.Add(this.buttonManualConfigNext);
+            this.panelManualConfig.Controls.Add(this.label5);
+            this.panelManualConfig.Controls.Add(this.numericUpDownManualBaseline);
+            this.panelManualConfig.Enabled = false;
+            this.panelManualConfig.Location = new System.Drawing.Point(4, 165);
+            this.panelManualConfig.Name = "panelManualConfig";
+            this.panelManualConfig.Size = new System.Drawing.Size(271, 73);
+            this.panelManualConfig.TabIndex = 13;
+            // 
+            // buttonManualConfigPrev
+            // 
+            this.buttonManualConfigPrev.Location = new System.Drawing.Point(5, 3);
+            this.buttonManualConfigPrev.Name = "buttonManualConfigPrev";
+            this.buttonManualConfigPrev.Size = new System.Drawing.Size(75, 23);
+            this.buttonManualConfigPrev.TabIndex = 13;
+            this.buttonManualConfigPrev.Text = "Пред";
+            this.buttonManualConfigPrev.UseVisualStyleBackColor = true;
+            this.buttonManualConfigPrev.Click += new System.EventHandler(this.buttonManualConfigPrev_Click);
+            // 
+            // buttonManualConfigNext
+            // 
+            this.buttonManualConfigNext.Location = new System.Drawing.Point(87, 3);
+            this.buttonManualConfigNext.Name = "buttonManualConfigNext";
+            this.buttonManualConfigNext.Size = new System.Drawing.Size(75, 23);
+            this.buttonManualConfigNext.TabIndex = 14;
+            this.buttonManualConfigNext.Text = "След";
+            this.buttonManualConfigNext.UseVisualStyleBackColor = true;
+            this.buttonManualConfigNext.Click += new System.EventHandler(this.buttonManualConfigNext_Click);
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(187, 8);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(72, 13);
+            this.label5.TabIndex = 16;
+            this.label5.Text = "Номер Event";
+            this.label5.Click += new System.EventHandler(this.Label5_Click_1);
+            // 
+            // numericUpDownManualBaseline
+            // 
+            this.numericUpDownManualBaseline.Location = new System.Drawing.Point(5, 46);
+            this.numericUpDownManualBaseline.Maximum = new decimal(new int[] {
+            32768,
+            0,
+            0,
+            0});
+            this.numericUpDownManualBaseline.Minimum = new decimal(new int[] {
+            32768,
+            0,
+            0,
+            -2147483648});
+            this.numericUpDownManualBaseline.Name = "numericUpDownManualBaseline";
+            this.numericUpDownManualBaseline.Size = new System.Drawing.Size(120, 20);
+            this.numericUpDownManualBaseline.TabIndex = 17;
+            this.numericUpDownManualBaseline.ValueChanged += new System.EventHandler(this.NumericUpDown1_ValueChanged);
+            // 
+            // radioButtonEmptyBaseline
+            // 
+            this.radioButtonEmptyBaseline.AutoSize = true;
+            this.radioButtonEmptyBaseline.Location = new System.Drawing.Point(6, 51);
+            this.radioButtonEmptyBaseline.Name = "radioButtonEmptyBaseline";
+            this.radioButtonEmptyBaseline.Size = new System.Drawing.Size(107, 17);
+            this.radioButtonEmptyBaseline.TabIndex = 21;
+            this.radioButtonEmptyBaseline.TabStop = true;
+            this.radioButtonEmptyBaseline.Text = "Без калибровки";
+            this.radioButtonEmptyBaseline.UseVisualStyleBackColor = true;
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label6.Location = new System.Drawing.Point(3, 32);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(69, 16);
+            this.label6.TabIndex = 13;
+            this.label6.Text = "Baseline";
+            // 
+            // radioButtonManualConfigBaseLine
+            // 
+            this.radioButtonManualConfigBaseLine.AutoSize = true;
+            this.radioButtonManualConfigBaseLine.Location = new System.Drawing.Point(6, 142);
+            this.radioButtonManualConfigBaseLine.Name = "radioButtonManualConfigBaseLine";
+            this.radioButtonManualConfigBaseLine.Size = new System.Drawing.Size(126, 17);
+            this.radioButtonManualConfigBaseLine.TabIndex = 20;
+            this.radioButtonManualConfigBaseLine.Text = "Настроить в ручную";
+            this.radioButtonManualConfigBaseLine.UseVisualStyleBackColor = true;
+            this.radioButtonManualConfigBaseLine.CheckedChanged += new System.EventHandler(this.RadioButtonManualConfigBaseLine_CheckedChanged);
+            // 
+            // radioButtonReadConfigFileBaseLine
+            // 
+            this.radioButtonReadConfigFileBaseLine.AutoSize = true;
+            this.radioButtonReadConfigFileBaseLine.Location = new System.Drawing.Point(6, 95);
+            this.radioButtonReadConfigFileBaseLine.Name = "radioButtonReadConfigFileBaseLine";
+            this.radioButtonReadConfigFileBaseLine.Size = new System.Drawing.Size(182, 17);
+            this.radioButtonReadConfigFileBaseLine.TabIndex = 19;
+            this.radioButtonReadConfigFileBaseLine.Text = "Прочитать файл конфигурации";
+            this.radioButtonReadConfigFileBaseLine.UseVisualStyleBackColor = true;
+            this.radioButtonReadConfigFileBaseLine.CheckedChanged += new System.EventHandler(this.RadioButtonReadConfigFileBaseLine_CheckedChanged);
+            // 
+            // radioButtonStandartConfigBaseLine
+            // 
+            this.radioButtonStandartConfigBaseLine.AutoSize = true;
+            this.radioButtonStandartConfigBaseLine.Checked = true;
+            this.radioButtonStandartConfigBaseLine.Location = new System.Drawing.Point(6, 73);
+            this.radioButtonStandartConfigBaseLine.Name = "radioButtonStandartConfigBaseLine";
+            this.radioButtonStandartConfigBaseLine.Size = new System.Drawing.Size(208, 17);
+            this.radioButtonStandartConfigBaseLine.TabIndex = 18;
+            this.radioButtonStandartConfigBaseLine.TabStop = true;
+            this.radioButtonStandartConfigBaseLine.Text = "Стандратная конфигурация Baseline";
+            this.radioButtonStandartConfigBaseLine.UseVisualStyleBackColor = true;
+            this.radioButtonStandartConfigBaseLine.CheckedChanged += new System.EventHandler(this.RadioButtonStandartConfigBaseLine_CheckedChanged);
+            // 
+            // ReadConfigFile
+            // 
+            this.ReadConfigFile.Enabled = false;
+            this.ReadConfigFile.Location = new System.Drawing.Point(6, 117);
+            this.ReadConfigFile.Name = "ReadConfigFile";
+            this.ReadConfigFile.Size = new System.Drawing.Size(75, 23);
+            this.ReadConfigFile.TabIndex = 5;
+            this.ReadConfigFile.Text = "Загрузить";
+            this.ReadConfigFile.UseVisualStyleBackColor = true;
+            this.ReadConfigFile.Click += new System.EventHandler(this.ReadConfigFile_Click);
             // 
             // Inl_config
             // 
             this.Inl_config.AutoSize = true;
-            this.Inl_config.Location = new System.Drawing.Point(3, 71);
+            this.Inl_config.Location = new System.Drawing.Point(4, 12);
             this.Inl_config.Name = "Inl_config";
             this.Inl_config.Size = new System.Drawing.Size(183, 17);
             this.Inl_config.TabIndex = 5;
             this.Inl_config.Text = "Использование Inl калибровки";
             this.Inl_config.UseVisualStyleBackColor = true;
             this.Inl_config.CheckedChanged += new System.EventHandler(this.Inl_config_CheckedChanged);
-            // 
-            // ReadConfigFile
-            // 
-            this.ReadConfigFile.Location = new System.Drawing.Point(3, 3);
-            this.ReadConfigFile.Name = "ReadConfigFile";
-            this.ReadConfigFile.Size = new System.Drawing.Size(272, 23);
-            this.ReadConfigFile.TabIndex = 5;
-            this.ReadConfigFile.Text = "Загрузить конфигурационный файл";
-            this.ReadConfigFile.UseVisualStyleBackColor = true;
-            this.ReadConfigFile.Click += new System.EventHandler(this.ReadConfigFile_Click);
             // 
             // OpenPanel
             // 
@@ -1189,6 +1309,7 @@
             this.PanelConfigChart.Name = "PanelConfigChart";
             this.PanelConfigChart.Size = new System.Drawing.Size(309, 54);
             this.PanelConfigChart.TabIndex = 12;
+            this.PanelConfigChart.Paint += new System.Windows.Forms.PaintEventHandler(this.PanelConfigChart_Paint);
             // 
             // NumerMaximumX
             // 
@@ -1297,6 +1418,9 @@
             this.ConCalc.PerformLayout();
             this.ConConfigFile.ResumeLayout(false);
             this.ConConfigFile.PerformLayout();
+            this.panelManualConfig.ResumeLayout(false);
+            this.panelManualConfig.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownManualBaseline)).EndInit();
             this.OpenPanel.ResumeLayout(false);
             this.MainPanel.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.StepChart)).EndInit();
@@ -1404,7 +1528,16 @@
         private System.Windows.Forms.NumericUpDown NumerMaximumY;
         private System.Windows.Forms.NumericUpDown NumerMinimumY;
         private System.Windows.Forms.Button StopButton;
-        private System.Windows.Forms.CheckBox checkBoxStandartConfBaseLine;
+        private System.Windows.Forms.Button buttonManualConfigPrev;
+        private System.Windows.Forms.Button buttonManualConfigNext;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.NumericUpDown numericUpDownManualBaseline;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.RadioButton radioButtonManualConfigBaseLine;
+        private System.Windows.Forms.RadioButton radioButtonReadConfigFileBaseLine;
+        private System.Windows.Forms.RadioButton radioButtonStandartConfigBaseLine;
+        private System.Windows.Forms.RadioButton radioButtonEmptyBaseline;
+        private System.Windows.Forms.Panel panelManualConfig;
     }
 }
 

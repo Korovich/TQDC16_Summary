@@ -129,7 +129,7 @@ namespace TQDC16_Summary_Rev_1
                 //StepChart.Maximum = AnalysisFile.NumEv/stepchartdivmax;
                 StepChart.Maximum = 1000;
                 //StepChart.Minimum = AnalysisFile.NumEv/stepchartdivmin;
-                StepChart.Minimum = 300;
+                StepChart.Minimum = 200;
                 BackGrWorkProgressBar.RunWorkerAsync(new BackGroundWorkerTask(CALCULATION, result.Format));
                 ChangedStateRadioButtonChannel(CChannel);
                 modeBGW = CALCULATION;
@@ -150,7 +150,7 @@ namespace TQDC16_Summary_Rev_1
                 //StepChart.Maximum = AnalysisFile.NumEv / stepchartdivmax;
                 StepChart.Maximum = 1000;
                 //StepChart.Minimum = AnalysisFile.NumEv / stepchartdivmin;
-                StepChart.Minimum = 300;
+                StepChart.Minimum = 200;
                 ChangedStateRadioButtonChannel(DChannel);
                 modeBGW = DECODER;
                 BackGrWorkProgressBar.RunWorkerAsync(new BackGroundWorkerTask(DECODER, result.Format));

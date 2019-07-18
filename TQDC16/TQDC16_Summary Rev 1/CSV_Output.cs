@@ -87,45 +87,83 @@ namespace TQDC16_Summary_Rev_1
         {
             for (int ch = 0; ch < 16; ch++)
             {
-                if (!IsNeedChannel(ch + 1, CChannel)||bufferadc[ch].Count==0||buffertdc[ch].Count==0) continue;
+                if (!IsNeedChannel(ch + 1, CChannel)||bufferadc[ch].Count==0||buffertdc[ch].Count==0) continue; 
                 if(bufferadc[ch].Count() > 1)
                 {
                     List<int> result = new List<int>();
-                    for (int i=0;i<bufferadc[ch].Count;i++)
+                    uint timestamp = bufferadc[ch][0].timestamp;
+                    int lasttdcindex = 0;
+                    int numtdcenteres = 0;
+                    result.InsertRange(0, bufferadc[ch][0].bufsamples);
+                    for (int i=1;i<bufferadc[ch].Count;i++)
                     {
-                        result.InsertRange(result.Count,bufferadc[ch][i].bufsamples);
+                        if (result.Count() == 0)
+                        {
+                            result.InsertRange(result.Count, bufferadc[ch][i].bufsamples);
+                            timestamp = bufferadc[ch][i].timestamp;
+                        }
+                        if (timestamp + ((result.Count + 1) * 12.5) >=                  //x переделать на сравнение с временной точкой 
+                            bufferadc[ch][i].timestamp)                               //x в массиве result а не с предыдущего sample из буффера
+                        {
+                            double pluscorr = (bufferadc[ch][i - 1].timestamp + (bufferadc[ch][i - 1].bufsamples.Count + 1) * 12.5 - bufferadc[ch][i].timestamp);
+                            for (int t = 0; t < buffertdc[ch].Count; t++)
+                            {
+                                if (buffertdc[ch][t].data / 1000 > bufferadc[ch][i].timestamp)
+                                {
+                                    buffertdc[ch][t].data += (uint)pluscorr*1000;
+                                }
+                            }
+                            result.InsertRange(result.Count, bufferadc[ch][i].bufsamples);
+                        }
+                        else
+                        {
+                            for (int k=0;k<buffertdc[ch].Count;k++)
+                            {
+                                if (result.Count() * 12.5 + timestamp > (buffertdc[ch][k].data / 1000))
+                                {
+                                    numtdcenteres = k;
+                                    lasttdcindex = k - 1;
+                                    break;
+                                }
+                            }
+                            for (int j = 0; j < numtdcenteres; j++)
+                            {
+                                if (i != numtdcenteres - 1)
+                                {
+                                    if (CalculationMMI(buferfiledata, result, buffertdc[ch][j].data, ch, timestamp, buffertdc[ch][j + 1].data))
+                                        j++;
+                                }
+                                else CalculationMMI(buferfiledata, result, buffertdc[ch].Last().data, ch, timestamp);
+                            }
+                            result = new List<int>();
+                        }
                     }
-                    CalculationMMI(buferfiledata, result, buffertdc[ch][0].data, ch, bufferadc[ch][0].timestamp);
+                    
+                    for (int i = lasttdcindex; i < buffertdc[ch].Count; i++)
+                    {
+                        if (i != buffertdc[ch].Count - 1)
+                        {
+                            if (CalculationMMI(buferfiledata, result, buffertdc[ch][i].data, ch, timestamp, buffertdc[ch][i + 1].data))
+                                i++;
+                        }
+                        else CalculationMMI(buferfiledata, result, buffertdc[ch].Last().data, ch, timestamp);
+
+                    }
+                    //CalculationMMI(buferfiledata, result, buffertdc[ch].Last().data, ch, timestamp);
                 }
                 else
                 {
-                    CalculationMMI(buferfiledata, bufferadc[ch][0].bufsamples, buffertdc[ch][0].data, ch, bufferadc[ch][0].timestamp);
-                }
-                /*
-                if (bufferadc[ch].Count() == buffertdc[ch].Count()) //если количество хитов tdc adc одинаковое
-                {
-                    for (int i = 0; i < bufferadc[ch].Count(); i++)
+                    for (int i = 0;i<buffertdc[ch].Count;i++)
                     {
-                        CalculationMMI(buferfiledata, bufferadc[ch][i].bufsamples, buffertdc[ch][i].data, ch);
+                        if (i != buffertdc[ch].Count - 1)
+                        {
+                            if (CalculationMMI(buferfiledata, bufferadc[ch][0].bufsamples, buffertdc[ch][i].data, ch, bufferadc[ch][0].timestamp, buffertdc[ch][i + 1].data))
+                                i++;
+                        }
+                        else CalculationMMI(buferfiledata, bufferadc[ch][0].bufsamples, buffertdc[ch].Last().data, ch, bufferadc[ch].Last().timestamp);
                     }
+                    //CalculationMMI(buferfiledata, bufferadc[ch][0].bufsamples, buffertdc[ch].Last().data, ch, bufferadc[ch].Last().timestamp);
                 }
-
-                if (bufferadc[ch].Count() > buffertdc[ch].Count()) //если количество хитов tdc<adc
-                {
-                    for (int i = 0; i < buffertdc[ch].Count(); i++)
-                    {
-                        CalculationMMI(buferfiledata, bufferadc[ch][i].bufsamples, buffertdc[ch][i].data, ch);
-                    }
-                }
-
-                if (bufferadc[ch].Count() < buffertdc[ch].Count())//если количество хитов tdc>adc
-                {
-                    for (int i = 0; i < bufferadc[ch].Count(); i++)
-                    {
-                        CalculationMMI(buferfiledata, bufferadc[ch][i].bufsamples, buffertdc[ch][i].data, ch);
-                    }
-                }
-                */
             }
         }
 

@@ -15,7 +15,7 @@ using Extreme.Mathematics;
 
 namespace TQDC16_Summary_Rev_1
 {
-    class Calculation:TQDC16_Summary
+    class Calculation : TQDC16_Summary
     {
         public static void StartCalcBinary(BackgroundWorker ProgressBar, bool[] EnableChannel, DoWorkEventArgs e)
         {
@@ -54,7 +54,7 @@ namespace TQDC16_Summary_Rev_1
                     MSLeng = Byte2Int(ReadBytes(pos + 21, 3, fs)) >> 2; // Чтение длины блока MStream
 
                     TimeStampSec = Byte2uInt(ReadBytes(pos + 24, 4, fs));    // Запись время триггера сек
-                    TimeStampnSec = Byte2uInt(ReadBytes(pos + 28, 4, fs))>>2;    // Запись время триггера нсек
+                    TimeStampnSec = Byte2uInt(ReadBytes(pos + 28, 4, fs)) >> 2;    // Запись время триггера нсек
                     buferfiledata.AddHeaderEvent(NumEv, TimeStampSec, TimeStampnSec);  //Запись данных триггера
                     pospl = pos + 32; // присваивание поцизии в блоке MSPayload начального значения
                     BlockData<Adc_Interface> adcbuffer = new BlockData<Adc_Interface>(); // экземпляр данных adc в блоке event
@@ -84,7 +84,7 @@ namespace TQDC16_Summary_Rev_1
                                             case 4:
                                                 {
                                                     int ch = ((Byte2Int(ReadBytes(pospl, 4, fs))) << 7) >> 28;                   //чтение канала данных
-                                                    if (!IsNeedChannel(ch+1,CChannel)) break;                                            //проверка нужды канала
+                                                    if (!IsNeedChannel(ch + 1, CChannel)) break;                                            //проверка нужды канала
                                                     uint value = (((Byte2uInt(ReadBytes(pospl, 4, fs))) << 11) >> 11) * 25;      //чтение данных tdc
                                                     if (inl_config)
                                                     {
@@ -97,7 +97,7 @@ namespace TQDC16_Summary_Rev_1
                                             case 5:
                                                 {
                                                     int ch = ((Byte2Int(ReadBytes(pospl, 4, fs))) << 7) >> 28;                   //чтение канала данных
-                                                    if (!IsNeedChannel(ch+1,CChannel)) break;                                            //проверка нужды канала
+                                                    if (!IsNeedChannel(ch + 1, CChannel)) break;                                            //проверка нужды канала
                                                     uint value = (((Byte2uInt(ReadBytes(pospl, 4, fs))) << 11) >> 11) * 25;      //чтение данных tdc
                                                     tdcbuffer.Newrecord(ch, new Tdc_Interface(TRAILING_FRONT, value));          //Запись данных в блок данных tdc
                                                     pospl += 4;
@@ -115,7 +115,7 @@ namespace TQDC16_Summary_Rev_1
                             case 1:
                                 {
                                     int ch = (int)(((Byte2Int(ReadBytes(pospl, 1, fs))) << 28) >> 28); // Считываемый канал данных
-                                    if (!IsNeedChannel(ch+1,CChannel))       //проверка нужды канала
+                                    if (!IsNeedChannel(ch + 1, CChannel))       //проверка нужды канала
                                     {
                                         pospl = pospl + DataPLLeng + 4;
                                         break;
@@ -137,7 +137,7 @@ namespace TQDC16_Summary_Rev_1
                                         }
                                         for (uint i = 0; i < ((DataLen / 4) * 4 == DataLen ? (DataLen / 4) : (DataLen / 4) + 1); i++) //цикл на чтение Sample ADC
                                         {
-                                            buf.Add(TQDC2Configs.ChGain[ch] ?(Byte2Sample(ReadBytes(pospl + 2, 2, fs)) + (int)TQDC2Configs.X4[ch]): (Byte2Sample(ReadBytes(pospl + 2, 2, fs)) + (int)TQDC2Configs.X1[ch])); // Запись первого Sample в лист
+                                            buf.Add(TQDC2Configs.ChGain[ch] ? (Byte2Sample(ReadBytes(pospl + 2, 2, fs)) + (int)TQDC2Configs.X4[ch]) : (Byte2Sample(ReadBytes(pospl + 2, 2, fs)) + (int)TQDC2Configs.X1[ch])); // Запись первого Sample в лист
                                             if (odd & i == (DataLen / 4)) // если данные нечетные и последняя строка данных, то последнее 16 битный sample не читается
                                             {
 
@@ -156,7 +156,7 @@ namespace TQDC16_Summary_Rev_1
                     WriteFileCalc(buferfiledata, writer, StartTimeStampnSec); //запись в файл
                     prog += EvLeng + 12;    //Повышение позиции для Progress Bar
                     pos = pos + EvLeng + 12;    // Запись новой позиции в файле
-                    ProgressBar.ReportProgress((int)NumEv,adcbuffer);   // Возращение прогресса в BackgroundWorker ProgressBar ( повышение строки прогресса в окне)
+                    ProgressBar.ReportProgress((int)NumEv, adcbuffer);   // Возращение прогресса в BackgroundWorker ProgressBar ( повышение строки прогресса в окне)
                     if (ProgressBar.CancellationPending == true)
                     {
                         fs.Close();     //Закрытие чтение
@@ -165,7 +165,7 @@ namespace TQDC16_Summary_Rev_1
                     }
                 }
             }
-            calculationresult = new BackGroundWorkerResult(CALCULATION,100,OK);
+            calculationresult = new BackGroundWorkerResult(CALCULATION, 100, OK);
             e.Result = calculationresult; //Возращение переменной для различия процесса
             fs.Close();     //Закрытие чтение
             CloseCsv();     //и записи
@@ -230,7 +230,7 @@ namespace TQDC16_Summary_Rev_1
                                     {
                                         readerLine = readerLine.Substring(4);
                                         int ch = int.Parse(readerLine.Substring(0, readerLine.IndexOf(':')));     //Добавление канала, данных,
-                                        if (!IsNeedChannel(ch + 1,CChannel)) break;                                            //проверка нужды канала
+                                        if (!IsNeedChannel(ch + 1, CChannel)) break;                                            //проверка нужды канала
                                         uint value = uint.Parse(readerLine.Substring(readerLine.IndexOf(": ") + 2)) * 25;      //чтение данных tdc
                                         tdcbuffer.Newrecord(ch, new Tdc_Interface(LEADING_FRONT, value));           //Запись данных в блок данных tdc
                                         break;
@@ -239,8 +239,8 @@ namespace TQDC16_Summary_Rev_1
                                     {
                                         readerLine = readerLine.Substring(4);
                                         int ch = int.Parse(readerLine.Substring(0, readerLine.IndexOf(':')));             //чтение канала данных
-                                        if (!IsNeedChannel(ch + 1,CChannel)) break;      //проверка нужды канала
-                                        uint timestamp = uint.Parse(readerLine.Substring(readerLine.IndexOf(": ") + 1, readerLine.IndexOf(';') - (readerLine.IndexOf(": ") + 1))) *8;
+                                        if (!IsNeedChannel(ch + 1, CChannel)) break;      //проверка нужды канала
+                                        uint timestamp = uint.Parse(readerLine.Substring(readerLine.IndexOf(": ") + 1, readerLine.IndexOf(';') - (readerLine.IndexOf(": ") + 1))) * 8;
                                         readerLine = readerLine.Substring(readerLine.IndexOf(';') + 2);
                                         List<int> databuf = new List<int>();    //Массив для sample adc
                                         while (true)
@@ -248,8 +248,8 @@ namespace TQDC16_Summary_Rev_1
                                             try
                                             {
                                                 //databuf.Add(int.Parse(readerLine.Substring(0, readerLine.IndexOf(' '))));
-                                                databuf.Add(TQDC2Configs.ChGain[ch] ? 
-                                                    (int.Parse(readerLine.Substring(0, readerLine.IndexOf(' '))) + (int)TQDC2Configs.X4[ch]) 
+                                                databuf.Add(TQDC2Configs.ChGain[ch] ?
+                                                    (int.Parse(readerLine.Substring(0, readerLine.IndexOf(' '))) + (int)TQDC2Configs.X4[ch])
                                                     : (int.Parse(readerLine.Substring(0, readerLine.IndexOf(' '))) + (int)TQDC2Configs.X1[ch]));
                                                 readerLine = readerLine.Substring(readerLine.IndexOf(' ') + 1);
                                             }
@@ -290,7 +290,7 @@ namespace TQDC16_Summary_Rev_1
             fs.Close(); // закрытие потока чтения
         }
 
-        internal static double CalculationIntegral(List<int> samples,int max,int min,uint timestampadc,ulong tdc)   //метод вычисления интеграла из datasamples
+        internal static double CalculationIntegral(List<int> samples, int start, int end)   //метод вычисления интеграла из datasamples
         {
             /*
             double result;
@@ -300,74 +300,147 @@ namespace TQDC16_Summary_Rev_1
                 ConvergenceCriterion.WithinRelativeTolerance;
             double integral = 0;
             result = simpson.Integrate(samples.ToArray(), 0, 2);*/
-            if (Math.Abs(max) > Math.Abs(min))
+            double result = 0;
+            for (int i = start; i < end - 1; i++)
             {
-                int start = 0;
-                double integral = 0;
-                for (int i=0;i<samples.Count;i++)
-                {
-                    if ((i*12.5) + timestampadc >tdc)
-                    {
-                        start = i - 1;
-                        break;
-                    }
-                }
-                for (int i = start; i < samples.Count() - 1; i++)
-                {
-                    if (i != start && samples[i] < samples[start]) break;
-                    integral += Math.Abs(((double)samples[i] + (double)samples[i + 1]) * 6.25);
-                }
-                return integral;
-                /*
-                for (int i = 0; i < samples.Count() - 1; i++)
-                {
-                    integral += Math.Abs((((double)samples[i] + (double)samples[i + 1]) - (2 * min)) * 6.25);
-                }
-                return integral;*/
+                result += Math.Abs(((double)samples[i] + (double)samples[i + 1]) * 6.25);
             }
-            if (Math.Abs(max) < Math.Abs(min))
-            {
-                int start = 0;
-                double integral = 0;
-                for (int i = 0; i < samples.Count; i++)
-                {
-                    if ((i * 12.5) + timestampadc > tdc)
-                    {
-                        if (i!=0)
-                        start = i - 1;
-                        break;
-                    }
-                }
-                for (int i = start; i < samples.Count() - 1; i++)
-                {
-                    if (i != start && -samples[i] < -samples[start]) break;
-                    integral += Math.Abs(((double)-samples[i] + (double)-samples[i + 1]) * 6.25);
-                }
-                return integral;
-                /*
-                for (int i = 0; i < samples.Count() - 1; i++)
-                {
-                    integral += Math.Abs((((double)samples[i] + (double)samples[i + 1]) - (2 * max)) * 6.25);
-                }
-                return integral;
-                */
-            }
-            return samples[0]*(samples.Count*12.5);
+            return result;
         }
 
 
         //Метод вычисления статистики из данных(мин макс интеграл)
-        internal static void CalculationMMI(BufferData<CalcInterf> buferfiledata , List<int> data, ulong tdc, int channel, uint timestampadc)
+        internal static bool CalculationMMI(BufferData<CalcInterf> buferfiledata, List<int> data, List<Tdc_Interface> tdcdata, int startTdc, int channel, uint timestampadc) //x long tdcnext = -1
         {
-            int[] result = new int[2] { data[0], data[0] }; //max min 
-            double integral;
-            for (int i = 1; i < data.Count; i++)
+            int indexFindedEnd = 0;
+            bool isFindEnd = false;
+            bool isnexttdcpass = false;
+            int indexStartTdc = 0;
+            double result = 0;
+            int indexnexttdc = 0;
+            int max = data[0];
+            int min = data[0];
+            bool isinverted = false;
+            bool isEndTdcinData = tdcdata.Count - 1 == startTdc;
+            for (int j = 1; j < data.Count; j++)
             {
-                if (data[i] > result[0]) { result[0] = data[i]; }//max
-                if (data[i] < result[1]) { result[1] = data[i]; }//min
+                if (data[j] > max)
+                { max = data[j]; }//max
+                if (data[j] < min)
+                { min = data[j]; }//min
             }
-            integral = CalculationIntegral(data,result[0],result[1],timestampadc,tdc);//integral                                                                                           
-            buferfiledata[channel].Add(new CalcInterf { tdc = tdc, max = result[0], min = result[1], integral = integral });
+            if (Math.Abs(max) < Math.Abs(min))
+            {
+                for (int j = 0; j < data.Count; j++)
+                {
+                    data[j] = -data[j];
+                }
+                isinverted = true;
+            }
+            for (int i = 0; i < data.Count; i++) //находим первую точку после tdc
+            {
+                if ((i * 12.5) + timestampadc > tdcdata[startTdc].data / 1000)
+                {
+                    indexStartTdc = i;
+                    break;
+                }
+            }
+            if (isEndTdcinData)
+                for (int i = indexStartTdc; i < data.Count; i++) //находим первую точку после tdc
+                {
+                    if ((i * 12.5) + timestampadc > tdcdata[startTdc + 1].data / 1000)
+                    {
+                        indexnexttdc = i;
+                        break;
+                    }
+                }
+            for (int i = indexStartTdc + 1; i < data.Count; i++)
+            {
+                if (data[i] < data[indexStartTdc + 1] || data[i] < 0)
+                {
+                    isFindEnd = true;
+                    indexFindedEnd = i;
+                    break;
+                }
+            }
+            if (isFindEnd)
+            {
+                if (isEndTdcinData)
+                {
+                    max = data[indexStartTdc];
+                    min = data[indexStartTdc];
+                    for (int j = indexStartTdc; j < indexFindedEnd; j++)
+                    {
+                        if (data[j] > max)
+                        { max = data[j]; }//max
+                        if (data[j] < min)
+                        { min = data[j]; }//min
+                    }
+                    result = CalculationIntegral(data, indexStartTdc, indexFindedEnd);
+                }
+                else
+                {
+
+                }
+            }
+            else
+            {
+                if (isEndTdcinData)
+                {
+                    int indexMinAfterMax = 0;
+                    max = data[indexStartTdc];
+                    min = data[indexStartTdc];
+                    for (int j = indexStartTdc; j < data.Count; j++)
+                    {
+                        if (data[j] > max)
+                        {
+                            max = data[j];
+                            indexMinAfterMax = j;
+                        }
+                        if (data[j] < min)
+                        {
+                            min = data[j];
+                        }
+                        if (data[j]<data[indexMinAfterMax])
+                        {
+                            indexMinAfterMax = j;
+                        }
+                    }
+                    result = CalculationIntegral(data, indexStartTdc, indexMinAfterMax);
+                }
+                else
+                {
+                    int indexMinAfterMax = 0;
+                    max = data[indexStartTdc];
+                    min = data[indexStartTdc];
+                    for (int j = indexStartTdc; j < indexnexttdc; j++)
+                    {
+                        if (data[j] > max)
+                        {
+                            max = data[j];
+                            indexMinAfterMax = j;
+                        }
+                        if (data[j] < min)
+                        {
+                            min = data[j];
+                        }
+                        if (data[j] < data[indexMinAfterMax])
+                        {
+                            indexMinAfterMax = j;
+                        }
+                    }
+                    result = CalculationIntegral(data, indexStartTdc, indexMinAfterMax);
+                }
+            }   
+            buferfiledata[channel].Add(new CalcInterf { tdc = tdcdata[startTdc].data, max = max, min = min, integral = result });
+            if (isinverted)
+            {
+                for (int j = 0; j < data.Count; j++)
+                {
+                    data[j] = -data[j];
+                }
+            }
+            return isnexttdcpass;
         }
     }
 }
